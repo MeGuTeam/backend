@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT;
 const authRouter = require("./routes/authRoutes");
+const writingJpRouter = require("./routes/writingJpController");
 
 app.use(
     cors({
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(authRouter);
+app.use(writingJpRouter);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
