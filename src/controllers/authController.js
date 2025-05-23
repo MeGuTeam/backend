@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const pool = require("../config/database");
+const supabase = require("../config/supabase");
 const jwt = require("jsonwebtoken");
 const validateInput = require("../utils/validateInput");
 
@@ -12,14 +12,16 @@ const registerAuth = async (req, res) => {
         if (!validateInput(username) || !validateInput(password)) {
             return res.status(400).json({
                 error: true,
-                message: "Invalid input",
+                message: "Inputan tidak valid",
+                data: null,
             });
         }
 
         if (!username || !password) {
             return res.status(400).json({
                 error: true,
-                message: "Username and password are required",
+                message: "Username dan password tidak boleh kosong",
+                data: null,
             });
         }
 
@@ -27,37 +29,51 @@ const registerAuth = async (req, res) => {
             return res.status(400).json({
                 error: true,
                 message:
-                    "Username must be at least 3 characters and password at least 6 characters",
+                    "Username minimal 3 karakter dan password minimal 6 karakter",
+                data: null,
             });
         }
 
-        const existingUser = await pool.query(
-            "SELECT * FROM users WHERE username = $1",
-            [username]
-        );
+        const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("username", username);
 
-        if (existingUser.rows.length > 0) {
-            return res.status(409).json({
+        if (fetchError) {
+            throw new Error("Gagal memeriksa username");
+        }
+
+        if (existingUser.data) {
+            return res.status(400).json({
                 error: true,
-                message: "Username already exists",
+                message: "Username sudah terdaftar",
+                data: null,
             });
         }
 
-        const result = await pool.query(
-            "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
-            [username, hashedPassword]
-        );
+        const { error: insertError } = await supabase
+            .from("users")
+            .insert([
+                {
+                    username,
+                    password: hashedPassword,
+                },
+            ])
+            .select();
 
-        res.status(201).json({
+        if (insertError) {
+            throw new Error("Gagal menyimpan user");
+        }
+
+        return res.status(201).json({
             error: false,
-            message: "User registered successfully",
-            datas: result.rows[0],
+            message: "Berhasil mendaftar",
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({
-            message: "Error registering user",
-            error: err.message,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            error: err,
+            data: null,
         });
     }
 };
@@ -69,103 +85,129 @@ const loginAuth = async (req, res) => {
         if (!username || !password) {
             return res.status(400).json({
                 error: true,
-                message: "Username and password are required",
+                message: "Username dan password tidak boleh kosong",
+                data: null,
             });
         }
-        const user = await pool.query(
-            "SELECT * FROM users WHERE username = $1",
-            [username]
-        );
 
-        if (user.rows.length === 0) {
+        const { data: user, error: fetchError } = await supabase
+            .from("users")
+            .select("user_id, username, password, profile_picture")
+            .eq("username", username)
+            .single();
+
+        if (fetchError) {
+            throw new Error("Gagal memeriksa username");
+        }
+
+        if (!user) {
             return res.status(401).json({
                 error: true,
-                message: "Invalid username or password",
+                message: "Username tidak terdaftar",
+                data: null,
             });
         }
 
-        const isMatch = await bcrypt.compare(password, user.rows[0].password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
                 error: true,
-                message: "Invalid password",
+                message: "Password salah",
+                data: null,
             });
         }
 
         const token = jwt.sign(
-            { id: user.rows[0].id, username: user.rows[0].username },
+            { user_id: user.user_id, username: user.username },
             process.env.JWT_SECRET,
             { expiresIn: "12h" }
         );
 
-        res.status(200).json({
-            error: true,
-            message: "Login successful",
-            datas: {
-                id: user.rows[0].id,
+        return res.status(200).json({
+            error: false,
+            message: "Login berhasil!",
+            data: {
+                id: user.user_id,
+                username: user.username,
+                profile_picture: user.profile_picture || null,
                 token,
-                username: user.rows[0].username,
             },
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({
-            message: "Error logging in",
-            error: err.message,
+        console.error("Login error:", err);
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
         });
     }
 };
 
 const changePasswordAuth = async (req, res) => {
-    const { user_id, oldPassword, newPassword } = req.body;
+    const { id, oldPassword, newPassword } = req.body;
 
     try {
         if (!oldPassword || !newPassword) {
             return res.status(400).json({
                 error: true,
-                message: "Old password and new password are required",
+                message: "Password lama dan baru tidak boleh kosong",
+                data: null,
             });
         }
 
-        const user = await pool.query("SELECT * FROM users WHERE id = $1", [
-            user_id,
-        ]);
+        const { data: user, error: fetchError } = await supabase
+            .from("users")
+            .select("user_id, password")
+            .eq("user_id", id)
+            .single();
 
-        if (user.rows.length === 0) {
+        if (fetchError) {
+            throw new Error("Gagal memeriksa user");
+        }
+
+        if (!user) {
             return res.status(404).json({
                 error: true,
-                message: "User not found",
+                message: "User tidak ditemukan",
+                data: null,
             });
         }
 
-        const isMatch = await bcrypt.compare(
-            oldPassword,
-            user.rows[0].password
-        );
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
             return res.status(401).json({
                 error: true,
-                message: "Invalid old password",
+                message: "Password lama salah",
+                data: null,
             });
         }
 
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-        await pool.query("UPDATE users SET password = $1 WHERE id = $2", [
-            hashedPassword,
-            user_id,
-        ]);
+        const { error: updateError } = await supabase
+            .from("users")
+            .update({
+                password: hashedPassword,
+                updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", id);
 
-        res.status(200).json({
+        if (updateError) {
+            throw new Error("Gagal memperbarui password");
+        }
+
+        return res.status(200).json({
             error: false,
-            message: "Password changed successfully",
+            message: "Password berhasil diubah",
+            data: null,
         });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({
-            message: "Error changing password",
-            error: err.message,
+    } catch (error) {
+        console.error("Change password error:", error);
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
         });
     }
 };

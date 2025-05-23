@@ -7,6 +7,5 @@ const {
 
 router.get("/hiragana", hiraganaController);
 router.get("/katakana", katakanaController);
-router.get("/particle", particleController);
 
 module.exports = router;
