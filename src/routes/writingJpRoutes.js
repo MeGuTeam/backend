@@ -4,8 +4,9 @@ const {
     katakanaController,
     particleController,
 } = require("../controllers/writingJpController");
+const middleware = require("../middleware/middleware");
 
-router.get("/hiragana", hiraganaController);
-router.get("/katakana", katakanaController);
+router.get("/hiragana", middleware, hiraganaController);
+router.get("/katakana", middleware, katakanaController);
 
 module.exports = router;
