@@ -13,9 +13,9 @@ const particleController = async (req, res) => {
 
         const result = data.map((row) => ({
             id: row.particle_id,
-            character: row.character,
-            romaji: row.romaji,
-            type: row.type,
+            particle_name: row.particle_name,
+            description: row.description,
+            example_sentence: row.example_sentence,
         }));
 
         return res.status(200).json({
