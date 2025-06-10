@@ -1,11 +1,30 @@
 # Dokumentasi API IKIBAN NIHONGO
 
-Dokumen ini menyediakan detail bagi tim frontend tentang cara berinteraksi dengan API backend aplikasi Ikiban Nihongo.
+Dokumen ini menyediakan detail lengkap bagi tim frontend tentang cara berinteraksi dengan API backend aplikasi Ikiban Nihongo - platform pembelajaran bahasa Jepang interaktif.
+
+## Deskripsi Proyek
+
+Ikiban Nihongo adalah aplikasi pembelajaran bahasa Jepang yang menyediakan materi pembelajaran komprehensif meliputi:
+
+-   Sistem penulisan Jepang (Hiragana, Katakana)
+-   Tata bahasa dasar (Partikel)
+-   Materi JLPT N5 (Kanji, Kata Sifat, Kata Keterangan, Kata Benda, Kata Kerja)
+-   Pembelajaran angka dalam bahasa Jepang
+-   Sistem manajemen profil pengguna
+
+## Teknologi yang Digunakan
+
+-   **Backend Framework:** Express.js
+-   **Database:** Supabase (PostgreSQL)
+-   **Authentication:** JWT (JSON Web Tokens)
+-   **File Upload:** Multer
+-   **Password Hashing:** bcrypt
+-   **CORS:** Mendukung cross-origin requests dari frontend
 
 ## URL Dasar
 
 ```
-http://localhost:3000
+http://localhost:8000
 ```
 
 ## Autentikasi
@@ -15,6 +34,12 @@ Sebagian besar endpoint memerlukan autentikasi melalui token JWT. Token harus di
 ```
 Authorization: Bearer <token>
 ```
+
+**Catatan Penting:**
+
+-   Token memiliki masa berlaku 12 jam
+-   Setelah login berhasil, simpan token untuk digunakan pada request selanjutnya
+-   Jika token expired, pengguna perlu login ulang
 
 ### Endpoint Autentikasi
 
@@ -45,6 +70,14 @@ Authorization: Bearer <token>
     {
         "error": true,
         "message": "Username sudah terdaftar",
+        "data": null
+    }
+    ```
+-   **Respon Error:** (400 Bad Request) - Validasi gagal
+    ```json
+    {
+        "error": true,
+        "message": "Username minimal 3 karakter dan password minimal 6 karakter",
         "data": null
     }
     ```
@@ -79,6 +112,14 @@ Authorization: Bearer <token>
     {
         "error": true,
         "message": "Password salah",
+        "data": null
+    }
+    ```
+-   **Respon Error:** (401 Unauthorized) - Username tidak ditemukan
+    ```json
+    {
+        "error": true,
+        "message": "Username tidak terdaftar",
         "data": null
     }
     ```
@@ -120,14 +161,42 @@ Authorization: Bearer <token>
 -   **URL:** `/hiragana`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data karakter hiragana
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Berhasil mendapatkan data hiragana",
+        "datas": [
+            {
+                "id": 1,
+                "character": "あ",
+                "romaji": "a",
+                "type": "monograph"
+            }
+        ]
+    }
+    ```
 
 ### Katakana
 
 -   **URL:** `/katakana`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data karakter katakana
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Berhasil mendapatkan data katakana",
+        "datas": [
+            {
+                "id": 1,
+                "character": "ア",
+                "romaji": "a",
+                "type": "monograph"
+            }
+        ]
+    }
+    ```
 
 ## Tata Bahasa Jepang
 
@@ -136,7 +205,21 @@ Authorization: Bearer <token>
 -   **URL:** `/particle`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data partikel bahasa Jepang
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Berhasil mendapatkan data partikel",
+        "datas": [
+            {
+                "id": 1,
+                "particle_name": "は",
+                "description": "Menunjukkan topik kalimat",
+                "example_sentence": "私は学生です。"
+            }
+        ]
+    }
+    ```
 
 ## Materi Pembelajaran JLPT N5
 
@@ -145,35 +228,111 @@ Authorization: Bearer <token>
 -   **URL:** `/kanjin5`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data kanji JLPT N5
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data kanji berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "character": "人",
+                "onyomi": "ジン、ニン",
+                "kunyomi": "ひと",
+                "meaning": "person, people"
+            }
+        ]
+    }
+    ```
 
 ### Kata Sifat N5
 
 -   **URL:** `/adjectiven5`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data kata sifat JLPT N5
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data kata sifat berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "reading": "あつい",
+                "word": "暑い",
+                "meaning": "hot (weather)",
+                "example_sentence": "今日は暑いです。",
+                "type": "i-adjective"
+            }
+        ]
+    }
+    ```
 
 ### Kata Keterangan N5
 
 -   **URL:** `/adverbn5`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data kata keterangan JLPT N5
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data kata keterangan berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "reading": "とても",
+                "word": "とても",
+                "meaning": "very, much",
+                "example_sentence": "とても嬉しいです。"
+            }
+        ]
+    }
+    ```
 
 ### Kata Benda N5
 
 -   **URL:** `/nounn5`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data kata benda JLPT N5
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data kata benda berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "reading": "がっこう",
+                "word": "学校",
+                "meaning": "school",
+                "example_sentence": "学校に行きます。"
+            }
+        ]
+    }
+    ```
 
 ### Kata Kerja N5
 
 -   **URL:** `/verbn5`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data kata kerja JLPT N5
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data kata kerja berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "reading": "いく",
+                "word": "行く",
+                "meaning": "to go",
+                "example_sentence": "学校に行きます。"
+            }
+        ]
+    }
+    ```
 
 ## Profil Pengguna
 
@@ -183,14 +342,49 @@ Authorization: Bearer <token>
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
 -   **Parameter URL:** `profileId` - ID profil pengguna yang ingin diambil
--   **Respon Sukses:** Mengembalikan data profil pengguna
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data profil berhasil diambil",
+        "data": {
+            "user_id": "user_id",
+            "username": "username",
+            "profile_picture": "image_url_or_null"
+        }
+    }
+    ```
+-   **Respon Error:** (404 Not Found)
+    ```json
+    {
+        "error": true,
+        "message": "User tidak ditemukan",
+        "data": null
+    }
+    ```
 
 ## Pembelajaran Angka
 
 -   **URL:** `/number`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Respon Sukses:** Mengembalikan data angka bahasa Jepang
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Data angka berhasil diambil",
+        "data": [
+            {
+                "id": 1,
+                "reading": "いち",
+                "word": "一",
+                "meaning": "one",
+                "example_sentence": "一つください。",
+                "type": "number"
+            }
+        ]
+    }
+    ```
 
 ## Penanganan Gambar
 
@@ -202,21 +396,73 @@ Authorization: Bearer <token>
 -   **Content Type:** `multipart/form-data`
 -   **Body:**
     -   `avatar`: File gambar yang akan diunggah
--   **Respon Sukses:** Mengembalikan data sukses unggah
+    -   `id`: ID pengguna (string)
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Gambar profil berhasil diunggah",
+        "data": {
+            "imageUrl": "https://supabase_url/storage/v1/object/public/avatarbucket/ikibannihongo/filename.jpg"
+        }
+    }
+    ```
+-   **Respon Error:** (400 Bad Request)
+    ```json
+    {
+        "error": true,
+        "message": "No file uploaded"
+    }
+    ```
+-   **Respon Error:** (404 Not Found)
+    ```json
+    {
+        "error": true,
+        "message": "User tidak ditemukan",
+        "data": null
+    }
+    ```
 
-### Get Avatar
+### Mendapatkan Avatar
 
 -   **URL:** `/avatar/:userId`
 -   **Method:** `GET`
--   **Auth Required:** Yes
--   **URL Parameters:** `userId` - ID of the user whose avatar to retrieve
--   **Success Response:** Returns the avatar image
+-   **Autentikasi Diperlukan:** Ya
+-   **Parameter URL:** `userId` - ID pengguna yang avatarnya ingin diambil
+-   **Respon Sukses:** (200 OK)
+    ```json
+    {
+        "error": false,
+        "message": "Gambar profil berhasil diambil",
+        "data": {
+            "imageUrl": "image_url_or_null"
+        }
+    }
+    ```
+-   **Respon Error:** (404 Not Found)
+    ```json
+    {
+        "error": true,
+        "message": "User tidak ditemukan",
+        "data": null
+    }
+    ```
 
-## Error Responses
+## Penanganan Error
 
-Common error responses include:
+Respon error umum yang mungkin terjadi:
 
--   **401 Unauthorized**
+-   **400 Bad Request**
+
+    ```json
+    {
+        "error": true,
+        "message": "Username dan password tidak boleh kosong",
+        "data": null
+    }
+    ```
+
+-   **401 Unauthorized** - Header Authorization tidak ada
 
     ```json
     {
@@ -224,7 +470,7 @@ Common error responses include:
     }
     ```
 
--   **401 Unauthorized**
+-   **401 Unauthorized** - Token tidak valid
 
     ```json
     {
@@ -233,43 +479,90 @@ Common error responses include:
     }
     ```
 
--   **500 Internal Server Error**
+-   **404 Not Found**
+
     ```json
     {
-        "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-        "error": "error_details",
+        "error": true,
+        "message": "User tidak ditemukan",
         "data": null
     }
     ```
 
-## Implementation Notes
+-   **500 Internal Server Error**
+    ```json
+    {
+        "error": true,
+        "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+        "data": null
+    }
+    ```
 
-1. Always store the JWT token after login and include it in the Authorization header for authenticated requests.
-2. Token expires after 12 hours, so users may need to log in again after that period.
-3. All responses follow a standard format with `error` (boolean), `message` (string), and `data` (object or null) properties.
-4. The API uses CORS and only allows requests from `http://localhost:3001`.
+## Catatan Implementasi
 
-## Response Format
+1. **Autentikasi**: Selalu simpan JWT token setelah login dan sertakan dalam header Authorization untuk request yang memerlukan autentikasi.
+2. **Expire Token**: Token memiliki masa berlaku 12 jam, setelah itu pengguna perlu login ulang.
+3. **Format Respon**: Semua respon mengikuti format standar dengan properti `error` (boolean), `message` (string), dan `data` (object atau null).
+4. **CORS**: API menggunakan CORS dan hanya menerima request dari `http://localhost:3000`.
+5. **Database**: Menggunakan Supabase sebagai database PostgreSQL.
+6. **File Upload**: Gambar avatar disimpan di Supabase Storage dengan bucket `avatarbucket`.
+7. **Validasi Input**: Semua input divalidasi untuk mencegah injeksi kode berbahaya.
 
-Most API endpoints return responses in the following format:
+## Struktur Respon Standar
+
+Sebagian besar endpoint API mengembalikan respon dalam format berikut:
 
 ```json
 {
-  "error": boolean,  // true if there was an error, false otherwise
-  "message": string, // A message describing the result of the operation
-  "data": object     // The returned data, or null if there was an error
+  "error": boolean,  // true jika terjadi error, false jika berhasil
+  "message": string, // Pesan yang menjelaskan hasil operasi
+  "data": object     // Data yang dikembalikan, atau null jika terjadi error
 }
 ```
 
-## Sample Code
+**Catatan:** Beberapa endpoint menggunakan `datas` (plural) untuk mengembalikan array data.
 
-### Example: Authentication and API Call (JavaScript)
+## Cara Menjalankan Server
+
+1. **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+2. **Setup environment variables:**
+   Buat file `.env` dengan variabel berikut:
+
+    ```
+    PORT=8000
+    JWT_SECRET=your_jwt_secret_key
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_API_KEY=your_supabase_api_key
+    ```
+
+3. **Jalankan server:**
+    - Development: `npm run dev`
+    - Production: `npm start`
+
+## Dependencies
+
+-   **@supabase/supabase-js**: Client untuk Supabase
+-   **bcrypt**: Hash password
+-   **cors**: Enable CORS
+-   **dotenv**: Load environment variables
+-   **express**: Web framework
+-   **jsonwebtoken**: JWT implementation
+-   **multer**: File upload middleware
+
+## Contoh Implementasi
+
+### Contoh: Autentikasi dan Pemanggilan API (JavaScript)
 
 ```javascript
-// Login and store token
+// Fungsi untuk login dan menyimpan token
 async function login(username, password) {
     try {
-        const response = await fetch("http://localhost:3000/login", {
+        const response = await fetch("http://localhost:8000/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -280,21 +573,22 @@ async function login(username, password) {
         const data = await response.json();
 
         if (!data.error) {
-            // Store token in localStorage or secure storage
+            // Simpan token di localStorage atau secure storage
             localStorage.setItem("token", data.data.token);
             localStorage.setItem("userId", data.data.id);
-            return true;
+            localStorage.setItem("username", data.data.username);
+            return { success: true, data: data.data };
         } else {
             console.error("Login failed:", data.message);
-            return false;
+            return { success: false, message: data.message };
         }
     } catch (err) {
         console.error("Login error:", err);
-        return false;
+        return { success: false, message: "Network error" };
     }
 }
 
-// Example of an authenticated API call
+// Contoh pemanggilan API yang memerlukan autentikasi
 async function getHiragana() {
     try {
         const token = localStorage.getItem("token");
@@ -302,8 +596,7 @@ async function getHiragana() {
             console.error("No authentication token found");
             return null;
         }
-
-        const response = await fetch("http://localhost:3000/hiragana", {
+        const response = await fetch("http://localhost:8000/hiragana", {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -313,7 +606,7 @@ async function getHiragana() {
         const data = await response.json();
 
         if (!data.error) {
-            return data.data;
+            return data.datas; // Perhatikan: menggunakan 'datas' bukan 'data'
         } else {
             console.error("Failed to fetch hiragana:", data.message);
             return null;
@@ -323,4 +616,149 @@ async function getHiragana() {
         return null;
     }
 }
+
+// Contoh upload avatar
+async function uploadAvatar(file, userId) {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No authentication token found");
+            return null;
+        }
+
+        const formData = new FormData();
+        formData.append("avatar", file);
+        formData.append("id", userId);
+        const response = await fetch("http://localhost:8000/upload", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            return data.data.imageUrl;
+        } else {
+            console.error("Failed to upload avatar:", data.message);
+            return null;
+        }
+    } catch (err) {
+        console.error("Error uploading avatar:", err);
+        return null;
+    }
+}
+
+// Contoh fetch data JLPT N5
+async function fetchN5Data(type) {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            throw new Error("No authentication token found");
+        }
+
+        const endpoints = {
+            kanji: "/kanjin5",
+            adjective: "/adjectiven5",
+            adverb: "/adverbn5",
+            noun: "/nounn5",
+            verb: "/verbn5",
+        };
+        const response = await fetch(
+            `http://localhost:8000${endpoints[type]}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (!data.error) {
+            return data.data;
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (err) {
+        console.error(`Error fetching ${type} data:`, err);
+        return null;
+    }
+}
+
+// Contoh penggunaan:
+// const kanjiData = await fetchN5Data('kanji');
+// const adjectiveData = await fetchN5Data('adjective');
 ```
+
+### Contoh: Manajemen State di React
+
+```javascript
+// Custom hook untuk manajemen autentikasi
+import { useState, useEffect } from "react";
+
+export const useAuth = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const username = localStorage.getItem("username");
+
+        if (token && userId && username) {
+            setUser({ id: userId, username, token });
+        }
+        setLoading(false);
+    }, []);
+
+    const login = async (username, password) => {
+        const result = await login(username, password);
+        if (result.success) {
+            setUser(result.data);
+        }
+        return result;
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        setUser(null);
+    };
+
+    return { user, login, logout, loading };
+};
+```
+
+## Tips untuk Frontend Developer
+
+1. **Error Handling**: Selalu handle kemungkinan error dan token yang expired.
+2. **Loading States**: Implementasikan loading state untuk memberikan feedback kepada user.
+3. **Token Refresh**: Implementasikan mekanisme untuk mendeteksi token expired dan redirect ke login.
+4. **File Upload**: Gunakan FormData untuk upload file dan tampilkan progress jika memungkinkan.
+5. **Caching**: Pertimbangkan untuk menggunakan caching untuk data yang jarang berubah seperti hiragana/katakana.
+6. **Responsive Design**: Pastikan UI responsif untuk berbagai ukuran layar.
+
+## Endpoint Summary
+
+| Endpoint           | Method | Auth | Deskripsi                    |
+| ------------------ | ------ | ---- | ---------------------------- |
+| `/register`        | POST   | No   | Pendaftaran pengguna baru    |
+| `/login`           | POST   | No   | Login pengguna               |
+| `/change-password` | POST   | Yes  | Ganti password               |
+| `/hiragana`        | GET    | Yes  | Data karakter hiragana       |
+| `/katakana`        | GET    | Yes  | Data karakter katakana       |
+| `/particle`        | GET    | Yes  | Data partikel bahasa Jepang  |
+| `/kanjin5`         | GET    | Yes  | Data kanji JLPT N5           |
+| `/adjectiven5`     | GET    | Yes  | Data kata sifat JLPT N5      |
+| `/adverbn5`        | GET    | Yes  | Data kata keterangan JLPT N5 |
+| `/nounn5`          | GET    | Yes  | Data kata benda JLPT N5      |
+| `/verbn5`          | GET    | Yes  | Data kata kerja JLPT N5      |
+| `/number`          | GET    | Yes  | Data angka bahasa Jepang     |
+| `/profile/:id`     | GET    | Yes  | Data profil pengguna         |
+| `/upload`          | POST   | Yes  | Upload avatar                |
+| `/avatar/:userId`  | GET    | Yes  | Mendapatkan avatar pengguna  |
