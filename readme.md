@@ -6,11 +6,12 @@ Dokumen ini menyediakan detail lengkap bagi tim frontend tentang cara berinterak
 
 Ikiban Nihongo adalah aplikasi pembelajaran bahasa Jepang yang menyediakan materi pembelajaran komprehensif meliputi:
 
--   Sistem penulisan Jepang (Hiragana, Katakana)
+-   Sistem penulisan Jepang (Hiragana, Katakana, Kanji)
 -   Tata bahasa dasar (Partikel)
 -   Materi JLPT N5 (Kanji, Kata Sifat, Kata Keterangan, Kata Benda, Kata Kerja)
 -   Pembelajaran angka dalam bahasa Jepang
--   Sistem manajemen profil pengguna
+-   Quiz Sederhana untuk Setiap Level
+-   Chatbot Assistant untuk Membantu Pembelajaran Anda
 
 ## Teknologi yang Digunakan
 
