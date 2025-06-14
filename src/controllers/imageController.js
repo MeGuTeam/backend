@@ -2,8 +2,8 @@ const supabase = require("../config/supabase");
 
 const uploadAvatarController = async (req, res) => {
     try {
+        const { id } = req.user;
         const { file } = req;
-        const { id } = req.body;
 
         if (!file) {
             return res.status(400).json({
@@ -76,12 +76,12 @@ const uploadAvatarController = async (req, res) => {
 
 const getAvatarController = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { id } = req.user;
 
         const { data: user, error: fetchError } = await supabase
             .from("users")
             .select("profile_picture")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .single();
 
         if (fetchError) {

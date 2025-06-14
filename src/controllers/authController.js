@@ -25,11 +25,11 @@ const registerAuth = async (req, res) => {
             });
         }
 
-        if (username.length < 3 || password.length < 6) {
+        if (username.length < 6 || password.length < 8) {
             return res.status(400).json({
                 error: true,
                 message:
-                    "Username minimal 3 karakter dan password minimal 6 karakter",
+                    "Username minimal 6 karakter dan password minimal 8 karakter",
                 data: null,
             });
         }
@@ -144,7 +144,8 @@ const loginAuth = async (req, res) => {
 };
 
 const changePasswordAuth = async (req, res) => {
-    const { id, oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body;
+    const { id } = req.user;
 
     try {
         if (!oldPassword || !newPassword) {

@@ -14,6 +14,6 @@ router.post(
     middleware,
     uploadAvatarController
 );
-router.get("/avatar/:userId", middleware, getAvatarController);
+router.get("/avatar", middleware, getAvatarController);
 
 module.exports = router;
