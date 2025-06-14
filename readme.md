@@ -41,6 +41,7 @@ Authorization: Bearer <token>
 -   Token memiliki masa berlaku 12 jam
 -   Setelah login berhasil, simpan token untuk digunakan pada request selanjutnya
 -   Jika token expired, pengguna perlu login ulang
+-   **User ID diambil dari JWT token**: Untuk endpoint yang memerlukan user ID (seperti ganti password, upload avatar, dll), user ID diambil secara otomatis dari JWT token yang dikirim melalui Authorization header, bukan dari request body atau URL parameter
 
 ### Endpoint Autentikasi
 
@@ -57,8 +58,8 @@ Authorization: Bearer <token>
     }
     ```
 -   **Catatan:**
-    -   Username minimal 3 karakter
-    -   Password minimal 6 karakter
+    -   Username minimal 6 karakter
+    -   Password minimal 8 karakter
 -   **Respon Sukses:** (201 Created)
     ```json
     {
@@ -133,11 +134,11 @@ Authorization: Bearer <token>
 -   **Body:**
     ```json
     {
-        "id": "user_id",
         "oldPassword": "password_lama",
         "newPassword": "password_baru"
     }
     ```
+-   **Catatan:** User ID diambil dari JWT token yang dikirim melalui Authorization header, bukan dari body request
 -   **Respon Sukses:** (200 OK)
     ```json
     {
@@ -397,7 +398,7 @@ Authorization: Bearer <token>
 -   **Content Type:** `multipart/form-data`
 -   **Body:**
     -   `avatar`: File gambar yang akan diunggah
-    -   `id`: ID pengguna (string)
+-   **Catatan:** User ID diambil dari JWT token yang dikirim melalui Authorization header, bukan dari form data
 -   **Respon Sukses:** (200 OK)
     ```json
     {
@@ -426,10 +427,10 @@ Authorization: Bearer <token>
 
 ### Mendapatkan Avatar
 
--   **URL:** `/avatar/:userId`
+-   **URL:** `/avatar`
 -   **Method:** `GET`
 -   **Autentikasi Diperlukan:** Ya
--   **Parameter URL:** `userId` - ID pengguna yang avatarnya ingin diambil
+-   **Catatan:** User ID diambil dari JWT token yang dikirim melalui Authorization header
 -   **Respon Sukses:** (200 OK)
     ```json
     {
@@ -502,12 +503,13 @@ Respon error umum yang mungkin terjadi:
 ## Catatan Implementasi
 
 1. **Autentikasi**: Selalu simpan JWT token setelah login dan sertakan dalam header Authorization untuk request yang memerlukan autentikasi.
-2. **Expire Token**: Token memiliki masa berlaku 12 jam, setelah itu pengguna perlu login ulang.
-3. **Format Respon**: Semua respon mengikuti format standar dengan properti `error` (boolean), `message` (string), dan `data` (object atau null).
-4. **CORS**: API menggunakan CORS dan hanya menerima request dari `http://localhost:3000`.
-5. **Database**: Menggunakan Supabase sebagai database PostgreSQL.
-6. **File Upload**: Gambar avatar disimpan di Supabase Storage dengan bucket `avatarbucket`.
-7. **Validasi Input**: Semua input divalidasi untuk mencegah injeksi kode berbahaya.
+2. **User ID dari Token**: Sistem menggunakan JWT token untuk mengidentifikasi user. User ID diambil dari token yang sudah di-decode, bukan dari request body atau parameter URL. Ini meningkatkan keamanan karena user tidak bisa mengirim ID user lain.
+3. **Expire Token**: Token memiliki masa berlaku 12 jam, setelah itu pengguna perlu login ulang.
+4. **Format Respon**: Semua respon mengikuti format standar dengan properti `error` (boolean), `message` (string), dan `data` (object atau null).
+5. **CORS**: API menggunakan CORS dan hanya menerima request dari `http://localhost:3000`.
+6. **Database**: Menggunakan Supabase sebagai database PostgreSQL.
+7. **File Upload**: Gambar avatar disimpan di Supabase Storage dengan bucket `avatarbucket`.
+8. **Validasi Input**: Semua input divalidasi untuk mencegah injeksi kode berbahaya.
 
 ## Struktur Respon Standar
 
@@ -618,8 +620,44 @@ async function getHiragana() {
     }
 }
 
+// Contoh ganti password
+async function changePassword(oldPassword, newPassword) {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No authentication token found");
+            return null;
+        }
+
+        const response = await fetch("http://localhost:8000/change-password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                oldPassword,
+                newPassword,
+                // User ID tidak perlu dikirim karena diambil dari JWT token
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            return { success: true, message: data.message };
+        } else {
+            console.error("Failed to change password:", data.message);
+            return { success: false, message: data.message };
+        }
+    } catch (err) {
+        console.error("Error changing password:", err);
+        return { success: false, message: "Network error" };
+    }
+}
+
 // Contoh upload avatar
-async function uploadAvatar(file, userId) {
+async function uploadAvatar(file) {
     try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -629,7 +667,7 @@ async function uploadAvatar(file, userId) {
 
         const formData = new FormData();
         formData.append("avatar", file);
-        formData.append("id", userId);
+        // User ID tidak perlu dikirim karena diambil dari JWT token
         const response = await fetch("http://localhost:8000/upload", {
             method: "POST",
             headers: {
@@ -648,6 +686,36 @@ async function uploadAvatar(file, userId) {
         }
     } catch (err) {
         console.error("Error uploading avatar:", err);
+        return null;
+    }
+}
+
+// Contoh mendapatkan avatar
+async function getAvatar() {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No authentication token found");
+            return null;
+        }
+
+        const response = await fetch("http://localhost:8000/avatar", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            return data.data.imageUrl;
+        } else {
+            console.error("Failed to get avatar:", data.message);
+            return null;
+        }
+    } catch (err) {
+        console.error("Error getting avatar:", err);
         return null;
     }
 }
@@ -762,4 +830,4 @@ export const useAuth = () => {
 | `/number`          | GET    | Yes  | Data angka bahasa Jepang     |
 | `/profile/:id`     | GET    | Yes  | Data profil pengguna         |
 | `/upload`          | POST   | Yes  | Upload avatar                |
-| `/avatar/:userId`  | GET    | Yes  | Mendapatkan avatar pengguna  |
+| `/avatar`          | GET    | Yes  | Mendapatkan avatar pengguna  |
