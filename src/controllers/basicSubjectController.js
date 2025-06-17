@@ -180,56 +180,9 @@ const basicConversationController = async (req, res) => {
     }
 };
 
-const questionWordController = async (req, res) => {
-    try {
-        const { data: questionData, error: fetchError } = await supabase
-            .from("question_word_n5")
-            .select("*")
-            .order("question_word_id", { ascending: true });
-
-        const { data: tracker } = await supabase
-            .from("tracker")
-            .select("question_word_n5_id, status")
-            .eq("user_id", req.user.id);
-
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata tanya");
-        }
-
-        const datas = questionData.map((question) => {
-            const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.question_word_n5_id === question.question_word_id
-                  )
-                : null;
-            return {
-                id: question.question_word_id,
-                reading: question.reading,
-                word: question.word,
-                meaning: question.meaning,
-                example_sentence: question.example_sentence,
-                status: trackerItem ? trackerItem.status : false,
-            };
-        });
-
-        return res.status(200).json({
-            error: false,
-            message: "Data kata tanya berhasil diambil",
-            data: datas,
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
 module.exports = {
     particleController,
     hiraganaController,
     katakanaController,
     basicConversationController,
-    questionWordController,
 };

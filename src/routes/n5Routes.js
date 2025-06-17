@@ -24,6 +24,7 @@ const {
     nounTimeN5Controller,
     nounTrafficN5Controller,
     nounWorkN5Controller,
+    questionWordController,
 } = require("../controllers/n5Controller");
 const middleware = require("../middleware/middleware");
 
@@ -55,5 +56,6 @@ router.get("/noun-school-n5", middleware, nounSchoolN5Controller);
 router.get("/noun-time-n5", middleware, nounTimeN5Controller);
 router.get("/noun-traffic-n5", middleware, nounTrafficN5Controller);
 router.get("/noun-work-n5", middleware, nounWorkN5Controller);
+router.get("/question-word-n5", middleware, questionWordController);
 
 module.exports = router;

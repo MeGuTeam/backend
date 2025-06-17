@@ -62,7 +62,9 @@ const adjectiveN5Controller = async (req, res) => {
 
         const datas = adjectiveData.map((adjective) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.adjective_n5_id === adjective.adjective_id)
+                ? tracker.find(
+                      (t) => t.adjective_n5_id === adjective.adjective_id
+                  )
                 : null;
             return {
                 id: adjective.adjective_id,
@@ -195,7 +197,9 @@ const nounActivityN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_activity_n5_id === noun.noun_activity_id)
+                ? tracker.find(
+                      (t) => t.noun_activity_n5_id === noun.noun_activity_id
+                  )
                 : null;
             return {
                 id: noun.noun_activity_id,
@@ -241,7 +245,10 @@ const nounAnimalplantN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_animalplant_n5_id === noun.noun_animalplant_id)
+                ? tracker.find(
+                      (t) =>
+                          t.noun_animalplant_n5_id === noun.noun_animalplant_id
+                  )
                 : null;
             return {
                 id: noun.noun_animalplant_id,
@@ -285,7 +292,9 @@ const nounAuxnumberN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_auxnumber_n5_id === noun.noun_auxnumber_id)
+                ? tracker.find(
+                      (t) => t.noun_auxnumber_n5_id === noun.noun_auxnumber_id
+                  )
                 : null;
             return {
                 id: noun.noun_auxnumber_id,
@@ -463,7 +472,9 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_fooddrink_n5_id === noun.noun_fooddrink_id)
+                ? tracker.find(
+                      (t) => t.noun_fooddrink_n5_id === noun.noun_fooddrink_id
+                  )
                 : null;
             return {
                 id: noun.noun_fooddrink_id,
@@ -509,7 +520,11 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_homeappliances_n5_id === noun.noun_homeappliances_id)
+                ? tracker.find(
+                      (t) =>
+                          t.noun_homeappliances_n5_id ===
+                          noun.noun_homeappliances_id
+                  )
                 : null;
             return {
                 id: noun.noun_homeappliances_id,
@@ -545,13 +560,16 @@ const nounKosoadoN5Controller = async (req, res) => {
         const { data: tracker } = await supabase
             .from("tracker")
             .select("noun_kosoado_n5_id, status")
-            .eq("user_id", req.user.id);        if (fetchError) {
+            .eq("user_id", req.user.id);
+        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda kosoado");
         }
-        
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_kosoado_n5_id === noun.noun_kosoado_id)
+                ? tracker.find(
+                      (t) => t.noun_kosoado_n5_id === noun.noun_kosoado_id
+                  )
                 : null;
             return {
                 id: noun.noun_kosoado_id,
@@ -587,10 +605,11 @@ const nounMediaN5Controller = async (req, res) => {
         const { data: tracker } = await supabase
             .from("tracker")
             .select("noun_media_n5_id, status")
-            .eq("user_id", req.user.id);        if (fetchError) {
+            .eq("user_id", req.user.id);
+        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda media");
         }
-        
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_media_n5_id === noun.noun_media_id)
@@ -629,13 +648,16 @@ const nounNaturalN5Controller = async (req, res) => {
         const { data: tracker } = await supabase
             .from("tracker")
             .select("noun_natural_n5_id, status")
-            .eq("user_id", req.user.id);        if (fetchError) {
+            .eq("user_id", req.user.id);
+        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda alam");
         }
-        
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_natural_n5_id === noun.noun_natural_id)
+                ? tracker.find(
+                      (t) => t.noun_natural_n5_id === noun.noun_natural_id
+                  )
                 : null;
             return {
                 id: noun.noun_natural_id,
@@ -671,13 +693,16 @@ const nounNumberN5Controller = async (req, res) => {
         const { data: tracker } = await supabase
             .from("tracker")
             .select("noun_number_n5_id, status")
-            .eq("user_id", req.user.id);        if (fetchError) {
+            .eq("user_id", req.user.id);
+        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda angka");
         }
-        
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_number_n5_id === noun.noun_number_id)
+                ? tracker.find(
+                      (t) => t.noun_number_n5_id === noun.noun_number_id
+                  )
                 : null;
             return {
                 id: noun.noun_number_id,
@@ -717,9 +742,12 @@ const nounOutfitN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda pakaian");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_outfit_n5_id === noun.noun_outfit_id)
+                ? tracker.find(
+                      (t) => t.noun_outfit_n5_id === noun.noun_outfit_id
+                  )
                 : null;
             return {
                 id: noun.noun_outfit_id,
@@ -759,9 +787,12 @@ const nounPeopleN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda orang");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_people_n5_id === noun.noun_people_id)
+                ? tracker.find(
+                      (t) => t.noun_people_n5_id === noun.noun_people_id
+                  )
                 : null;
             return {
                 id: noun.noun_people_id,
@@ -801,9 +832,12 @@ const nounPositionN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda posisi");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_position_n5_id === noun.noun_position_id)
+                ? tracker.find(
+                      (t) => t.noun_position_n5_id === noun.noun_position_id
+                  )
                 : null;
             return {
                 id: noun.noun_position_id,
@@ -843,9 +877,12 @@ const nounRegionN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda wilayah");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_region_n5_id === noun.noun_region_id)
+                ? tracker.find(
+                      (t) => t.noun_region_n5_id === noun.noun_region_id
+                  )
                 : null;
             return {
                 id: noun.noun_region_id,
@@ -885,9 +922,12 @@ const nounSchoolN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda sekolah");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_school_n5_id === noun.noun_school_id)
+                ? tracker.find(
+                      (t) => t.noun_school_n5_id === noun.noun_school_id
+                  )
                 : null;
             return {
                 id: noun.noun_school_id,
@@ -927,7 +967,8 @@ const nounTimeN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda waktu");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_time_n5_id === noun.noun_time_id)
                 : null;
@@ -969,9 +1010,12 @@ const nounTrafficN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda lalu lintas");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_traffic_n5_id === noun.noun_traffic_id)
+                ? tracker.find(
+                      (t) => t.noun_traffic_n5_id === noun.noun_traffic_id
+                  )
                 : null;
             return {
                 id: noun.noun_traffic_id,
@@ -1011,7 +1055,8 @@ const nounWorkN5Controller = async (req, res) => {
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda pekerjaan");
-        }        const datas = nounData.map((noun) => {
+        }
+        const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_work_n5_id === noun.noun_work_id)
                 : null;
@@ -1028,6 +1073,52 @@ const nounWorkN5Controller = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Data kata benda pekerjaan berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const questionWordController = async (req, res) => {
+    try {
+        const { data: questionData, error: fetchError } = await supabase
+            .from("question_word_n5")
+            .select("*")
+            .order("question_word_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("question_word_n5_id, status")
+            .eq("user_id", req.user.id);
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata tanya");
+        }
+
+        const datas = questionData.map((question) => {
+            const trackerItem = tracker
+                ? tracker.find(
+                      (t) => t.question_word_n5_id === question.question_word_id
+                  )
+                : null;
+            return {
+                id: question.question_word_id,
+                reading: question.reading,
+                word: question.word,
+                meaning: question.meaning,
+                example_sentence: question.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata tanya berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -1064,4 +1155,5 @@ module.exports = {
     nounTimeN5Controller,
     nounTrafficN5Controller,
     nounWorkN5Controller,
+    questionWordController,
 };
