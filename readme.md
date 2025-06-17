@@ -11,8 +11,7 @@ Dokumen ini menyediakan detail lengkap untuk tim frontend tentang cara berintera
 -   [⚙️ Setup Instructions](#️-setup-instructions)
 -   [🔐 Authentication](#-authentication)
 -   [📚 API Endpoints](#-api-endpoints)
--   [💻 Code Examples](#-code-examples)
--   [🛠️ Developer Tools](#️-developer-tools)
+-   [️ Developer Tools](#️-developer-tools)
 -   [❌ Error Handling](#-error-handling)
 
 ## 🚀 Quick Start
@@ -265,9 +264,98 @@ POST /change-password
 
 ## 📚 API Endpoints
 
-### 👤 User Management
+> **Endpoints organized by Frontend Usage Context**
 
-#### Get User Profile
+### 🔐 Authentication Endpoints
+
+_Used for user registration and login functionality_
+
+#### Register New User
+
+```http
+POST /register
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "myusername", // min 6 characters
+    "password": "mypassword" // min 8 characters
+}
+```
+
+**Success Response (201):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mendaftar"
+}
+```
+
+#### User Login
+
+```http
+POST /login
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "myusername",
+    "password": "mypassword"
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Login berhasil!",
+    "data": {
+        "id": "user_uuid",
+        "username": "myusername",
+        "profile_picture": "https://example.com/avatar.jpg",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+}
+```
+
+---
+
+### ⚙️ Profile Settings Endpoints
+
+_Used in user profile settings page_
+
+#### Upload Profile Avatar
+
+```http
+POST /upload/avatar
+```
+
+🔒 **Authentication Required**  
+📎 **Content-Type:** `multipart/form-data`
+
+**Form Data:**
+
+-   `avatar` - Image file (JPG, PNG, etc.)
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Gambar profil berhasil diunggah",
+    "data": {
+        "imageUrl": "https://supabase.storage.url/avatarbucket/filename.jpg"
+    }
+}
+```
+
+#### Get User Profile Details
 
 ```http
 GET /profile/:profileId
@@ -293,32 +381,13 @@ GET /profile/:profileId
 }
 ```
 
-#### Upload Avatar
+---
 
-```http
-POST /upload/avatar
-```
+### �️ Navbar Profile Image Endpoint
 
-🔒 **Authentication Required**  
-📎 **Content-Type:** `multipart/form-data`
+_Used to display user avatar in navigation bar_
 
-**Form Data:**
-
--   `avatar` - Image file (JPG, PNG, etc.)
-
-**Success Response (200):**
-
-```json
-{
-    "error": false,
-    "message": "Gambar profil berhasil diunggah",
-    "data": {
-        "imageUrl": "https://supabase.storage.url/avatarbucket/filename.jpg"
-    }
-}
-```
-
-#### Get User Avatar
+#### Get Current User Avatar
 
 ```http
 GET /avatar
@@ -340,7 +409,34 @@ GET /avatar
 
 ---
 
-### 📝 Japanese Writing Systems
+### 📖 Main Learning Material Categories
+
+_Used in material selection menu (same level as N5-N1 selection)_
+
+#### Japanese Particles
+
+```http
+GET /particle
+```
+
+🔒 **Authentication Required**
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mendapatkan data partikel",
+    "datas": [
+        {
+            "id": 1,
+            "particle_name": "は",
+            "description": "Menunjukkan topik kalimat",
+            "example_sentence": "私は学生です。"
+        }
+    ]
+}
+```
 
 #### Hiragana Characters
 
@@ -361,12 +457,6 @@ GET /hiragana
             "id": 1,
             "character": "あ",
             "romaji": "a",
-            "type": "monograph"
-        },
-        {
-            "id": 2,
-            "character": "か",
-            "romaji": "ka",
             "type": "monograph"
         }
     ]
@@ -398,35 +488,6 @@ GET /katakana
 }
 ```
 
----
-
-### 📖 Grammar & Basics
-
-#### Japanese Particles
-
-```http
-GET /particle
-```
-
-🔒 **Authentication Required**
-
-**Success Response (200):**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil mendapatkan data partikel",
-    "datas": [
-        {
-            "id": 1,
-            "particle_name": "は",
-            "description": "Menunjukkan topik kalimat",
-            "example_sentence": "私は学生です。"
-        }
-    ]
-}
-```
-
 #### Basic Conversations
 
 ```http
@@ -445,9 +506,13 @@ GET /question-word-n5
 
 ---
 
-### 📊 JLPT N5 Content
+### 📊 N5 Learning Materials
 
-#### Kanji N5
+_Used inside N5 material section - subcategories of N5 content_
+
+#### Core N5 Categories
+
+##### Kanji N5
 
 ```http
 GET /kanji-n5
@@ -473,7 +538,7 @@ GET /kanji-n5
 }
 ```
 
-#### Adjectives N5
+##### Adjectives N5
 
 ```http
 GET /adjective-n5
@@ -500,7 +565,7 @@ GET /adjective-n5
 }
 ```
 
-#### Adverbs N5
+##### Adverbs N5
 
 ```http
 GET /adverb-n5
@@ -508,7 +573,7 @@ GET /adverb-n5
 
 🔒 **Authentication Required**
 
-#### Verbs N5
+##### Verbs N5
 
 ```http
 GET /verb-n5
@@ -516,133 +581,173 @@ GET /verb-n5
 
 🔒 **Authentication Required**
 
----
+#### N5 Noun Categories
 
-### 🏷️ Noun Categories N5
+_Organized by topic/theme for easier learning_
 
-#### Activity Nouns
+##### Activity Nouns
 
 ```http
 GET /noun-activity-n5
 ```
 
-#### Animal & Plant Nouns
+🔒 **Authentication Required**
+
+##### Animal & Plant Nouns
 
 ```http
 GET /noun-animalplant-n5
 ```
 
-#### Number-related Nouns
+🔒 **Authentication Required**
+
+##### Auxiliary Number Nouns
 
 ```http
 GET /noun-auxnumber-n5
 ```
 
-#### Body Parts Nouns
+🔒 **Authentication Required**
+
+##### Body Part Nouns
 
 ```http
 GET /noun-body-n5
 ```
 
-#### City & Location Nouns
+🔒 **Authentication Required**
+
+##### City & Location Nouns
 
 ```http
 GET /noun-city-n5
 ```
 
-#### Color Nouns
+🔒 **Authentication Required**
+
+##### Color Nouns
 
 ```http
 GET /noun-color-n5
 ```
 
-#### Food & Drink Nouns
+🔒 **Authentication Required**
+
+##### Food & Drink Nouns
 
 ```http
 GET /noun-fooddrink-n5
 ```
 
-#### Home Appliance Nouns
+🔒 **Authentication Required**
+
+##### Home Appliance Nouns
 
 ```http
 GET /noun-homeappliances-n5
 ```
 
-#### Demonstrative Nouns (こそあど)
+🔒 **Authentication Required**
+
+##### Demonstrative Nouns (こそあど)
 
 ```http
 GET /noun-kosoado-n5
 ```
 
-#### Media Nouns
+🔒 **Authentication Required**
+
+##### Media Nouns
 
 ```http
 GET /noun-media-n5
 ```
 
-#### Nature Nouns
+🔒 **Authentication Required**
+
+##### Nature Nouns
 
 ```http
 GET /noun-natural-n5
 ```
 
-#### Number Nouns
+🔒 **Authentication Required**
+
+##### Number Nouns
 
 ```http
 GET /noun-number-n5
 ```
 
-#### Clothing Nouns
+🔒 **Authentication Required**
+
+##### Clothing & Outfit Nouns
 
 ```http
 GET /noun-outfit-n5
 ```
 
-#### People Nouns
+🔒 **Authentication Required**
+
+##### People Nouns
 
 ```http
 GET /noun-people-n5
 ```
 
-#### Position Nouns
+🔒 **Authentication Required**
+
+##### Position & Direction Nouns
 
 ```http
 GET /noun-position-n5
 ```
 
-#### Region Nouns
+🔒 **Authentication Required**
+
+##### Region Nouns
 
 ```http
 GET /noun-region-n5
 ```
 
-#### School Nouns
+🔒 **Authentication Required**
+
+##### School-related Nouns
 
 ```http
 GET /noun-school-n5
 ```
 
-#### Time Nouns
+🔒 **Authentication Required**
+
+##### Time-related Nouns
 
 ```http
 GET /noun-time-n5
 ```
 
-#### Traffic Nouns
+🔒 **Authentication Required**
+
+##### Traffic & Transportation Nouns
 
 ```http
 GET /noun-traffic-n5
 ```
 
-#### Work Nouns
+🔒 **Authentication Required**
+
+##### Work & Occupation Nouns
 
 ```http
 GET /noun-work-n5
 ```
 
-🔒 **All noun endpoints require authentication**
+🔒 **Authentication Required**
 
-**Standard Noun Response Format:**
+### 📝 Standard N5 Vocabulary Response Format
+
+_All N5 vocabulary endpoints return data in this format:_
 
 ```json
 {
@@ -660,419 +765,30 @@ GET /noun-work-n5
 }
 ```
 
-## 💻 Code Examples
+---
 
-### 🔧 JavaScript/Fetch API Examples
+### 🎯 Frontend Usage Guide
 
-#### Authentication Flow
+**For Material Selection Menu:**
 
-```javascript
-// API Base Configuration
-const API_BASE_URL = "http://localhost:8000";
+-   Use `/particle`, `/hiragana`, `/katakana`, `/basic-conversation`, `/question-word-n5`
+-   These appear at the same level as N5-N1 buttons
 
-class IkibanAPI {
-    constructor() {
-        this.baseURL = API_BASE_URL;
-        this.token = localStorage.getItem("token");
-    }
+**For N5 Subcategories:**
 
-    // Helper method for API calls
-    async apiCall(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                ...options.headers,
-            },
-            ...options,
-        };
+-   Use `/kanji-n5`, `/adjective-n5`, `/adverb-n5`, `/verb-n5`
+-   Use noun category endpoints for organized vocabulary learning
 
-        // Add auth header for protected routes
-        if (
-            this.token &&
-            !endpoint.includes("/login") &&
-            !endpoint.includes("/register")
-        ) {
-            config.headers.Authorization = `Bearer ${this.token}`;
-        }
+**For User Interface:**
 
-        try {
-            const response = await fetch(url, config);
-            const data = await response.json();
+-   Use `/avatar` for navbar profile image
+-   Use `/profile/:id` and `/upload/avatar` for profile settings
 
-            if (!response.ok) {
-                throw new Error(data.message || "API Error");
-            }
+**For Authentication:**
 
-            return data;
-        } catch (error) {
-            console.error("API Error:", error);
-            throw error;
-        }
-    }
+-   Use `/register` and `/login` for user onboarding
 
-    // Authentication Methods
-    async register(username, password) {
-        const data = await this.apiCall("/register", {
-            method: "POST",
-            body: JSON.stringify({ username, password }),
-        });
-        return data;
-    }
-
-    async login(username, password) {
-        const data = await this.apiCall("/login", {
-            method: "POST",
-            body: JSON.stringify({ username, password }),
-        });
-
-        if (!data.error) {
-            this.token = data.data.token;
-            localStorage.setItem("token", this.token);
-            localStorage.setItem("user", JSON.stringify(data.data));
-        }
-
-        return data;
-    }
-
-    async changePassword(oldPassword, newPassword) {
-        return await this.apiCall("/change-password", {
-            method: "POST",
-            body: JSON.stringify({ oldPassword, newPassword }),
-        });
-    }
-
-    // Learning Content Methods
-    async getHiragana() {
-        const data = await this.apiCall("/hiragana");
-        return data.datas; // Note: uses 'datas' not 'data'
-    }
-
-    async getKatakana() {
-        const data = await this.apiCall("/katakana");
-        return data.datas;
-    }
-
-    async getParticles() {
-        const data = await this.apiCall("/particle");
-        return data.datas;
-    }
-
-    // JLPT N5 Methods
-    async getKanjiN5() {
-        const data = await this.apiCall("/kanji-n5");
-        return data.data;
-    }
-
-    async getAdjectivesN5() {
-        const data = await this.apiCall("/adjective-n5");
-        return data.data;
-    }
-
-    async getVerbsN5() {
-        const data = await this.apiCall("/verb-n5");
-        return data.data;
-    }
-
-    // Noun Categories
-    async getNounsByCategory(category) {
-        const endpoint = `/noun-${category}-n5`;
-        const data = await this.apiCall(endpoint);
-        return data.data;
-    }
-
-    // Profile Methods
-    async getProfile(profileId) {
-        const data = await this.apiCall(`/profile/${profileId}`);
-        return data.data;
-    }
-
-    async uploadAvatar(file) {
-        const formData = new FormData();
-        formData.append("avatar", file);
-
-        const data = await this.apiCall("/upload/avatar", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${this.token}`,
-            },
-            body: formData,
-        });
-
-        return data.data.imageUrl;
-    }
-
-    async getAvatar() {
-        const data = await this.apiCall("/avatar");
-        return data.data.imageUrl;
-    }
-
-    // Utility Methods
-    logout() {
-        this.token = null;
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-    }
-
-    isAuthenticated() {
-        return !!this.token;
-    }
-}
-
-// Usage Examples
-const api = new IkibanAPI();
-
-// Login example
-async function handleLogin(username, password) {
-    try {
-        const result = await api.login(username, password);
-        console.log("Login successful:", result.data);
-        return { success: true, user: result.data };
-    } catch (error) {
-        console.error("Login failed:", error.message);
-        return { success: false, error: error.message };
-    }
-}
-
-// Fetch learning content
-async function loadLearningContent() {
-    try {
-        const [hiragana, katakana, kanji] = await Promise.all([
-            api.getHiragana(),
-            api.getKatakana(),
-            api.getKanjiN5(),
-        ]);
-
-        return { hiragana, katakana, kanji };
-    } catch (error) {
-        console.error("Failed to load content:", error);
-        return null;
-    }
-}
-
-// Upload avatar example
-async function handleAvatarUpload(fileInput) {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    try {
-        const imageUrl = await api.uploadAvatar(file);
-        console.log("Avatar uploaded:", imageUrl);
-        return imageUrl;
-    } catch (error) {
-        console.error("Upload failed:", error);
-        return null;
-    }
-}
-```
-
-### ⚛️ React Hook Examples
-
-```javascript
-// Custom hooks for React applications
-import { useState, useEffect, useCallback } from "react";
-
-// Authentication Hook
-export function useAuth() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const api = new IkibanAPI();
-
-    useEffect(() => {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
-    }, []);
-
-    const login = useCallback(async (username, password) => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const result = await api.login(username, password);
-            setUser(result.data);
-            return { success: true };
-        } catch (err) {
-            setError(err.message);
-            return { success: false, error: err.message };
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const logout = useCallback(() => {
-        api.logout();
-        setUser(null);
-    }, []);
-
-    return { user, login, logout, loading, error };
-}
-
-// Learning Content Hook
-export function useLearningContent(contentType) {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const api = new IkibanAPI();
-
-    useEffect(() => {
-        async function fetchContent() {
-            setLoading(true);
-            setError(null);
-
-            try {
-                let result;
-                switch (contentType) {
-                    case "hiragana":
-                        result = await api.getHiragana();
-                        break;
-                    case "katakana":
-                        result = await api.getKatakana();
-                        break;
-                    case "kanji-n5":
-                        result = await api.getKanjiN5();
-                        break;
-                    case "adjective-n5":
-                        result = await api.getAdjectivesN5();
-                        break;
-                    default:
-                        throw new Error("Invalid content type");
-                }
-                setData(result);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        if (contentType) {
-            fetchContent();
-        }
-    }, [contentType]);
-
-    return { data, loading, error, refetch: () => fetchContent() };
-}
-
-// React Component Examples
-function LoginForm() {
-    const { login, loading, error } = useAuth();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const result = await login(username, password);
-        if (result.success) {
-            // Redirect or update UI
-            console.log("Login successful!");
-        }
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                minLength={6}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                minLength={8}
-                required
-            />
-            <button type="submit" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
-            </button>
-            {error && <div className="error">{error}</div>}
-        </form>
-    );
-}
-
-function HiraganaList() {
-    const { data: hiragana, loading, error } = useLearningContent("hiragana");
-
-    if (loading) return <div>Loading hiragana...</div>;
-    if (error) return <div>Error: {error}</div>;
-
-    return (
-        <div className="hiragana-grid">
-            {hiragana.map((char) => (
-                <div key={char.id} className="character-card">
-                    <div className="character">{char.character}</div>
-                    <div className="romaji">{char.romaji}</div>
-                </div>
-            ))}
-        </div>
-    );
-}
-```
-
-### 🌐 Axios Alternative
-
-```javascript
-// Using Axios instead of Fetch
-import axios from "axios";
-
-const apiClient = axios.create({
-    baseURL: "http://localhost:8000",
-    timeout: 10000,
-});
-
-// Request interceptor to add auth token
-apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
-// Response interceptor for error handling
-apiClient.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Token expired, redirect to login
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-        }
-        return Promise.reject(error);
-    }
-);
-
-// API methods
-export const authAPI = {
-    login: (username, password) =>
-        apiClient.post("/login", { username, password }),
-
-    register: (username, password) =>
-        apiClient.post("/register", { username, password }),
-
-    changePassword: (oldPassword, newPassword) =>
-        apiClient.post("/change-password", { oldPassword, newPassword }),
-};
-
-export const contentAPI = {
-    getHiragana: () => apiClient.get("/hiragana"),
-    getKatakana: () => apiClient.get("/katakana"),
-    getKanjiN5: () => apiClient.get("/kanji-n5"),
-    getNounsByCategory: (category) => apiClient.get(`/noun-${category}-n5`),
-};
-```
-
-## 🛠️ Developer Tools
+## ️ Developer Tools
 
 ### 📊 API Testing
 
@@ -1394,63 +1110,3 @@ async function handleAPICall(apiFunction) {
 -   `time` - Time expressions
 -   `traffic` - Transportation
 -   `work` - Work and occupations
-
----
-
-## 🚀 Implementation Checklist
-
-### For Frontend Developers
-
-#### ✅ Initial Setup
-
--   [ ] Setup environment variables
--   [ ] Install HTTP client (fetch/axios)
--   [ ] Create API service class
--   [ ] Implement token storage mechanism
-
-#### ✅ Authentication Flow
-
--   [ ] Login form with validation
--   [ ] Token storage and retrieval
--   [ ] Auto-logout on token expiration
--   [ ] Registration form
--   [ ] Password change functionality
-
-#### ✅ Content Loading
-
--   [ ] Loading states for all API calls
--   [ ] Error handling and user feedback
--   [ ] Data caching for static content
--   [ ] Pagination if needed
-
-#### ✅ File Upload
-
--   [ ] Avatar upload with preview
--   [ ] Progress indication
--   [ ] File type validation
--   [ ] Error handling
-
-#### ✅ User Experience
-
--   [ ] Responsive design
--   [ ] Loading indicators
--   [ ] Error messages
--   [ ] Success notifications
--   [ ] Navigation protection for authenticated routes
-
----
-
-## 📞 Support & Contact
-
-Untuk pertanyaan teknis atau bantuan implementasi:
-
-1. **Backend Issues**: Check server logs dan database connection
-2. **API Errors**: Gunakan browser dev tools untuk debugging
-3. **Authentication**: Pastikan token format dan expiration
-4. **CORS Issues**: Pastikan frontend URL sesuai konfigurasi
-
----
-
-**Last Updated:** January 2025  
-**API Version:** 1.0.0  
-**Maintained by:** Backend Team
