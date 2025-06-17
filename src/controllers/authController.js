@@ -1,22 +1,16 @@
 const bcrypt = require("bcrypt");
 const supabase = require("../config/supabase");
 const jwt = require("jsonwebtoken");
-const validateInput = require("../utils/validateInput");
+const {
+    validateInput,
+    validateUsername,
+    validatePassword,
+} = require("../utils/validateInput");
 
 const registerAuth = async (req, res) => {
     const { username, password } = req.body;
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     try {
-        if (!validateInput(username) || !validateInput(password)) {
-            return res.status(400).json({
-                error: true,
-                message: "Inputan tidak valid",
-                data: null,
-            });
-        }
-
         if (!username || !password) {
             return res.status(400).json({
                 error: true,
@@ -25,14 +19,34 @@ const registerAuth = async (req, res) => {
             });
         }
 
-        if (username.length < 6 || password.length < 8) {
+        if (!validateInput(username) || !validateInput(password)) {
             return res.status(400).json({
                 error: true,
-                message:
-                    "Username minimal 6 karakter dan password minimal 8 karakter",
+                message: "Inputan tidak valid",
                 data: null,
             });
         }
+
+        if (!validateUsername(username)) {
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Username harus 3-20 karakter dan hanya boleh mengandung huruf, angka, dan garis bawah",
+                data: null,
+            });
+        }
+
+        if (!validatePassword(password)) {
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Password minimal 8 karakter dan harus mengandung kombinasi huruf besar, kecil, angka, dan simbol",
+                data: null,
+            });
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const { data: existingUser, error: fetchError } = await supabase
             .from("users")
@@ -43,7 +57,7 @@ const registerAuth = async (req, res) => {
             throw new Error("Gagal memeriksa username");
         }
 
-        if (existingUser.data) {
+        if (existingUser.length > 0) {
             return res.status(400).json({
                 error: true,
                 message: "Username sudah terdaftar",
@@ -86,6 +100,22 @@ const loginAuth = async (req, res) => {
             return res.status(400).json({
                 error: true,
                 message: "Username dan password tidak boleh kosong",
+                data: null,
+            });
+        }
+
+        if (!validateUsername(username)) {
+            return res.status(400).json({
+                error: true,
+                message: "Format username tidak valid",
+                data: null,
+            });
+        }
+
+        if (!validatePassword(password)) {
+            return res.status(400).json({
+                error: true,
+                message: "Format password tidak valid",
                 data: null,
             });
         }
@@ -152,6 +182,15 @@ const changePasswordAuth = async (req, res) => {
             return res.status(400).json({
                 error: true,
                 message: "Password lama dan baru tidak boleh kosong",
+                data: null,
+            });
+        }
+
+        if (!validatePassword(newPassword)) {
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Password baru minimal 8 karakter dan harus mengandung kombinasi huruf besar, kecil, angka, dan simbol",
                 data: null,
             });
         }
