@@ -56,7 +56,7 @@ Server akan berjalan di `http://localhost:8000`
 | POST   | `/profile/upload-avatar`   | Upload foto profil        | ✅            |
 | PUT    | `/profile/change-password` | Ganti password            | ✅            |
 | GET    | `/profile/avatar`          | Ambil avatar untuk navbar | ✅            |
-| GET    | `/profile`                 | Ambil data profil lengkap | ✅            |
+| GET    | `/profile/:userId`         | Ambil data profil lengkap | ✅            |
 
 ### 🌟 Tampilan Depan N1 - N5 Sejajar Dengan Endpoint Berikut
 
