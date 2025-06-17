@@ -49,7 +49,6 @@ const uploadAvatarController = async (req, res) => {
             .from("users")
             .update({
                 profile_picture: imageUrl,
-                updated_at: new Date().toISOString(),
             })
             .eq("user_id", id);
 
@@ -60,9 +59,6 @@ const uploadAvatarController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Gambar profil berhasil diunggah",
-            data: {
-                imageUrl,
-            },
         });
     } catch (err) {
         console.error("Avatar upload error:", err);

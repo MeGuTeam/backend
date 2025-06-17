@@ -4,15 +4,11 @@ const profileController = async (req, res) => {
     try {
         const { profileId } = req.params;
 
-        console.log("Fetching profile for ID:", profileId);
-
         const { data: user, error } = await supabase
             .from("users")
             .select("*")
             .eq("user_id", profileId)
             .single();
-
-        console.log(error);
 
         if (error) {
             throw new Error("Gagal mengambil data profil");

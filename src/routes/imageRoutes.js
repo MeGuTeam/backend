@@ -9,7 +9,7 @@ const {
 const middleware = require("../middleware/middleware");
 
 router.post(
-    "/upload",
+    "/upload/avatar",
     upload.single("avatar"),
     middleware,
     uploadAvatarController
