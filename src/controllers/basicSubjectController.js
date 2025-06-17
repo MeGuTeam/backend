@@ -7,21 +7,32 @@ const particleController = async (req, res) => {
             .select("*")
             .order("particle_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("particle_id, status")
+            .eq("user_id", req.user.id);
+
         if (error) {
             throw new Error("Gagal memeriksa partikel");
         }
 
-        const result = data.map((row) => ({
-            id: row.particle_id,
-            particle_name: row.particle_name,
-            description: row.description,
-            example_sentence: row.example_sentence,
-        }));
+        const resultData = data.map((row) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.particle_id === row.particle_id)
+                : null;
+            return {
+                id: row.particle_id,
+                particle_name: row.particle_name,
+                description: row.description,
+                example_sentence: row.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data partikel",
-            datas: result,
+            datas: resultData,
         });
     } catch (err) {
         console.error(err);
@@ -40,16 +51,27 @@ const hiraganaController = async (req, res) => {
             .select("*")
             .order("hiragana_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("hiragana_id, status")
+            .eq("user_id", req.user.id);
+
         if (error) {
             throw new Error("Gagal memeriksa hiragana");
         }
 
-        const result = data.map((row) => ({
-            id: row.hiragana_id,
-            character: row.character,
-            romaji: row.romaji,
-            type: row.type,
-        }));
+        const result = data.map((row) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.hiragana_id === row.hiragana_id)
+                : null;
+            return {
+                id: row.hiragana_id,
+                character: row.character,
+                romaji: row.romaji,
+                type: row.type,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -72,15 +94,29 @@ const katakanaController = async (req, res) => {
             .from("katakana")
             .select("*")
             .order("katakana_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("katakana_id, status")
+            .eq("user_id", req.user.id);
+
         if (error) {
             throw new Error("Gagal memeriksa katakana");
         }
-        const result = data.map((row) => ({
-            id: row.katakana_id,
-            character: row.character,
-            romaji: row.romaji,
-            type: row.type,
-        }));
+
+        const result = data.map((row) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.katakana_id === row.katakana_id)
+                : null;
+            return {
+                id: row.katakana_id,
+                character: row.character,
+                romaji: row.romaji,
+                type: row.type,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
+
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data katakana",
@@ -103,18 +139,31 @@ const basicConversationController = async (req, res) => {
             .select("*")
             .order("conversation_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("basic_conversation_id, status")
+            .eq("user_id", req.user.id);
+
         if (error) {
             throw new Error("Gagal memeriksa percakapan dasar");
         }
 
-        const result = data.map((row) => ({
-            id: row.conversation_id,
-            word: row.word,
-            reading: row.reading,
-            meaning: row.meaning,
-            type: row.type,
-            example_sentence: row.example_sentence,
-        }));
+        const result = data.map((row) => {
+            const trackerItem = tracker
+                ? tracker.find(
+                      (t) => t.basic_conversation_id === row.conversation_id
+                  )
+                : null;
+            return {
+                id: row.conversation_id,
+                word: row.word,
+                reading: row.reading,
+                meaning: row.meaning,
+                type: row.type,
+                example_sentence: row.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -138,17 +187,30 @@ const questionWordController = async (req, res) => {
             .select("*")
             .order("question_word_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("question_word_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata tanya");
         }
 
-        const datas = questionData.map((question) => ({
-            id: question.question_id,
-            reading: question.reading,
-            word: question.word,
-            meaning: question.meaning,
-            example_sentence: question.example_sentence,
-        }));
+        const datas = questionData.map((question) => {
+            const trackerItem = tracker
+                ? tracker.find(
+                      (t) => t.question_word_n5_id === question.question_word_id
+                  )
+                : null;
+            return {
+                id: question.question_word_id,
+                reading: question.reading,
+                word: question.word,
+                meaning: question.meaning,
+                example_sentence: question.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,

@@ -7,17 +7,28 @@ const kanjiN5Controller = async (req, res) => {
             .select("*")
             .order("kanji_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("kanji_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kanji");
         }
 
-        const datas = kanjiData.map((kanji) => ({
-            id: kanji.kanji_id,
-            character: kanji.character,
-            onyomi: kanji.onyomi,
-            kunyomi: kanji.kunyomi,
-            meaning: kanji.meaning,
-        }));
+        const datas = kanjiData.map((kanji) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.kanji_n5_id === kanji.kanji_id)
+                : null;
+            return {
+                id: kanji.kanji_id,
+                character: kanji.character,
+                onyomi: kanji.onyomi,
+                kunyomi: kanji.kunyomi,
+                meaning: kanji.meaning,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -40,18 +51,29 @@ const adjectiveN5Controller = async (req, res) => {
             .select("*")
             .order("adjective_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("adjective_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata sifat");
         }
 
-        const datas = adjectiveData.map((adjective) => ({
-            id: adjective.adjective_id,
-            reading: adjective.reading,
-            word: adjective.word,
-            meaning: adjective.meaning,
-            example_sentence: adjective.example_sentence,
-            type: adjective.type,
-        }));
+        const datas = adjectiveData.map((adjective) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.adjective_n5_id === adjective.adjective_id)
+                : null;
+            return {
+                id: adjective.adjective_id,
+                reading: adjective.reading,
+                word: adjective.word,
+                meaning: adjective.meaning,
+                example_sentence: adjective.example_sentence,
+                type: adjective.type,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -74,17 +96,28 @@ const adverbN5Controller = async (req, res) => {
             .select("*")
             .order("adverb_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("adverb_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata keterangan");
         }
 
-        const datas = adverbData.map((adverb) => ({
-            id: adverb.adverb_id,
-            reading: adverb.reading,
-            word: adverb.word,
-            meaning: adverb.meaning,
-            example_sentence: adverb.example_sentence,
-        }));
+        const datas = adverbData.map((adverb) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.adverb_n5_id === adverb.adverb_id)
+                : null;
+            return {
+                id: adverb.adverb_id,
+                reading: adverb.reading,
+                word: adverb.word,
+                meaning: adverb.meaning,
+                example_sentence: adverb.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -107,17 +140,28 @@ const verbN5Controller = async (req, res) => {
             .select("*")
             .order("verb_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("verb_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata kerja");
         }
 
-        const datas = verbData.map((verb) => ({
-            id: verb.verb_id,
-            reading: verb.reading,
-            word: verb.word,
-            meaning: verb.meaning,
-            example_sentence: verb.example_sentence,
-        }));
+        const datas = verbData.map((verb) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.verb_n5_id === verb.verb_id)
+                : null;
+            return {
+                id: verb.verb_id,
+                reading: verb.reading,
+                word: verb.word,
+                meaning: verb.meaning,
+                example_sentence: verb.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -140,17 +184,28 @@ const nounActivityN5Controller = async (req, res) => {
             .select("*")
             .order("noun_activity_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_activity_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda aktivitas");
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_activity_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_activity_n5_id === noun.noun_activity_id)
+                : null;
+            return {
+                id: noun.noun_activity_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -173,19 +228,30 @@ const nounAnimalplantN5Controller = async (req, res) => {
             .select("*")
             .order("noun_animalplant_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_animalplant_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error(
                 "Gagal mengambil data kata benda hewan dan tumbuhan"
             );
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_animalplant_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_animalplant_n5_id === noun.noun_animalplant_id)
+                : null;
+            return {
+                id: noun.noun_animalplant_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -208,17 +274,28 @@ const nounAuxnumberN5Controller = async (req, res) => {
             .select("*")
             .order("noun_auxnumber_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_auxnumber_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda angka");
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_auxnumber_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_auxnumber_n5_id === noun.noun_auxnumber_id)
+                : null;
+            return {
+                id: noun.noun_auxnumber_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -241,17 +318,28 @@ const nounBodyN5Controller = async (req, res) => {
             .select("*")
             .order("noun_body_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_body_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda tubuh");
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_body_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_body_n5_id === noun.noun_body_id)
+                : null;
+            return {
+                id: noun.noun_body_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -274,17 +362,28 @@ const nounCityN5Controller = async (req, res) => {
             .select("*")
             .order("noun_city_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_city_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda kota");
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_city_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_city_n5_id === noun.noun_city_id)
+                : null;
+            return {
+                id: noun.noun_city_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -307,17 +406,28 @@ const nounColorN5Controller = async (req, res) => {
             .select("*")
             .order("noun_color_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_color_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda warna");
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_color_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_color_n5_id === noun.noun_color_id)
+                : null;
+            return {
+                id: noun.noun_color_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -340,19 +450,30 @@ const nounFoodDrinkN5Controller = async (req, res) => {
             .select("*")
             .order("noun_fooddrink_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_fooddrink_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error(
                 "Gagal mengambil data kata benda makanan dan minuman"
             );
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_fooddrink_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_fooddrink_n5_id === noun.noun_fooddrink_id)
+                : null;
+            return {
+                id: noun.noun_fooddrink_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -375,19 +496,30 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
             .select("*")
             .order("noun_homeappliances_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_homeappliances_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error(
                 "Gagal mengambil data kata benda peralatan rumah tangga"
             );
         }
 
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_homeappliances_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_homeappliances_n5_id === noun.noun_homeappliances_id)
+                : null;
+            return {
+                id: noun.noun_homeappliances_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -410,17 +542,26 @@ const nounKosoadoN5Controller = async (req, res) => {
             .select("*")
             .order("noun_kosoado_id", { ascending: true });
 
-        if (fetchError) {
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_kosoado_n5_id, status")
+            .eq("user_id", req.user.id);        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda kosoado");
         }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_kosoado_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_kosoado_n5_id === noun.noun_kosoado_id)
+                : null;
+            return {
+                id: noun.noun_kosoado_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -443,17 +584,26 @@ const nounMediaN5Controller = async (req, res) => {
             .select("*")
             .order("noun_media_id", { ascending: true });
 
-        if (fetchError) {
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_media_n5_id, status")
+            .eq("user_id", req.user.id);        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda media");
         }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_media_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_media_n5_id === noun.noun_media_id)
+                : null;
+            return {
+                id: noun.noun_media_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -476,17 +626,26 @@ const nounNaturalN5Controller = async (req, res) => {
             .select("*")
             .order("noun_natural_id", { ascending: true });
 
-        if (fetchError) {
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_natural_n5_id, status")
+            .eq("user_id", req.user.id);        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda alam");
         }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_natural_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_natural_n5_id === noun.noun_natural_id)
+                : null;
+            return {
+                id: noun.noun_natural_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -509,17 +668,26 @@ const nounNumberN5Controller = async (req, res) => {
             .select("*")
             .order("noun_number_id", { ascending: true });
 
-        if (fetchError) {
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_number_n5_id, status")
+            .eq("user_id", req.user.id);        if (fetchError) {
             throw new Error("Gagal mengambil data kata benda angka");
         }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_number_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_number_n5_id === noun.noun_number_id)
+                : null;
+            return {
+                id: noun.noun_number_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -542,17 +710,26 @@ const nounOutfitN5Controller = async (req, res) => {
             .select("*")
             .order("noun_outfit_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_outfit_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda pakaian");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_outfit_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_outfit_n5_id === noun.noun_outfit_id)
+                : null;
+            return {
+                id: noun.noun_outfit_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -575,17 +752,26 @@ const nounPeopleN5Controller = async (req, res) => {
             .select("*")
             .order("noun_people_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_people_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda orang");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_people_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_people_n5_id === noun.noun_people_id)
+                : null;
+            return {
+                id: noun.noun_people_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -608,17 +794,26 @@ const nounPositionN5Controller = async (req, res) => {
             .select("*")
             .order("noun_position_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_position_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda posisi");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_position_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_position_n5_id === noun.noun_position_id)
+                : null;
+            return {
+                id: noun.noun_position_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -641,17 +836,26 @@ const nounRegionN5Controller = async (req, res) => {
             .select("*")
             .order("noun_region_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_region_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda wilayah");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_region_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_region_n5_id === noun.noun_region_id)
+                : null;
+            return {
+                id: noun.noun_region_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -674,17 +878,26 @@ const nounSchoolN5Controller = async (req, res) => {
             .select("*")
             .order("noun_school_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_school_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda sekolah");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_school_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_school_n5_id === noun.noun_school_id)
+                : null;
+            return {
+                id: noun.noun_school_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -707,17 +920,26 @@ const nounTimeN5Controller = async (req, res) => {
             .select("*")
             .order("noun_time_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_time_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda waktu");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_time_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_time_n5_id === noun.noun_time_id)
+                : null;
+            return {
+                id: noun.noun_time_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -740,17 +962,26 @@ const nounTrafficN5Controller = async (req, res) => {
             .select("*")
             .order("noun_traffic_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_traffic_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda lalu lintas");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_traffic_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_traffic_n5_id === noun.noun_traffic_id)
+                : null;
+            return {
+                id: noun.noun_traffic_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
@@ -773,17 +1004,26 @@ const nounWorkN5Controller = async (req, res) => {
             .select("*")
             .order("noun_work_id", { ascending: true });
 
+        const { data: tracker } = await supabase
+            .from("tracker")
+            .select("noun_work_n5_id, status")
+            .eq("user_id", req.user.id);
+
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda pekerjaan");
-        }
-
-        const datas = nounData.map((noun) => ({
-            id: noun.noun_work_id,
-            reading: noun.reading,
-            word: noun.word,
-            meaning: noun.meaning,
-            example_sentence: noun.example_sentence,
-        }));
+        }        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_work_n5_id === noun.noun_work_id)
+                : null;
+            return {
+                id: noun.noun_work_id,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
 
         return res.status(200).json({
             error: false,
