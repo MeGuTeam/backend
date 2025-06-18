@@ -97,6 +97,100 @@ Server akan berjalan di `http://localhost:8000`
 | GET    | `/noun-traffic-n5`        | Kata benda transportasi      | ✅            |
 | GET    | `/noun-work-n5`           | Kata benda pekerjaan         | ✅            |
 
+### 📊 Tracking Progress Pengguna
+
+| Method | Endpoint                          | Deskripsi                                   | Auth Required |
+| ------ | --------------------------------- | ------------------------------------------- | ------------- |
+| POST   | `/tracker/particle`               | Tracking progress partikel                  | ✅            |
+| POST   | `/tracker/hiragana`               | Tracking progress hiragana                  | ✅            |
+| POST   | `/tracker/katakana`               | Tracking progress katakana                  | ✅            |
+| POST   | `/tracker/basic-conversation`     | Tracking progress percakapan dasar          | ✅            |
+| POST   | `/tracker/kanji-n5`               | Tracking progress kanji N5                  | ✅            |
+| POST   | `/tracker/adjective-n5`           | Tracking progress kata sifat N5             | ✅            |
+| POST   | `/tracker/adverb-n5`              | Tracking progress kata keterangan N5        | ✅            |
+| POST   | `/tracker/verb-n5`                | Tracking progress kata kerja N5             | ✅            |
+| POST   | `/tracker/noun-activity-n5`       | Tracking progress kata benda aktivitas N5   | ✅            |
+| POST   | `/tracker/noun-animalplant-n5`    | Tracking progress kata benda hewan N5       | ✅            |
+| POST   | `/tracker/noun-auxnumber-n5`      | Tracking progress kata benda angka bantu N5 | ✅            |
+| POST   | `/tracker/noun-body-n5`           | Tracking progress kata benda tubuh N5       | ✅            |
+| POST   | `/tracker/noun-city-n5`           | Tracking progress kata benda kota N5        | ✅            |
+| POST   | `/tracker/noun-color-n5`          | Tracking progress kata benda warna N5       | ✅            |
+| POST   | `/tracker/noun-fooddrink-n5`      | Tracking progress kata benda makanan N5     | ✅            |
+| POST   | `/tracker/noun-homeappliances-n5` | Tracking progress kata benda peralatan N5   | ✅            |
+| POST   | `/tracker/noun-kosoado-n5`        | Tracking progress kata benda kosoado N5     | ✅            |
+| POST   | `/tracker/noun-media-n5`          | Tracking progress kata benda media N5       | ✅            |
+| POST   | `/tracker/noun-natural-n5`        | Tracking progress kata benda alam N5        | ✅            |
+| POST   | `/tracker/noun-number-n5`         | Tracking progress kata benda angka N5       | ✅            |
+| POST   | `/tracker/noun-outfit-n5`         | Tracking progress kata benda pakaian N5     | ✅            |
+| POST   | `/tracker/noun-people-n5`         | Tracking progress kata benda orang N5       | ✅            |
+| POST   | `/tracker/noun-position-n5`       | Tracking progress kata benda posisi N5      | ✅            |
+| POST   | `/tracker/noun-region-n5`         | Tracking progress kata benda wilayah N5     | ✅            |
+| POST   | `/tracker/noun-school-n5`         | Tracking progress kata benda sekolah N5     | ✅            |
+| POST   | `/tracker/noun-time-n5`           | Tracking progress kata benda waktu N5       | ✅            |
+| POST   | `/tracker/noun-traffic-n5`        | Tracking progress kata benda lalu lintas N5 | ✅            |
+| POST   | `/tracker/noun-work-n5`           | Tracking progress kata benda pekerjaan N5   | ✅            |
+| POST   | `/tracker/question-word-n5`       | Tracking progress kata tanya N5             | ✅            |
+
+#### 📝 Format Request Tracking
+
+Semua endpoint tracking menggunakan format request body berikut:
+
+```json
+{
+    "particle_id": 1, // ID item yang di-track (sesuai dengan jenis tracking)
+    "status": true // Status tracking saat ini (true/false)
+}
+```
+
+**Contoh untuk berbagai jenis tracking:**
+
+```json
+// Tracking Particle
+{
+  "particle_id": 1,
+  "status": true
+}
+
+// Tracking Hiragana
+{
+  "hiragana_id": 5,
+  "status": false
+}
+
+// Tracking Kanji N5
+{
+  "kanji_n5_id": 10,
+  "status": true
+}
+
+// Tracking Noun Activity N5
+{
+  "noun_activity_n5_id": 3,
+  "status": true
+}
+```
+
+#### ✅ Response Format Tracking
+
+**Success Response:**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil menyelesaikan tracking [jenis materi]"
+}
+```
+
+**Error Response:**
+
+```json
+{
+    "error": true,
+    "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+    "data": null
+}
+```
+
 ## 🔒 Format Autentikasi
 
 Semua endpoint yang memerlukan autentikasi harus menyertakan header:
