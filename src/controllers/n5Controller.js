@@ -3,13 +3,14 @@ const supabase = require("../config/supabase");
 const kanjiN5Controller = async (req, res) => {
     try {
         const { data: kanjiData, error: fetchError } = await supabase
-            .from("kanji_n5")
+            .from("kanjis")
             .select("*")
+            .eq("level_id", "5")
             .order("kanji_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("kanji_n5_id, status")
+            .from("tracking")
+            .select("kanji_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -18,7 +19,7 @@ const kanjiN5Controller = async (req, res) => {
 
         const datas = kanjiData.map((kanji) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.kanji_n5_id === kanji.kanji_id)
+                ? tracker.find((t) => t.kanji_id === kanji.kanji_id)
                 : null;
             return {
                 id: kanji.kanji_id,
@@ -47,13 +48,14 @@ const kanjiN5Controller = async (req, res) => {
 const adjectiveN5Controller = async (req, res) => {
     try {
         const { data: adjectiveData, error: fetchError } = await supabase
-            .from("adjective_n5")
+            .from("adjectives")
             .select("*")
+            .eq("level_id", "5")
             .order("adjective_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("adjective_n5_id, status")
+            .from("tracking")
+            .select("adjective_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -62,9 +64,7 @@ const adjectiveN5Controller = async (req, res) => {
 
         const datas = adjectiveData.map((adjective) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.adjective_n5_id === adjective.adjective_id
-                  )
+                ? tracker.find((t) => t.adjective_id === adjective.adjective_id)
                 : null;
             return {
                 id: adjective.adjective_id,
@@ -94,13 +94,15 @@ const adjectiveN5Controller = async (req, res) => {
 const adverbN5Controller = async (req, res) => {
     try {
         const { data: adverbData, error: fetchError } = await supabase
-            .from("adverb_n5")
+            .from("other_words")
             .select("*")
-            .order("adverb_id", { ascending: true });
+            .eq("type", "adverb")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("adverb_n5_id, status")
+            .from("tracking")
+            .select("other_word_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -109,10 +111,10 @@ const adverbN5Controller = async (req, res) => {
 
         const datas = adverbData.map((adverb) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.adverb_n5_id === adverb.adverb_id)
+                ? tracker.find((t) => t.other_word_id === adverb.other_word_id)
                 : null;
             return {
-                id: adverb.adverb_id,
+                id: adverb.other_word_id,
                 reading: adverb.reading,
                 word: adverb.word,
                 meaning: adverb.meaning,
@@ -138,13 +140,14 @@ const adverbN5Controller = async (req, res) => {
 const verbN5Controller = async (req, res) => {
     try {
         const { data: verbData, error: fetchError } = await supabase
-            .from("verb_n5")
+            .from("verbs")
             .select("*")
+            .eq("level_id", "5")
             .order("verb_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("verb_n5_id, status")
+            .from("tracking")
+            .select("verb_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -153,7 +156,7 @@ const verbN5Controller = async (req, res) => {
 
         const datas = verbData.map((verb) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.verb_n5_id === verb.verb_id)
+                ? tracker.find((t) => t.verb_id === verb.verb_id)
                 : null;
             return {
                 id: verb.verb_id,
@@ -182,13 +185,14 @@ const verbN5Controller = async (req, res) => {
 const nounActivityN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_activity_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_activity_id", { ascending: true });
+            .eq("type", "activity")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_activity_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -197,12 +201,10 @@ const nounActivityN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_activity_n5_id === noun.noun_activity_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_activity_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -228,13 +230,14 @@ const nounActivityN5Controller = async (req, res) => {
 const nounAnimalplantN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_animalplant_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_animalplant_id", { ascending: true });
+            .eq("type", "animalplant")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_animalplant_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -245,13 +248,10 @@ const nounAnimalplantN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) =>
-                          t.noun_animalplant_n5_id === noun.noun_animalplant_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_animalplant_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -277,13 +277,14 @@ const nounAnimalplantN5Controller = async (req, res) => {
 const nounAuxnumberN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_auxnumber_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_auxnumber_id", { ascending: true });
+            .eq("type", "auxnumber")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_auxnumber_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -292,12 +293,10 @@ const nounAuxnumberN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_auxnumber_n5_id === noun.noun_auxnumber_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_auxnumber_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -323,13 +322,14 @@ const nounAuxnumberN5Controller = async (req, res) => {
 const nounBodyN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_body_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_body_id", { ascending: true });
+            .eq("type", "body")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_body_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -338,10 +338,10 @@ const nounBodyN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_body_n5_id === noun.noun_body_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_body_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -367,13 +367,14 @@ const nounBodyN5Controller = async (req, res) => {
 const nounCityN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_city_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_city_id", { ascending: true });
+            .eq("type", "city")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_city_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -382,10 +383,10 @@ const nounCityN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_city_n5_id === noun.noun_city_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_city_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -411,25 +412,25 @@ const nounCityN5Controller = async (req, res) => {
 const nounColorN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_color_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_color_id", { ascending: true });
+            .eq("type", "color")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_color_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda warna");
         }
-
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_color_n5_id === noun.noun_color_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_color_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -455,13 +456,14 @@ const nounColorN5Controller = async (req, res) => {
 const nounFoodDrinkN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_fooddrink_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_fooddrink_id", { ascending: true });
+            .eq("type", "fooddrink")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_fooddrink_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -472,12 +474,10 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_fooddrink_n5_id === noun.noun_fooddrink_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_fooddrink_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -503,13 +503,14 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 const nounHomeAppliancesN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_homeappliances_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_homeappliances_id", { ascending: true });
+            .eq("type", "homeappliances")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_homeappliances_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -520,14 +521,10 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) =>
-                          t.noun_homeappliances_n5_id ===
-                          noun.noun_homeappliances_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_homeappliances_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -553,13 +550,14 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
 const nounKosoadoN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_kosoado_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_kosoado_id", { ascending: true });
+            .eq("type", "kosoado")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_kosoado_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda kosoado");
@@ -567,12 +565,10 @@ const nounKosoadoN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_kosoado_n5_id === noun.noun_kosoado_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_kosoado_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -598,13 +594,14 @@ const nounKosoadoN5Controller = async (req, res) => {
 const nounMediaN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_media_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_media_id", { ascending: true });
+            .eq("type", "media")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_media_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda media");
@@ -612,10 +609,10 @@ const nounMediaN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_media_n5_id === noun.noun_media_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_media_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -641,13 +638,14 @@ const nounMediaN5Controller = async (req, res) => {
 const nounNaturalN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_natural_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_natural_id", { ascending: true });
+            .eq("type", "natural")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_natural_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda alam");
@@ -655,12 +653,10 @@ const nounNaturalN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_natural_n5_id === noun.noun_natural_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_natural_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -686,13 +682,14 @@ const nounNaturalN5Controller = async (req, res) => {
 const nounNumberN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_number_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_number_id", { ascending: true });
+            .eq("type", "number")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_number_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda angka");
@@ -700,12 +697,10 @@ const nounNumberN5Controller = async (req, res) => {
 
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_number_n5_id === noun.noun_number_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_number_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -731,13 +726,14 @@ const nounNumberN5Controller = async (req, res) => {
 const nounOutfitN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_outfit_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_outfit_id", { ascending: true });
+            .eq("type", "outfit")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_outfit_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -745,12 +741,10 @@ const nounOutfitN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_outfit_n5_id === noun.noun_outfit_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_outfit_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -776,26 +770,24 @@ const nounOutfitN5Controller = async (req, res) => {
 const nounPeopleN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_people_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_people_id", { ascending: true });
+            .eq("type", "people")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_people_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
-
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda orang");
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_people_n5_id === noun.noun_people_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_people_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -821,13 +813,14 @@ const nounPeopleN5Controller = async (req, res) => {
 const nounPositionN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_position_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_position_id", { ascending: true });
+            .eq("type", "position")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_position_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -835,12 +828,10 @@ const nounPositionN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_position_n5_id === noun.noun_position_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_position_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -866,13 +857,14 @@ const nounPositionN5Controller = async (req, res) => {
 const nounRegionN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_region_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_region_id", { ascending: true });
+            .eq("type", "region")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_region_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -880,12 +872,10 @@ const nounRegionN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_region_n5_id === noun.noun_region_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_region_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -911,13 +901,14 @@ const nounRegionN5Controller = async (req, res) => {
 const nounSchoolN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_school_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_school_id", { ascending: true });
+            .eq("type", "school")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_school_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -925,12 +916,10 @@ const nounSchoolN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_school_n5_id === noun.noun_school_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_school_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -956,13 +945,14 @@ const nounSchoolN5Controller = async (req, res) => {
 const nounTimeN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_time_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_time_id", { ascending: true });
+            .eq("type", "time")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_time_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -970,10 +960,10 @@ const nounTimeN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_time_n5_id === noun.noun_time_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_time_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -999,13 +989,14 @@ const nounTimeN5Controller = async (req, res) => {
 const nounTrafficN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_traffic_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_traffic_id", { ascending: true });
+            .eq("type", "traffic")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_traffic_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -1013,12 +1004,10 @@ const nounTrafficN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.noun_traffic_n5_id === noun.noun_traffic_id
-                  )
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_traffic_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -1044,13 +1033,14 @@ const nounTrafficN5Controller = async (req, res) => {
 const nounWorkN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
-            .from("noun_work_n5")
+            .from("nouns")
             .select("*")
-            .order("noun_work_id", { ascending: true });
+            .eq("type", "work")
+            .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("noun_work_n5_id, status")
+            .from("tracking")
+            .select("noun_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -1058,10 +1048,10 @@ const nounWorkN5Controller = async (req, res) => {
         }
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
-                ? tracker.find((t) => t.noun_work_n5_id === noun.noun_work_id)
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
-                id: noun.noun_work_id,
+                id: noun.noun_id,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -1087,13 +1077,15 @@ const nounWorkN5Controller = async (req, res) => {
 const questionWordController = async (req, res) => {
     try {
         const { data: questionData, error: fetchError } = await supabase
-            .from("question_word_n5")
+            .from("other_words")
             .select("*")
-            .order("question_word_id", { ascending: true });
+            .eq("type", "question_word")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
-            .select("question_word_n5_id, status")
+            .from("tracking")
+            .select("other_word_id, status")
             .eq("user_id", req.user.id);
 
         if (fetchError) {
@@ -1103,11 +1095,11 @@ const questionWordController = async (req, res) => {
         const datas = questionData.map((question) => {
             const trackerItem = tracker
                 ? tracker.find(
-                      (t) => t.question_word_n5_id === question.question_word_id
+                      (t) => t.other_word_id === question.other_word_id
                   )
                 : null;
             return {
-                id: question.question_word_id,
+                id: question.other_word_id,
                 reading: question.reading,
                 word: question.word,
                 meaning: question.meaning,
@@ -1119,6 +1111,54 @@ const questionWordController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Data kata tanya berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const conjunctionN5Controller = async (req, res) => {
+    try {
+        const { data: conjunctionData, error: fetchError } = await supabase
+            .from("other_words")
+            .select("*")
+            .eq("type", "conjunction")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("tracking")
+            .select("other_word_id, status")
+            .eq("user_id", req.user.id);
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata hubung");
+        }
+
+        const datas = conjunctionData.map((conjunction) => {
+            const trackerItem = tracker
+                ? tracker.find(
+                      (t) => t.other_word_id === conjunction.other_word_id
+                  )
+                : null;
+            return {
+                id: conjunction.other_word_id,
+                reading: conjunction.reading,
+                word: conjunction.word,
+                meaning: conjunction.meaning,
+                example_sentence: conjunction.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata hubung berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -1156,4 +1196,5 @@ module.exports = {
     nounTrafficN5Controller,
     nounWorkN5Controller,
     questionWordController,
+    conjunctionN5Controller,
 };

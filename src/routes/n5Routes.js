@@ -25,12 +25,15 @@ const {
     nounTrafficN5Controller,
     nounWorkN5Controller,
     questionWordController,
+    conjunctionN5Controller,
 } = require("../controllers/n5Controller");
 const middleware = require("../middleware/middleware");
 
 router.get("/kanji-n5", middleware, kanjiN5Controller);
 router.get("/adjective-n5", middleware, adjectiveN5Controller);
 router.get("/adverb-n5", middleware, adverbN5Controller);
+router.get("/question-word-n5", middleware, questionWordController);
+router.get("/conjunction-n5", middleware, conjunctionN5Controller);
 router.get("/verb-n5", middleware, verbN5Controller);
 router.get("/noun-activity-n5", middleware, nounActivityN5Controller);
 router.get("/noun-animalplant-n5", middleware, nounAnimalplantN5Controller);
@@ -56,6 +59,5 @@ router.get("/noun-school-n5", middleware, nounSchoolN5Controller);
 router.get("/noun-time-n5", middleware, nounTimeN5Controller);
 router.get("/noun-traffic-n5", middleware, nounTrafficN5Controller);
 router.get("/noun-work-n5", middleware, nounWorkN5Controller);
-router.get("/question-word-n5", middleware, questionWordController);
 
 module.exports = router;

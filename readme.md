@@ -44,21 +44,329 @@ Server akan berjalan di `http://localhost:8000`
 
 ### 🔐 Autentikasi
 
-| Method | Endpoint    | Deskripsi                | Auth Required |
-| ------ | ----------- | ------------------------ | ------------- |
-| POST   | `/register` | Registrasi pengguna baru | ❌            |
-| POST   | `/login`    | Login pengguna           | ❌            |
+#### POST `/register` - Registrasi Pengguna Baru
+
+**Request Body:**
+
+```json
+{
+    "username": "string", // 3-20 karakter, hanya huruf, angka, dan underscore
+    "password": "string" // Min 8 karakter, kombinasi huruf besar/kecil, angka, simbol
+}
+```
+
+**Success Response (201):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mendaftar"
+}
+```
+
+**Error Response (400/500):**
+
+```json
+{
+    "error": true,
+    "message": "Error message",
+    "data": null
+}
+```
+
+#### POST `/login` - Login Pengguna
+
+**Request Body:**
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Login berhasil!",
+    "data": {
+        "id": "integer",
+        "username": "string",
+        "profile_picture": "string|null",
+        "token": "string"
+    }
+}
+```
+
+#### POST `/change-password` - Ganti Password
+
+**Request Body:**
+
+```json
+{
+    "oldPassword": "string",
+    "newPassword": "string" // Min 8 karakter, kombinasi huruf besar/kecil, angka, simbol
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Password berhasil diubah",
+    "data": null
+}
+```
+
+### 👤 Profil Pengguna
+
+#### POST `/upload/avatar` - Upload Foto Profil
+
+**Request:** Multipart form-data
+
+```
+avatar: File (image file)
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengunggah avatar",
+    "data": {
+        "imageUrl": "string"
+    }
+}
+```
+
+#### GET `/avatar` - Ambil Avatar untuk Navbar
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data avatar",
+    "data": {
+        "profile_picture": "string|null"
+    }
+}
+```
+
+#### GET `/profile/:profileId` - Ambil Data Profil Lengkap
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data profil",
+    "data": {
+        "user_id": "integer",
+        "username": "string",
+        "profile_picture": "string|null",
+        "created_at": "string",
+        "updated_at": "string"
+    }
+}
+```
+
+### 🌟 Materi Dasar
+
+#### GET `/particle` - Materi Partikel
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data partikel",
+    "data": [
+        {
+            "id": "integer",
+            "particle_name": "string",
+            "description": "string",
+            "example_sentence": "string",
+            "status": "boolean" // tracking status user
+        }
+    ]
+}
+```
+
+#### GET `/hiragana` - Materi Hiragana
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data hiragana",
+    "data": [
+        {
+            "id": "integer",
+            "hiragana_character": "string",
+            "romaji": "string",
+            "status": "boolean"
+        }
+    ]
+}
+```
+
+#### GET `/katakana` - Materi Katakana
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data katakana",
+    "data": [
+        {
+            "id": "integer",
+            "katakana_character": "string",
+            "romaji": "string",
+            "status": "boolean"
+        }
+    ]
+}
+```
+
+#### GET `/basic-conversation` - Percakapan Dasar
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data percakapan dasar",
+    "data": [
+        {
+            "id": "integer",
+            "japanese": "string",
+            "indonesian": "string",
+            "status": "boolean"
+        }
+    ]
+}
+```
+
+### 📝 Materi Level N5
+
+Semua endpoint N5 memiliki format response yang sama:
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mengambil data [jenis materi]",
+    "data": [
+        {
+            "id": "integer",
+            "[field_name]": "string", // Nama field sesuai jenis materi
+            "meaning": "string",
+            "status": "boolean"
+        }
+    ]
+}
+```
+
+**Contoh untuk berbagai jenis materi:**
+
+-   **Kanji N5**: `kanji_character`, `meaning`, `kunyomi`, `onyomi`
+-   **Adjective N5**: `adjective`, `meaning`, `adjective_type`
+-   **Verb N5**: `verb`, `meaning`, `verb_type`
+-   **Noun Categories**: `[category]_name`, `meaning`
+
+### 📊 Tracking Progress
+
+Semua endpoint tracking menggunakan format yang sama:
+
+#### POST `/tracker/[materi]` - Tracking Progress
+
+**Request Body:**
+
+```json
+{
+    "[materi]_id": "integer", // ID item yang di-track
+    "status": "boolean" // Status tracking saat ini
+}
+```
+
+**Contoh Request Body untuk berbagai materi:**
+
+```json
+// Tracking Particle
+{
+  "particle_id": 1,
+  "status": true
+}
+
+// Tracking Hiragana
+{
+  "hiragana_id": 5,
+  "status": false
+}
+
+// Tracking Kanji N5
+{
+  "kanji_n5_id": 10,
+  "status": true
+}
+
+// Tracking Noun Activity N5
+{
+  "noun_activity_n5_id": 3,
+  "status": true
+}
+
+// Tracking Conjunction N5
+{
+  "conjunction_n5_id": 2,
+  "status": true
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil menyelesaikan tracking [jenis materi]"
+}
+```
+
+**Error Response (500):**
+
+```json
+{
+    "error": true,
+    "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+    "data": null
+}
+```
+
+## 📋 Tabel Endpoint API
+
+| Method | Endpoint           | Deskripsi                | Auth Required |
+| ------ | ------------------ | ------------------------ | ------------- |
+| POST   | `/register`        | Registrasi pengguna baru | ❌            |
+| POST   | `/login`           | Login pengguna           | ❌            |
+| POST   | `/change-password` | Ganti password           | ✅            |
 
 ### 👤 Profil Pengguna
 
 | Method | Endpoint              | Deskripsi                 | Auth Required |
 | ------ | --------------------- | ------------------------- | ------------- |
 | POST   | `/upload/avatar`      | Upload foto profil        | ✅            |
-| PUT    | `/change-password`    | Ganti password            | ✅            |
 | GET    | `/avatar`             | Ambil avatar untuk navbar | ✅            |
 | GET    | `/profile/:profileId` | Ambil data profil lengkap | ✅            |
 
-### 🌟 Tampilan Depan N1 - N5 Sejajar Dengan Endpoint Berikut
+### 🌟 Materi Dasar
 
 | Method | Endpoint              | Deskripsi                     | Auth Required |
 | ------ | --------------------- | ----------------------------- | ------------- |
@@ -76,6 +384,7 @@ Server akan berjalan di `http://localhost:8000`
 | GET    | `/adverb-n5`              | Kata keterangan level N5     | ✅            |
 | GET    | `/verb-n5`                | Kata kerja level N5          | ✅            |
 | GET    | `/question-word-n5`       | Kata tanya level N5          | ✅            |
+| GET    | `/conjunction-n5`         | Kata sambung level N5        | ✅            |
 | GET    | `/noun-activity-n5`       | Kata benda aktivitas         | ✅            |
 | GET    | `/noun-animalplant-n5`    | Kata benda hewan & tumbuhan  | ✅            |
 | GET    | `/noun-auxnumber-n5`      | Kata benda angka bantu       | ✅            |
@@ -130,66 +439,7 @@ Server akan berjalan di `http://localhost:8000`
 | POST   | `/tracker/noun-traffic-n5`        | Tracking progress kata benda lalu lintas N5 | ✅            |
 | POST   | `/tracker/noun-work-n5`           | Tracking progress kata benda pekerjaan N5   | ✅            |
 | POST   | `/tracker/question-word-n5`       | Tracking progress kata tanya N5             | ✅            |
-
-#### 📝 Format Request Tracking
-
-Semua endpoint tracking menggunakan format request body berikut:
-
-```json
-{
-    "particle_id": 1, // ID item yang di-track (sesuai dengan jenis tracking)
-    "status": true // Status tracking saat ini (true/false)
-}
-```
-
-**Contoh untuk berbagai jenis tracking:**
-
-```json
-// Tracking Particle
-{
-  "particle_id": 1,
-  "status": true
-}
-
-// Tracking Hiragana
-{
-  "hiragana_id": 5,
-  "status": false
-}
-
-// Tracking Kanji N5
-{
-  "kanji_n5_id": 10,
-  "status": true
-}
-
-// Tracking Noun Activity N5
-{
-  "noun_activity_n5_id": 3,
-  "status": true
-}
-```
-
-#### ✅ Response Format Tracking
-
-**Success Response:**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil menyelesaikan tracking [jenis materi]"
-}
-```
-
-**Error Response:**
-
-```json
-{
-    "error": true,
-    "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-    "data": null
-}
-```
+| POST   | `/tracker/conjunction-n5`         | Tracking progress kata sambung N5           | ✅            |
 
 ## 🔒 Format Autentikasi
 

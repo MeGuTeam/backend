@@ -8,7 +8,7 @@ const particleController = async (req, res) => {
             .order("particle_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("particle_id, status")
             .eq("user_id", req.user.id);
 
@@ -52,7 +52,7 @@ const hiraganaController = async (req, res) => {
             .order("hiragana_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("hiragana_id, status")
             .eq("user_id", req.user.id);
 
@@ -96,7 +96,7 @@ const katakanaController = async (req, res) => {
             .order("katakana_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("katakana_id, status")
             .eq("user_id", req.user.id);
 
@@ -137,10 +137,10 @@ const basicConversationController = async (req, res) => {
         const { data, error } = await supabase
             .from("basic_conversation")
             .select("*")
-            .order("conversation_id", { ascending: true });
+            .order("basic_conversation_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("basic_conversation_id, status")
             .eq("user_id", req.user.id);
 
@@ -155,7 +155,7 @@ const basicConversationController = async (req, res) => {
                   )
                 : null;
             return {
-                id: row.conversation_id,
+                id: row.basic_conversation_id,
                 word: row.word,
                 reading: row.reading,
                 meaning: row.meaning,

@@ -6,7 +6,7 @@ const particleTrackingUserController = async (req, res) => {
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("particle_id, status, user_id")
             .eq("user_id", userId)
             .eq("particle_id", particle_id);
@@ -17,7 +17,7 @@ const particleTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
                     particle_id: particle_id,
@@ -28,9 +28,9 @@ const particleTrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking partikel");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
                     .eq("particle_id", particle_id);
@@ -40,7 +40,7 @@ const particleTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
                     .eq("particle_id", particle_id);
@@ -56,7 +56,6 @@ const particleTrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking partikel",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -71,7 +70,7 @@ const hiraganaTrackingUserController = async (req, res) => {
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("hiragana_id, status, user_id")
             .eq("user_id", userId)
             .eq("hiragana_id", hiragana_id);
@@ -82,7 +81,7 @@ const hiraganaTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
                     hiragana_id: hiragana_id,
@@ -93,9 +92,9 @@ const hiraganaTrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking hiragana");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
                     .eq("hiragana_id", hiragana_id);
@@ -105,7 +104,7 @@ const hiraganaTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
                     .eq("hiragana_id", hiragana_id);
@@ -121,7 +120,6 @@ const hiraganaTrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking hiragana",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -136,7 +134,7 @@ const katakanaTrackingUserController = async (req, res) => {
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("katakana_id, status, user_id")
             .eq("user_id", userId)
             .eq("katakana_id", katakana_id);
@@ -147,7 +145,7 @@ const katakanaTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
                     katakana_id: katakana_id,
@@ -158,9 +156,9 @@ const katakanaTrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking katakana");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
                     .eq("katakana_id", katakana_id);
@@ -170,7 +168,7 @@ const katakanaTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
                     .eq("katakana_id", katakana_id);
@@ -186,7 +184,6 @@ const katakanaTrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking katakana",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -201,7 +198,7 @@ const basicConversationTrackingUserController = async (req, res) => {
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
+            .from("tracking")
             .select("basic_conversation_id, status, user_id")
             .eq("user_id", userId)
             .eq("basic_conversation_id", basic_conversation_id);
@@ -212,7 +209,7 @@ const basicConversationTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
                     basic_conversation_id: basic_conversation_id,
@@ -223,9 +220,9 @@ const basicConversationTrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking percakapan dasar");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
                     .eq("basic_conversation_id", basic_conversation_id);
@@ -237,7 +234,7 @@ const basicConversationTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
                     .eq("basic_conversation_id", basic_conversation_id);
@@ -255,7 +252,6 @@ const basicConversationTrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking percakapan dasar",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -266,14 +262,13 @@ const basicConversationTrackingUserController = async (req, res) => {
 
 const kanjiN5TrackingUserController = async (req, res) => {
     try {
-        const { kanji_n5_id, status } = req.body;
+        const { kanji_id, status } = req.body;
         const userId = req.user.id;
-
         const { data, error } = await supabase
-            .from("tracker")
-            .select("kanji_n5_id, status, user_id")
+            .from("tracking")
+            .select("kanji_id, status, user_id")
             .eq("user_id", userId)
-            .eq("kanji_n5_id", kanji_n5_id);
+            .eq("kanji_id", kanji_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kanji N5");
@@ -281,10 +276,10 @@ const kanjiN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    kanji_n5_id: kanji_n5_id,
+                    kanji_id: kanji_id,
                     status: true,
                 });
 
@@ -292,22 +287,22 @@ const kanjiN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kanji N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("kanji_n5_id", kanji_n5_id);
+                    .eq("kanji_id", kanji_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kanji N5");
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("kanji_n5_id", kanji_n5_id);
+                    .eq("kanji_id", kanji_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kanji N5");
@@ -320,7 +315,6 @@ const kanjiN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kanji N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -331,14 +325,14 @@ const kanjiN5TrackingUserController = async (req, res) => {
 
 const adjectiveN5TrackingUserController = async (req, res) => {
     try {
-        const { adjective_n5_id, status } = req.body;
+        const { adjective_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("adjective_n5_id, status, user_id")
+            .from("tracking")
+            .select("adjective_id, status, user_id")
             .eq("user_id", userId)
-            .eq("adjective_n5_id", adjective_n5_id);
+            .eq("adjective_id", adjective_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata sifat N5");
@@ -346,10 +340,10 @@ const adjectiveN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    adjective_n5_id: adjective_n5_id,
+                    adjective_id: adjective_id,
                     status: true,
                 });
 
@@ -357,22 +351,22 @@ const adjectiveN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata sifat N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("adjective_n5_id", adjective_n5_id);
+                    .eq("adjective_id", adjective_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata sifat N5");
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("adjective_n5_id", adjective_n5_id);
+                    .eq("adjective_id", adjective_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata sifat N5");
@@ -385,7 +379,6 @@ const adjectiveN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata sifat N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -396,14 +389,14 @@ const adjectiveN5TrackingUserController = async (req, res) => {
 
 const adverbN5TrackingUserController = async (req, res) => {
     try {
-        const { adverb_n5_id, status } = req.body;
+        const { other_word_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("adverb_n5_id, status, user_id")
+            .from("tracking")
+            .select("other_word_id, status, user_id")
             .eq("user_id", userId)
-            .eq("adverb_n5_id", adverb_n5_id);
+            .eq("other_word_id", other_word_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata keterangan N5");
@@ -411,10 +404,10 @@ const adverbN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    adverb_n5_id: adverb_n5_id,
+                    other_word_id: other_word_id,
                     status: true,
                 });
 
@@ -422,12 +415,12 @@ const adverbN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata keterangan N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("adverb_n5_id", adverb_n5_id);
+                    .eq("other_word_id", other_word_id);
 
                 if (updateError) {
                     throw new Error(
@@ -436,10 +429,10 @@ const adverbN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("adverb_n5_id", adverb_n5_id);
+                    .eq("other_word_id", other_word_id);
 
                 if (updateError) {
                     throw new Error(
@@ -454,7 +447,6 @@ const adverbN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata keterangan N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -465,14 +457,14 @@ const adverbN5TrackingUserController = async (req, res) => {
 
 const verbN5TrackingUserController = async (req, res) => {
     try {
-        const { verb_n5_id, status } = req.body;
+        const { verb_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("verb_n5_id, status, user_id")
+            .from("tracking")
+            .select("verb_id, status, user_id")
             .eq("user_id", userId)
-            .eq("verb_n5_id", verb_n5_id);
+            .eq("verb_id", verb_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata kerja N5");
@@ -480,10 +472,10 @@ const verbN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    verb_n5_id: verb_n5_id,
+                    verb_id: verb_id,
                     status: true,
                 });
 
@@ -491,22 +483,22 @@ const verbN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata kerja N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("verb_n5_id", verb_n5_id);
+                    .eq("verb_id", verb_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata kerja N5");
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("verb_n5_id", verb_n5_id);
+                    .eq("verb_id", verb_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata kerja N5");
@@ -519,7 +511,6 @@ const verbN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata kerja N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -530,14 +521,14 @@ const verbN5TrackingUserController = async (req, res) => {
 
 const nounActivityN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_activity_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_activity_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_activity_n5_id", noun_activity_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa aktivitas kata benda N5");
@@ -545,10 +536,10 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_activity_n5_id: noun_activity_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -558,12 +549,12 @@ const nounActivityN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_activity_n5_id", noun_activity_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -572,10 +563,10 @@ const nounActivityN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_activity_n5_id", noun_activity_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -590,7 +581,6 @@ const nounActivityN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking aktivitas kata benda N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -601,14 +591,14 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
 const nounAnimalplantN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_animalplant_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_animalplant_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_animalplant_n5_id", noun_animalplant_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda hewan dan tumbuhan N5");
@@ -616,10 +606,10 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_animalplant_n5_id: noun_animalplant_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -629,12 +619,12 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_animalplant_n5_id", noun_animalplant_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -643,10 +633,10 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_animalplant_n5_id", noun_animalplant_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -662,7 +652,6 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
                 "Berhasil menyelesaikan tracking kata benda hewan dan tumbuhan N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -673,14 +662,14 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
 
 const nounAuxnumberN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_auxnumber_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_auxnumber_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_auxnumber_n5_id", noun_auxnumber_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda angka bantu N5");
@@ -688,10 +677,10 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_auxnumber_n5_id: noun_auxnumber_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -701,12 +690,12 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_auxnumber_n5_id", noun_auxnumber_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -715,10 +704,10 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_auxnumber_n5_id", noun_auxnumber_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -734,7 +723,6 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
                 "Berhasil menyelesaikan tracking kata benda angka bantu N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -745,14 +733,14 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
 
 const nounBodyN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_body_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_body_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_body_n5_id", noun_body_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda tubuh N5");
@@ -760,10 +748,10 @@ const nounBodyN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_body_n5_id: noun_body_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -771,12 +759,12 @@ const nounBodyN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda tubuh N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_body_n5_id", noun_body_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -785,10 +773,10 @@ const nounBodyN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_body_n5_id", noun_body_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -803,7 +791,6 @@ const nounBodyN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda tubuh N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -814,14 +801,14 @@ const nounBodyN5TrackingUserController = async (req, res) => {
 
 const nounCityN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_city_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_city_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_city_n5_id", noun_city_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda kota N5");
@@ -829,10 +816,10 @@ const nounCityN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_city_n5_id: noun_city_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -840,12 +827,12 @@ const nounCityN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda kota N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_city_n5_id", noun_city_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -854,10 +841,10 @@ const nounCityN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_city_n5_id", noun_city_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -872,7 +859,6 @@ const nounCityN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda kota N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -883,14 +869,14 @@ const nounCityN5TrackingUserController = async (req, res) => {
 
 const nounColorN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_color_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_color_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_color_n5_id", noun_color_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda warna N5");
@@ -898,10 +884,10 @@ const nounColorN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_color_n5_id: noun_color_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -909,12 +895,12 @@ const nounColorN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda warna N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_color_n5_id", noun_color_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -923,10 +909,10 @@ const nounColorN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_color_n5_id", noun_color_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -941,7 +927,6 @@ const nounColorN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda warna N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -952,14 +937,14 @@ const nounColorN5TrackingUserController = async (req, res) => {
 
 const nounFoodDrinkN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_fooddrink_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_fooddrink_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_fooddrink_n5_id", noun_fooddrink_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error(
@@ -969,10 +954,10 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_fooddrink_n5_id: noun_fooddrink_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -982,12 +967,12 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_fooddrink_n5_id", noun_fooddrink_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -996,10 +981,10 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_fooddrink_n5_id", noun_fooddrink_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1015,7 +1000,6 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
                 "Berhasil menyelesaikan tracking kata benda makanan dan minuman N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1026,14 +1010,14 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
 const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_homeappliances_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_homeappliances_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_homeappliances_n5_id", noun_homeappliances_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error(
@@ -1043,10 +1027,10 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_homeappliances_n5_id: noun_homeappliances_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1056,12 +1040,12 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_homeappliances_n5_id", noun_homeappliances_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1070,10 +1054,10 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_homeappliances_n5_id", noun_homeappliances_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1089,7 +1073,6 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
                 "Berhasil menyelesaikan tracking kata benda peralatan rumah tangga N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1100,14 +1083,14 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
 const nounKosoadoN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_kosoado_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_kosoado_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_kosoado_n5_id", noun_kosoado_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda kosoado N5");
@@ -1115,10 +1098,10 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_kosoado_n5_id: noun_kosoado_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1128,12 +1111,12 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_kosoado_n5_id", noun_kosoado_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1142,10 +1125,10 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_kosoado_n5_id", noun_kosoado_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1160,7 +1143,6 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda kosoado N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1171,14 +1153,14 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
 const nounMediaN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_media_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_media_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_media_n5_id", noun_media_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda media N5");
@@ -1186,10 +1168,10 @@ const nounMediaN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_media_n5_id: noun_media_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1197,12 +1179,12 @@ const nounMediaN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda media N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_media_n5_id", noun_media_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1211,10 +1193,10 @@ const nounMediaN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_media_n5_id", noun_media_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1229,7 +1211,6 @@ const nounMediaN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda media N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1240,14 +1221,14 @@ const nounMediaN5TrackingUserController = async (req, res) => {
 
 const nounNaturalN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_natural_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_natural_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_natural_n5_id", noun_natural_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda alam N5");
@@ -1255,10 +1236,10 @@ const nounNaturalN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_natural_n5_id: noun_natural_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1266,12 +1247,12 @@ const nounNaturalN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda alam N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_natural_n5_id", noun_natural_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1280,10 +1261,10 @@ const nounNaturalN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_natural_n5_id", noun_natural_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1298,7 +1279,6 @@ const nounNaturalN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda alam N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1309,14 +1289,14 @@ const nounNaturalN5TrackingUserController = async (req, res) => {
 
 const nounNumberN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_number_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_number_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_number_n5_id", noun_number_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda angka N5");
@@ -1324,10 +1304,10 @@ const nounNumberN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_number_n5_id: noun_number_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1335,12 +1315,12 @@ const nounNumberN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda angka N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_number_n5_id", noun_number_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1349,10 +1329,10 @@ const nounNumberN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_number_n5_id", noun_number_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1367,7 +1347,6 @@ const nounNumberN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda angka N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1378,14 +1357,14 @@ const nounNumberN5TrackingUserController = async (req, res) => {
 
 const nounOutfitN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_outfit_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_outfit_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_outfit_n5_id", noun_outfit_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda pakaian N5");
@@ -1393,10 +1372,10 @@ const nounOutfitN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_outfit_n5_id: noun_outfit_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1406,12 +1385,12 @@ const nounOutfitN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_outfit_n5_id", noun_outfit_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1420,10 +1399,10 @@ const nounOutfitN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_outfit_n5_id", noun_outfit_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1438,7 +1417,6 @@ const nounOutfitN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda pakaian N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1449,14 +1427,14 @@ const nounOutfitN5TrackingUserController = async (req, res) => {
 
 const nounPeopleN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_people_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_people_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_people_n5_id", noun_people_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda orang N5");
@@ -1464,10 +1442,10 @@ const nounPeopleN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_people_n5_id: noun_people_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1475,12 +1453,12 @@ const nounPeopleN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda orang N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_people_n5_id", noun_people_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1489,10 +1467,10 @@ const nounPeopleN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_people_n5_id", noun_people_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1507,7 +1485,6 @@ const nounPeopleN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda orang N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1518,14 +1495,14 @@ const nounPeopleN5TrackingUserController = async (req, res) => {
 
 const nounPositionN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_position_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_position_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_position_n5_id", noun_position_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda posisi N5");
@@ -1533,10 +1510,10 @@ const nounPositionN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_position_n5_id: noun_position_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1546,12 +1523,12 @@ const nounPositionN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_position_n5_id", noun_position_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1560,10 +1537,10 @@ const nounPositionN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_position_n5_id", noun_position_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1578,7 +1555,6 @@ const nounPositionN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda posisi N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1589,14 +1565,14 @@ const nounPositionN5TrackingUserController = async (req, res) => {
 
 const nounRegionN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_region_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_region_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_region_n5_id", noun_region_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda wilayah N5");
@@ -1604,10 +1580,10 @@ const nounRegionN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_region_n5_id: noun_region_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1617,12 +1593,12 @@ const nounRegionN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_region_n5_id", noun_region_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1631,10 +1607,10 @@ const nounRegionN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_region_n5_id", noun_region_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1649,7 +1625,6 @@ const nounRegionN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda wilayah N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1660,14 +1635,14 @@ const nounRegionN5TrackingUserController = async (req, res) => {
 
 const nounSchoolN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_school_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_school_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_school_n5_id", noun_school_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda sekolah N5");
@@ -1675,10 +1650,10 @@ const nounSchoolN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_school_n5_id: noun_school_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1688,12 +1663,12 @@ const nounSchoolN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_school_n5_id", noun_school_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1702,10 +1677,10 @@ const nounSchoolN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_school_n5_id", noun_school_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1720,7 +1695,6 @@ const nounSchoolN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda sekolah N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1731,14 +1705,14 @@ const nounSchoolN5TrackingUserController = async (req, res) => {
 
 const nounTimeN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_time_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_time_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_time_n5_id", noun_time_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda waktu N5");
@@ -1746,10 +1720,10 @@ const nounTimeN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_time_n5_id: noun_time_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1757,12 +1731,12 @@ const nounTimeN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata benda waktu N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_time_n5_id", noun_time_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1771,10 +1745,10 @@ const nounTimeN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_time_n5_id", noun_time_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1789,7 +1763,6 @@ const nounTimeN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda waktu N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1800,14 +1773,14 @@ const nounTimeN5TrackingUserController = async (req, res) => {
 
 const nounTrafficN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_traffic_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_traffic_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_traffic_n5_id", noun_traffic_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda lalu lintas N5");
@@ -1815,10 +1788,10 @@ const nounTrafficN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_traffic_n5_id: noun_traffic_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1828,12 +1801,12 @@ const nounTrafficN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_traffic_n5_id", noun_traffic_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1842,10 +1815,10 @@ const nounTrafficN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_traffic_n5_id", noun_traffic_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1861,7 +1834,6 @@ const nounTrafficN5TrackingUserController = async (req, res) => {
                 "Berhasil menyelesaikan tracking kata benda lalu lintas N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1872,14 +1844,14 @@ const nounTrafficN5TrackingUserController = async (req, res) => {
 
 const nounWorkN5TrackingUserController = async (req, res) => {
     try {
-        const { noun_work_n5_id, status } = req.body;
+        const { noun_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("noun_work_n5_id, status, user_id")
+            .from("tracking")
+            .select("noun_id, status, user_id")
             .eq("user_id", userId)
-            .eq("noun_work_n5_id", noun_work_n5_id);
+            .eq("noun_id", noun_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata benda pekerjaan N5");
@@ -1887,10 +1859,10 @@ const nounWorkN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    noun_work_n5_id: noun_work_n5_id,
+                    noun_id: noun_id,
                     status: true,
                 });
 
@@ -1900,12 +1872,12 @@ const nounWorkN5TrackingUserController = async (req, res) => {
                 );
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("noun_work_n5_id", noun_work_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1914,10 +1886,10 @@ const nounWorkN5TrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("noun_work_n5_id", noun_work_n5_id);
+                    .eq("noun_id", noun_id);
 
                 if (updateError) {
                     throw new Error(
@@ -1932,7 +1904,6 @@ const nounWorkN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata benda pekerjaan N5",
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1943,14 +1914,14 @@ const nounWorkN5TrackingUserController = async (req, res) => {
 
 const questionWordN5TrackingUserController = async (req, res) => {
     try {
-        const { question_word_n5_id, status } = req.body;
+        const { other_word_id, status } = req.body;
         const userId = req.user.id;
 
         const { data, error } = await supabase
-            .from("tracker")
-            .select("question_word_n5_id, status, user_id")
+            .from("tracking")
+            .select("other_word_id, status, user_id")
             .eq("user_id", userId)
-            .eq("question_word_n5_id", question_word_n5_id);
+            .eq("other_word_id", other_word_id);
 
         if (error) {
             throw new Error("Gagal memeriksa kata tanya N5");
@@ -1958,10 +1929,10 @@ const questionWordN5TrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracker")
+                .from("tracking")
                 .insert({
                     user_id: userId,
-                    question_word_n5_id: question_word_n5_id,
+                    other_word_id: other_word_id,
                     status: true,
                 });
 
@@ -1969,22 +1940,22 @@ const questionWordN5TrackingUserController = async (req, res) => {
                 throw new Error("Gagal menyimpan tracking kata tanya N5");
             }
         } else {
-            if (status) {
+            if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: false })
                     .eq("user_id", userId)
-                    .eq("question_word_n5_id", question_word_n5_id);
+                    .eq("other_word_id", other_word_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata tanya N5");
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracker")
+                    .from("tracking")
                     .update({ status: true })
                     .eq("user_id", userId)
-                    .eq("question_word_n5_id", question_word_n5_id);
+                    .eq("other_word_id", other_word_id);
 
                 if (updateError) {
                     throw new Error("Gagal memperbarui status kata tanya N5");
@@ -1997,7 +1968,70 @@ const questionWordN5TrackingUserController = async (req, res) => {
             message: "Berhasil menyelesaikan tracking kata tanya N5",
         });
     } catch (err) {
-        console.error(err);
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const conjunctionN5TrackingUserController = async (req, res) => {
+    try {
+        const { conjunction_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("other_word_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("other_word_id", conjunction_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata hubung N5");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    other_word_id: conjunction_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata hubung N5");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("other_word_id", conjunction_id);
+
+                if (updateError) {
+                    throw new Error("Gagal memperbarui status kata hubung N5");
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("other_word_id", conjunction_id);
+
+                if (updateError) {
+                    throw new Error("Gagal memperbarui status kata hubung N5");
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata hubung N5",
+        });
+    } catch (err) {
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -2036,4 +2070,6 @@ module.exports = {
     nounTrafficN5TrackingUserController,
     nounWorkN5TrackingUserController,
     questionWordN5TrackingUserController,
+    kanjiN5TrackingUserController,
+    conjunctionN5TrackingUserController,
 };

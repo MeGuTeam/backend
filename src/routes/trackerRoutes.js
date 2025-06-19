@@ -29,6 +29,7 @@ const {
     nounTrafficN5TrackingUserController,
     nounWorkN5TrackingUserController,
     questionWordN5TrackingUserController,
+    conjunctionN5TrackingUserController,
 } = require("../controllers/trackerN5Controller");
 const middleware = require("../middleware/middleware");
 
@@ -155,6 +156,12 @@ router.post(
     "/tracker/question-word-n5",
     middleware,
     questionWordN5TrackingUserController
+);
+
+router.post(
+    "/tracker/conjunction-n5",
+    middleware,
+    conjunctionN5TrackingUserController
 );
 
 module.exports = router;
