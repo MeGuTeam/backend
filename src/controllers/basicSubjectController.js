@@ -16,6 +16,14 @@ const particleController = async (req, res) => {
             throw new Error("Gagal memeriksa partikel");
         }
 
+        if (data.length === 0 || !data) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data partikel yang ditemukan",
+                data: null,
+            });
+        }
+
         const resultData = data.map((row) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.particle_id === row.particle_id)
@@ -32,13 +40,14 @@ const particleController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data partikel",
-            datas: resultData,
+            data: resultData,
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }
@@ -60,6 +69,14 @@ const hiraganaController = async (req, res) => {
             throw new Error("Gagal memeriksa hiragana");
         }
 
+        if (data.length === 0 || !data) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data hiragana yang ditemukan",
+                data: null,
+            });
+        }
+
         const result = data.map((row) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.hiragana_id === row.hiragana_id)
@@ -76,13 +93,14 @@ const hiraganaController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data hiragana",
-            datas: result,
+            data: result,
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }
@@ -104,6 +122,14 @@ const katakanaController = async (req, res) => {
             throw new Error("Gagal memeriksa katakana");
         }
 
+        if (data.length === 0 || !data) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data katakana yang ditemukan",
+                data: null,
+            });
+        }
+
         const result = data.map((row) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.katakana_id === row.katakana_id)
@@ -120,7 +146,7 @@ const katakanaController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data katakana",
-            datas: result,
+            data: result,
         });
     } catch (err) {
         console.error(err);
@@ -148,6 +174,14 @@ const basicConversationController = async (req, res) => {
             throw new Error("Gagal memeriksa percakapan dasar");
         }
 
+        if (data.length === 0 || !data) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data percakapan dasar yang ditemukan",
+                data: null,
+            });
+        }
+
         const result = data.map((row) => {
             const trackerItem = tracker
                 ? tracker.find(
@@ -168,13 +202,14 @@ const basicConversationController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data percakapan dasar",
-            datas: result,
+            data: result,
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }

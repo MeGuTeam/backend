@@ -43,7 +43,7 @@ const uploadAvatarController = async (req, res) => {
             throw new Error("Gagal mengunggah gambar ke penyimpanan");
         }
 
-        const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatarbucket/ikibannihongo/${fileName}`;
+        const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${process.env.BUCKET_AVATAR_PATH}/${fileName}`;
 
         const { error: updateError } = await supabase
             .from("users")
@@ -61,10 +61,11 @@ const uploadAvatarController = async (req, res) => {
             message: "Gambar profil berhasil diunggah",
         });
     } catch (err) {
-        console.error("Avatar upload error:", err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }
@@ -84,7 +85,7 @@ const getAvatarController = async (req, res) => {
             throw new Error("Gagal memeriksa user");
         }
 
-        if (!user) {
+        if (user.length === 0) {
             return res.status(404).json({
                 error: true,
                 message: "User tidak ditemukan",
@@ -102,7 +103,6 @@ const getAvatarController = async (req, res) => {
             },
         });
     } catch (err) {
-        console.error("Get avatar error:", err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",

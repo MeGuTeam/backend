@@ -14,7 +14,7 @@ const profileController = async (req, res) => {
             throw new Error("Gagal mengambil data profil");
         }
 
-        if (!user) {
+        if (user.length === 0 || !user) {
             return res.status(404).json({
                 error: true,
                 message: "User tidak ditemukan",
@@ -26,16 +26,16 @@ const profileController = async (req, res) => {
             error: false,
             message: "Data profil berhasil diambil",
             data: {
-                user_id: user.user_id,
                 username: user.username,
                 profile_picture: user.profile_picture,
             },
         });
     } catch (err) {
-        console.error("Profile fetch error:", err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }

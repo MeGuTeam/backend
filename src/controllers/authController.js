@@ -164,7 +164,6 @@ const loginAuth = async (req, res) => {
             },
         });
     } catch (err) {
-        console.error("Login error:", err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -243,7 +242,6 @@ const changePasswordAuth = async (req, res) => {
             data: null,
         });
     } catch (error) {
-        console.error("Change password error:", error);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
