@@ -25,18 +25,12 @@ npm install
 
 3. Buat file `.env` di root folder dan isi dengan konfigurasi berikut:
 
-```
-env
-DB_HOST=
-DB_USER=
-DB_PASSWORD=
-DB_NAME=
-DB_PORT=
-PORT=
-JWT_SECRET=
-SUPABASE_URL=
-BUCKET_AVATAR_PATH=
-SUPABASE_API_KEY=
+```env
+PORT=8000
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_anon_key
+JWT_SECRET=your_jwt_secret_key
+SUPABASE_API_KEY=your_supabase_api_key
 ```
 
 4. Jalankan aplikasi
