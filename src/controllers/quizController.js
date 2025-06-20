@@ -303,7 +303,6 @@ const submitQuizController = async (req, res) => {
                 .eq("quizzes_id", quizzes_id)
                 .maybeSingle();
         if (existingResultError) {
-            console.log(existingResultError);
             return res.status(500).json({
                 error: true,
                 message: "Gagal memeriksa hasil kuis yang sudah ada",
@@ -317,7 +316,6 @@ const submitQuizController = async (req, res) => {
                 .update({ score })
                 .eq("quizzes_result_id", existingResult.quizzes_result_id);
             if (updateError) {
-                console.log(updateError);
                 return res.status(500).json({
                     error: true,
                     message: "Gagal memperbarui hasil kuis",
