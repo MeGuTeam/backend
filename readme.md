@@ -25,11 +25,18 @@ npm install
 
 3. Buat file `.env` di root folder dan isi dengan konfigurasi berikut:
 
-```env
-PORT=5000
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
-JWT_SECRET=your_jwt_secret_key
+```
+env
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=
+PORT=
+JWT_SECRET=
+SUPABASE_URL=
+BUCKET_AVATAR_PATH=
+SUPABASE_API_KEY=
 ```
 
 4. Jalankan aplikasi
@@ -405,6 +412,118 @@ Semua endpoint tracking menggunakan format yang sama:
 | GET    | `/noun-time-n5`           | Kata benda waktu             | ✅            |
 | GET    | `/noun-traffic-n5`        | Kata benda transportasi      | ✅            |
 | GET    | `/noun-work-n5`           | Kata benda pekerjaan         | ✅            |
+
+### 🧩 Kuis
+
+| Method | Endpoint                                | Deskripsi                       | Auth Required |
+| ------ | --------------------------------------- | ------------------------------- | ------------- |
+| GET    | `/quiz-categories`                      | Ambil kategori kuis             | ✅            |
+| GET    | `/quiz/:quiz_category_id/:level_id`     | Ambil daftar kuis               | ✅            |
+| GET    | `/quiz/:quizzes_id`                     | Generate kuis dengan pertanyaan | ✅            |
+| PUT    | `/quiz/:quizzes_id/:question_id/answer` | Kirim jawaban kuis              | ✅            |
+| POST   | `/quiz/:quizzes_id/submit`              | Submit dan dapatkan nilai kuis  | ✅            |
+
+### 🧩 Kuis
+
+#### GET `/quiz-categories` - Ambil Kategori Kuis
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Kategori kuis berhasil diambil",
+    "data": [
+        {
+            "id": "integer",
+            "category": "string"
+        }
+    ]
+}
+```
+
+#### GET `/quiz/:quiz_category_id/:level_id` - Ambil Daftar Kuis
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Kuis berhasil diambil",
+    "data": [
+        {
+            "quizzes_id": "integer",
+            "title": "string",
+            "category": "string",
+            "level": "string"
+        }
+    ]
+}
+```
+
+#### GET `/quiz/:quizzes_id` - Generate Kuis dengan Pertanyaan
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Kuis berhasil dibuat",
+    "data": {
+        "quizzes_id": "integer",
+        "title": "string",
+        "category": "string",
+        "level": "string",
+        "questions": [
+            {
+                "question_id": "integer",
+                "question_text": "string",
+                "utils": "string|null",
+                "options": [
+                    {
+                        "option_id": "integer",
+                        "option_text": "string"
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+#### PUT `/quiz/:quizzes_id/:question_id/answer` - Kirim Jawaban Kuis
+
+**Request Body:**
+
+```json
+{
+    "option_id": "integer"
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Jawaban berhasil dikirim",
+    "data": null
+}
+```
+
+#### POST `/quiz/:quizzes_id/submit` - Submit dan Dapatkan Nilai Kuis
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Kuis berhasil diselesaikan",
+    "data": {
+        "score": "number"
+    }
+}
+```
 
 ### 📊 Tracking Progress Pengguna
 
