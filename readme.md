@@ -627,37 +627,37 @@ Semua endpoint tracking menggunakan format request yang sama:
 | POST   | `/tracker/hiragana`           | `hiragana_id`           | Tracking progress hiragana           |
 | POST   | `/tracker/katakana`           | `katakana_id`           | Tracking progress katakana           |
 | POST   | `/tracker/basic-conversation` | `basic_conversation_id` | Tracking progress percakapan dasar   |
-| POST   | `/tracker/kanji-n5`           | `kanji_id`              | Tracking progress kanji N5           |
-| POST   | `/tracker/adjective-n5`       | `adjective_id`          | Tracking progress kata sifat N5      |
-| POST   | `/tracker/adverb-n5`          | `other_word_id`         | Tracking progress kata keterangan N5 |
-| POST   | `/tracker/verb-n5`            | `verb_id`               | Tracking progress kata kerja N5      |
-| POST   | `/tracker/question-word-n5`   | `other_word_id`         | Tracking progress kata tanya N5      |
-| POST   | `/tracker/conjunction-n5`     | `conjunction_id`        | Tracking progress kata sambung N5    |
+| POST   | `/tracker/kanji`              | `kanji_id`              | Tracking progress kanji N5           |
+| POST   | `/tracker/adjective`          | `adjective_id`          | Tracking progress kata sifat N5      |
+| POST   | `/tracker/adverb`             | `other_word_id`         | Tracking progress kata keterangan N5 |
+| POST   | `/tracker/verb`               | `verb_id`               | Tracking progress kata kerja N5      |
+| POST   | `/tracker/question-word`      | `other_word_id`         | Tracking progress kata tanya N5      |
+| POST   | `/tracker/conjunction`        | `conjunction_id`        | Tracking progress kata sambung N5    |
 
 #### Tracking Kata Benda N5:
 
-| Method | Endpoint                          | Request Body Field | Deskripsi                             |
-| ------ | --------------------------------- | ------------------ | ------------------------------------- |
-| POST   | `/tracker/noun-activity-n5`       | `noun_id`          | Tracking kata benda aktivitas         |
-| POST   | `/tracker/noun-animalplant-n5`    | `noun_id`          | Tracking kata benda hewan & tumbuhan  |
-| POST   | `/tracker/noun-auxnumber-n5`      | `noun_id`          | Tracking kata benda angka bantu       |
-| POST   | `/tracker/noun-body-n5`           | `noun_id`          | Tracking kata benda tubuh             |
-| POST   | `/tracker/noun-city-n5`           | `noun_id`          | Tracking kata benda kota              |
-| POST   | `/tracker/noun-color-n5`          | `noun_id`          | Tracking kata benda warna             |
-| POST   | `/tracker/noun-fooddrink-n5`      | `noun_id`          | Tracking kata benda makanan & minuman |
-| POST   | `/tracker/noun-homeappliances-n5` | `noun_id`          | Tracking kata benda peralatan rumah   |
-| POST   | `/tracker/noun-kosoado-n5`        | `noun_id`          | Tracking kata benda kosoado           |
-| POST   | `/tracker/noun-media-n5`          | `noun_id`          | Tracking kata benda media             |
-| POST   | `/tracker/noun-natural-n5`        | `noun_id`          | Tracking kata benda alam              |
-| POST   | `/tracker/noun-number-n5`         | `noun_id`          | Tracking kata benda angka             |
-| POST   | `/tracker/noun-outfit-n5`         | `noun_id`          | Tracking kata benda pakaian           |
-| POST   | `/tracker/noun-people-n5`         | `noun_id`          | Tracking kata benda orang             |
-| POST   | `/tracker/noun-position-n5`       | `noun_id`          | Tracking kata benda posisi            |
-| POST   | `/tracker/noun-region-n5`         | `noun_id`          | Tracking kata benda wilayah           |
-| POST   | `/tracker/noun-school-n5`         | `noun_id`          | Tracking kata benda sekolah           |
-| POST   | `/tracker/noun-time-n5`           | `noun_id`          | Tracking kata benda waktu             |
-| POST   | `/tracker/noun-traffic-n5`        | `noun_id`          | Tracking kata benda transportasi      |
-| POST   | `/tracker/noun-work-n5`           | `noun_id`          | Tracking kata benda pekerjaan         |
+| Method | Endpoint                       | Request Body Field | Deskripsi                             |
+| ------ | ------------------------------ | ------------------ | ------------------------------------- |
+| POST   | `/tracker/noun-activity`       | `noun_id`          | Tracking kata benda aktivitas         |
+| POST   | `/tracker/noun-animalplant`    | `noun_id`          | Tracking kata benda hewan & tumbuhan  |
+| POST   | `/tracker/noun-auxnumber`      | `noun_id`          | Tracking kata benda angka bantu       |
+| POST   | `/tracker/noun-body`           | `noun_id`          | Tracking kata benda tubuh             |
+| POST   | `/tracker/noun-city`           | `noun_id`          | Tracking kata benda kota              |
+| POST   | `/tracker/noun-color`          | `noun_id`          | Tracking kata benda warna             |
+| POST   | `/tracker/noun-fooddrink`      | `noun_id`          | Tracking kata benda makanan & minuman |
+| POST   | `/tracker/noun-homeappliances` | `noun_id`          | Tracking kata benda peralatan rumah   |
+| POST   | `/tracker/noun-kosoado`        | `noun_id`          | Tracking kata benda kosoado           |
+| POST   | `/tracker/noun-media`          | `noun_id`          | Tracking kata benda media             |
+| POST   | `/tracker/noun-natural`        | `noun_id`          | Tracking kata benda alam              |
+| POST   | `/tracker/noun-number`         | `noun_id`          | Tracking kata benda angka             |
+| POST   | `/tracker/noun-outfit`         | `noun_id`          | Tracking kata benda pakaian           |
+| POST   | `/tracker/noun-people`         | `noun_id`          | Tracking kata benda orang             |
+| POST   | `/tracker/noun-position`       | `noun_id`          | Tracking kata benda posisi            |
+| POST   | `/tracker/noun-region`         | `noun_id`          | Tracking kata benda wilayah           |
+| POST   | `/tracker/noun-school`         | `noun_id`          | Tracking kata benda sekolah           |
+| POST   | `/tracker/noun-time`           | `noun_id`          | Tracking kata benda waktu             |
+| POST   | `/tracker/noun-traffic`        | `noun_id`          | Tracking kata benda transportasi      |
+| POST   | `/tracker/noun-work`           | `noun_id`          | Tracking kata benda pekerjaan         |
 
 #### Contoh Request Body untuk Tracking:
 
