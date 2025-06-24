@@ -137,10 +137,7 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengunggah avatar",
-    "data": {
-        "imageUrl": "string"
-    }
+    "message": "Berhasil mengunggah avatar"
 }
 ```
 
@@ -153,7 +150,7 @@ avatar: File (image file)
     "error": false,
     "message": "Berhasil mengambil data avatar",
     "data": {
-        "profile_picture": "string|null"
+        "imageUrl": "string|null"
     }
 }
 ```
@@ -167,11 +164,8 @@ avatar: File (image file)
     "error": false,
     "message": "Berhasil mengambil data profil",
     "data": {
-        "user_id": "integer",
         "username": "string",
-        "profile_picture": "string|null",
-        "created_at": "string",
-        "updated_at": "string"
+        "profile_picture": "string|null"
     }
 }
 ```
@@ -185,14 +179,11 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil data partikel",
+    "message": "Berhasil mendapatkan data partikel",
     "data": [
         {
             "id": "integer",
-            "particle_name": "string",
-            "description": "string",
-            "example_sentence": "string",
-            "status": "boolean" // tracking status user
+            "particle_name": "string"
         }
     ]
 }
@@ -205,13 +196,15 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil detail data partikel",
+    "message": "Berhasil mendapatkan detail partikel",
     "data": [
         {
             "id": "integer",
+            "romaji": "string",
             "particle_name": "string",
             "description": "string",
-            "example_sentence": "string"
+            "example_sentence": "string",
+            "status": "boolean"
         }
     ]
 }
@@ -224,12 +217,13 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil data hiragana",
+    "message": "Berhasil mendapatkan data hiragana",
     "data": [
         {
             "id": "integer",
-            "hiragana_character": "string",
+            "character": "string",
             "romaji": "string",
+            "type": "string",
             "status": "boolean"
         }
     ]
@@ -243,12 +237,13 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil data katakana",
+    "message": "Berhasil mendapatkan data katakana",
     "data": [
         {
             "id": "integer",
-            "katakana_character": "string",
+            "character": "string",
             "romaji": "string",
+            "type": "string",
             "status": "boolean"
         }
     ]
@@ -262,13 +257,13 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil data percakapan dasar",
+    "message": "Berhasil mendapatkan data percakapan dasar",
     "data": [
         {
             "id": "integer",
-            "japanese": "string",
-            "indonesian": "string",
-            "status": "boolean"
+            "word": "string",
+            "reading": "string",
+            "meaning": "string"
         }
     ]
 }
@@ -281,12 +276,16 @@ avatar: File (image file)
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil detail data percakapan dasar",
+    "message": "Berhasil mendapatkan detail percakapan dasar",
     "data": [
         {
             "id": "integer",
-            "japanese": "string",
-            "indonesian": "string"
+            "word": "string",
+            "reading": "string",
+            "meaning": "string",
+            "type": "string",
+            "example_sentence": "string",
+            "status": "boolean"
         }
     ]
 }
@@ -301,13 +300,11 @@ Semua endpoint N5 memiliki format response yang sama:
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil data [jenis materi]",
+    "message": "Data [jenis materi] berhasil diambil",
     "data": [
         {
             "id": "integer",
-            "[field_name]": "string", // Nama field sesuai jenis materi
-            "meaning": "string",
-            "status": "boolean"
+            "character": "string" // Nama field bervariasi sesuai jenis materi
         }
     ]
 }
@@ -315,32 +312,41 @@ Semua endpoint N5 memiliki format response yang sama:
 
 **Contoh untuk berbagai jenis materi:**
 
--   **Kanji N5**: `kanji_character`, `meaning`, `kunyomi`, `onyomi`
--   **Adjective N5**: `adjective`, `meaning`, `adjective_type`
--   **Verb N5**: `verb`, `meaning`, `verb_type`
--   **Noun Categories**: `[category]_name`, `meaning`
+-   **Kanji N5**: `character` (karakter kanji)
+-   **Adjective N5**: `character` (kata sifat)
+-   **Verb N5**: `character` (kata kerja)
+-   **Noun Categories**: `character` (kata benda)
 
 #### Detail Routes N5
 
 Semua materi N5 juga memiliki endpoint details dengan format:
 
-**GET `/[materi]-n5-details`** - Detail materi tanpa status tracking
+**GET `/[materi]-n5-details`** - Detail materi dengan status tracking
 
 **Success Response (200):**
 
 ```json
 {
     "error": false,
-    "message": "Berhasil mengambil detail data [jenis materi]",
+    "message": "Detail data [jenis materi] berhasil diambil",
     "data": [
         {
             "id": "integer",
-            "[field_name]": "string",
-            "meaning": "string"
+            "romaji": "string",
+            "character": "string",
+            "meaning": "string",
+            "status": "boolean"
         }
     ]
 }
 ```
+
+**Contoh tambahan field untuk berbagai jenis materi:**
+
+-   **Kanji N5**: `onyomi`, `kunyomi`
+-   **Adjective N5**: (tidak ada field tambahan)
+-   **Verb N5**: (tidak ada field tambahan)
+-   **Noun Categories**: (tidak ada field tambahan)
 
 ### 📊 Tracking Progress
 
