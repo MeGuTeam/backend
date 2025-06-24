@@ -4,6 +4,37 @@ const kanjiN5Controller = async (req, res) => {
     try {
         const { data: kanjiData, error: fetchError } = await supabase
             .from("kanjis")
+            .select("kanji_id, character, meaning")
+            .eq("level_id", "5")
+            .order("kanji_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kanji");
+        }
+
+        const datas = kanjiData.map((kanji) => ({
+            id: kanji.kanji_id,
+            character: kanji.character,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kanji berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const kanjiN5DetailsController = async (req, res) => {
+    try {
+        const { data: kanjiData, error: fetchError } = await supabase
+            .from("kanjis")
             .select("*")
             .eq("level_id", "5")
             .order("kanji_id", { ascending: true });
@@ -23,6 +54,7 @@ const kanjiN5Controller = async (req, res) => {
                 : null;
             return {
                 id: kanji.kanji_id,
+                romaji: kanji.romaji,
                 character: kanji.character,
                 onyomi: kanji.onyomi,
                 kunyomi: kanji.kunyomi,
@@ -33,7 +65,7 @@ const kanjiN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kanji berhasil diambil",
+            message: "Detail data kanji berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -46,6 +78,37 @@ const kanjiN5Controller = async (req, res) => {
 };
 
 const adjectiveN5Controller = async (req, res) => {
+    try {
+        const { data: adjectiveData, error: fetchError } = await supabase
+            .from("adjectives")
+            .select("adjective_id, word, reading, meaning")
+            .eq("level_id", "5")
+            .order("adjective_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata sifat");
+        }
+
+        const datas = adjectiveData.map((adjective) => ({
+            id: adjective.adjective_id,
+            word: adjective.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata sifat berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const adjectiveN5DetailsController = async (req, res) => {
     try {
         const { data: adjectiveData, error: fetchError } = await supabase
             .from("adjectives")
@@ -68,6 +131,7 @@ const adjectiveN5Controller = async (req, res) => {
                 : null;
             return {
                 id: adjective.adjective_id,
+                romaji: adjective.romaji,
                 reading: adjective.reading,
                 word: adjective.word,
                 meaning: adjective.meaning,
@@ -79,7 +143,7 @@ const adjectiveN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata sifat berhasil diambil",
+            message: "Detail data kata sifat berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -92,6 +156,38 @@ const adjectiveN5Controller = async (req, res) => {
 };
 
 const adverbN5Controller = async (req, res) => {
+    try {
+        const { data: adverbData, error: fetchError } = await supabase
+            .from("other_words")
+            .select("other_word_id, word, reading, meaning")
+            .eq("type", "adverb")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata keterangan");
+        }
+
+        const datas = adverbData.map((adverb) => ({
+            id: adverb.other_word_id,
+            word: adverb.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata keterangan berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const adverbN5DetailsController = async (req, res) => {
     try {
         const { data: adverbData, error: fetchError } = await supabase
             .from("other_words")
@@ -115,6 +211,7 @@ const adverbN5Controller = async (req, res) => {
                 : null;
             return {
                 id: adverb.other_word_id,
+                romaji: adverb.romaji,
                 reading: adverb.reading,
                 word: adverb.word,
                 meaning: adverb.meaning,
@@ -125,7 +222,7 @@ const adverbN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata keterangan berhasil diambil",
+            message: "Detail data kata keterangan berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -138,6 +235,37 @@ const adverbN5Controller = async (req, res) => {
 };
 
 const verbN5Controller = async (req, res) => {
+    try {
+        const { data: verbData, error: fetchError } = await supabase
+            .from("verbs")
+            .select("verb_id, word, reading, meaning")
+            .eq("level_id", "5")
+            .order("verb_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata kerja");
+        }
+
+        const datas = verbData.map((verb) => ({
+            id: verb.verb_id,
+            word: verb.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata kerja berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const verbN5DetailsController = async (req, res) => {
     try {
         const { data: verbData, error: fetchError } = await supabase
             .from("verbs")
@@ -160,6 +288,7 @@ const verbN5Controller = async (req, res) => {
                 : null;
             return {
                 id: verb.verb_id,
+                romaji: verb.romaji,
                 reading: verb.reading,
                 word: verb.word,
                 meaning: verb.meaning,
@@ -170,7 +299,7 @@ const verbN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata kerja berhasil diambil",
+            message: "Detail data kata kerja berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -183,6 +312,37 @@ const verbN5Controller = async (req, res) => {
 };
 
 const nounActivityN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "activity")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda aktivitas");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda aktivitas berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounActivityN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -205,6 +365,7 @@ const nounActivityN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -215,7 +376,7 @@ const nounActivityN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda aktivitas berhasil diambil",
+            message: "Detail data kata benda aktivitas berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -228,6 +389,39 @@ const nounActivityN5Controller = async (req, res) => {
 };
 
 const nounAnimalplantN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "animalplant")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error(
+                "Gagal mengambil data kata benda hewan dan tumbuhan"
+            );
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda hewan dan tumbuhan berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounAnimalplantN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -252,6 +446,7 @@ const nounAnimalplantN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -262,7 +457,8 @@ const nounAnimalplantN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda hewan dan tumbuhan berhasil diambil",
+            message:
+                "Detail data kata benda hewan dan tumbuhan berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -275,6 +471,37 @@ const nounAnimalplantN5Controller = async (req, res) => {
 };
 
 const nounAuxnumberN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "auxnumber")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda angka");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda angka berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounAuxnumberN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -297,6 +524,7 @@ const nounAuxnumberN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -307,7 +535,7 @@ const nounAuxnumberN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda angka berhasil diambil",
+            message: "Detail data kata benda angka berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -320,6 +548,37 @@ const nounAuxnumberN5Controller = async (req, res) => {
 };
 
 const nounBodyN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "body")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda tubuh");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda tubuh berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounBodyN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -342,6 +601,7 @@ const nounBodyN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -352,7 +612,7 @@ const nounBodyN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda tubuh berhasil diambil",
+            message: "Detail data kata benda tubuh berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -365,6 +625,37 @@ const nounBodyN5Controller = async (req, res) => {
 };
 
 const nounCityN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "city")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda kota");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda kota berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounCityN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -387,6 +678,7 @@ const nounCityN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -397,7 +689,7 @@ const nounCityN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda kota berhasil diambil",
+            message: "Detail data kata benda kota berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -413,31 +705,18 @@ const nounColorN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
-            .select("*")
+            .select("noun_id, word, reading, meaning")
             .eq("type", "color")
             .order("noun_id", { ascending: true });
-
-        const { data: tracker } = await supabase
-            .from("tracking")
-            .select("noun_id, status")
-            .eq("user_id", req.user.id);
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda warna");
         }
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
-                : null;
-            return {
-                id: noun.noun_id,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
-                status: trackerItem ? trackerItem.status : false,
-            };
-        });
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -453,7 +732,86 @@ const nounColorN5Controller = async (req, res) => {
     }
 };
 
+const nounColorN5DetailsController = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "color")
+            .order("noun_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("tracking")
+            .select("noun_id, status")
+            .eq("user_id", req.user.id);
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda warna");
+        }
+
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
+                : null;
+            return {
+                id: noun.noun_id,
+                romaji: noun.romaji,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda warna berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
 const nounFoodDrinkN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "fooddrink")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error(
+                "Gagal mengambil data kata benda makanan dan minuman"
+            );
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda makanan dan minuman berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounFoodDrinkN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -478,6 +836,7 @@ const nounFoodDrinkN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -488,7 +847,8 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda makanan dan minuman berhasil diambil",
+            message:
+                "Detail data kata benda makanan dan minuman berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -501,6 +861,39 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 };
 
 const nounHomeAppliancesN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "homeappliances")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error(
+                "Gagal mengambil data kata benda peralatan rumah tangga"
+            );
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata benda peralatan rumah tangga berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounHomeAppliancesN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
@@ -525,6 +918,7 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -535,7 +929,8 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata benda peralatan rumah tangga berhasil diambil",
+            message:
+                "Detail data kata benda peralatan rumah tangga berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -551,31 +946,18 @@ const nounKosoadoN5Controller = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
-            .select("*")
+            .select("noun_id, word, reading, meaning")
             .eq("type", "kosoado")
             .order("noun_id", { ascending: true });
 
-        const { data: tracker } = await supabase
-            .from("tracking")
-            .select("noun_id, status")
-            .eq("user_id", req.user.id);
         if (fetchError) {
             throw new Error("Gagal mengambil data kata benda kosoado");
         }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
-                : null;
-            return {
-                id: noun.noun_id,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
-                status: trackerItem ? trackerItem.status : false,
-            };
-        });
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -591,20 +973,21 @@ const nounKosoadoN5Controller = async (req, res) => {
     }
 };
 
-const nounMediaN5Controller = async (req, res) => {
+const nounKosoadoN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "media")
+            .eq("type", "kosoado")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
             .from("tracking")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
+
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda media");
+            throw new Error("Gagal mengambil data kata benda kosoado");
         }
 
         const datas = nounData.map((noun) => {
@@ -613,6 +996,7 @@ const nounMediaN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -620,6 +1004,37 @@ const nounMediaN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda kosoado berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounMediaN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "media")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda media");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -635,20 +1050,21 @@ const nounMediaN5Controller = async (req, res) => {
     }
 };
 
-const nounNaturalN5Controller = async (req, res) => {
+const nounMediaN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "natural")
+            .eq("type", "media")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
             .from("tracking")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
+
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda alam");
+            throw new Error("Gagal mengambil data kata benda media");
         }
 
         const datas = nounData.map((noun) => {
@@ -657,6 +1073,7 @@ const nounNaturalN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -664,6 +1081,37 @@ const nounNaturalN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda media berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounNaturalN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "natural")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda alam");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -679,20 +1127,21 @@ const nounNaturalN5Controller = async (req, res) => {
     }
 };
 
-const nounNumberN5Controller = async (req, res) => {
+const nounNaturalN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "number")
+            .eq("type", "natural")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
             .from("tracking")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
+
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda angka");
+            throw new Error("Gagal mengambil data kata benda alam");
         }
 
         const datas = nounData.map((noun) => {
@@ -701,6 +1150,7 @@ const nounNumberN5Controller = async (req, res) => {
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -708,6 +1158,37 @@ const nounNumberN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda alam berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounNumberN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "number")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda angka");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -723,12 +1204,12 @@ const nounNumberN5Controller = async (req, res) => {
     }
 };
 
-const nounOutfitN5Controller = async (req, res) => {
+const nounNumberN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "outfit")
+            .eq("type", "number")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -737,14 +1218,16 @@ const nounOutfitN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda pakaian");
+            throw new Error("Gagal mengambil data kata benda angka");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -752,6 +1235,37 @@ const nounOutfitN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda angka berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounOutfitN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "outfit")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda pakaian");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -767,27 +1281,30 @@ const nounOutfitN5Controller = async (req, res) => {
     }
 };
 
-const nounPeopleN5Controller = async (req, res) => {
+const nounOutfitN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "people")
+            .eq("type", "outfit")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
             .from("tracking")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
+
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda orang");
+            throw new Error("Gagal mengambil data kata benda pakaian");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -795,6 +1312,37 @@ const nounPeopleN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda pakaian berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounPeopleN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "people")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda orang");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -810,12 +1358,12 @@ const nounPeopleN5Controller = async (req, res) => {
     }
 };
 
-const nounPositionN5Controller = async (req, res) => {
+const nounPeopleN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "position")
+            .eq("type", "people")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -824,14 +1372,16 @@ const nounPositionN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda posisi");
+            throw new Error("Gagal mengambil data kata benda orang");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -839,6 +1389,37 @@ const nounPositionN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda orang berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounPositionN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "position")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda posisi");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -854,12 +1435,12 @@ const nounPositionN5Controller = async (req, res) => {
     }
 };
 
-const nounRegionN5Controller = async (req, res) => {
+const nounPositionN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "region")
+            .eq("type", "position")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -868,14 +1449,16 @@ const nounRegionN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda wilayah");
+            throw new Error("Gagal mengambil data kata benda posisi");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -883,6 +1466,37 @@ const nounRegionN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda posisi berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounRegionN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "region")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda wilayah");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -898,12 +1512,12 @@ const nounRegionN5Controller = async (req, res) => {
     }
 };
 
-const nounSchoolN5Controller = async (req, res) => {
+const nounRegionN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "school")
+            .eq("type", "region")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -912,14 +1526,16 @@ const nounSchoolN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda sekolah");
+            throw new Error("Gagal mengambil data kata benda wilayah");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -927,6 +1543,37 @@ const nounSchoolN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda wilayah berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounSchoolN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "school")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda sekolah");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -942,12 +1589,12 @@ const nounSchoolN5Controller = async (req, res) => {
     }
 };
 
-const nounTimeN5Controller = async (req, res) => {
+const nounSchoolN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "time")
+            .eq("type", "school")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -956,14 +1603,16 @@ const nounTimeN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda waktu");
+            throw new Error("Gagal mengambil data kata benda sekolah");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -971,6 +1620,37 @@ const nounTimeN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda sekolah berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounTimeN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "time")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda waktu");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -986,12 +1666,12 @@ const nounTimeN5Controller = async (req, res) => {
     }
 };
 
-const nounTrafficN5Controller = async (req, res) => {
+const nounTimeN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "traffic")
+            .eq("type", "time")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -1000,14 +1680,16 @@ const nounTrafficN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda lalu lintas");
+            throw new Error("Gagal mengambil data kata benda waktu");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -1015,6 +1697,37 @@ const nounTrafficN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda waktu berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounTrafficN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "traffic")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda lalu lintas");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -1030,12 +1743,12 @@ const nounTrafficN5Controller = async (req, res) => {
     }
 };
 
-const nounWorkN5Controller = async (req, res) => {
+const nounTrafficN5DetailsController = async (req, res) => {
     try {
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("*")
-            .eq("type", "work")
+            .eq("type", "traffic")
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
@@ -1044,14 +1757,16 @@ const nounWorkN5Controller = async (req, res) => {
             .eq("user_id", req.user.id);
 
         if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda pekerjaan");
+            throw new Error("Gagal mengambil data kata benda lalu lintas");
         }
+
         const datas = nounData.map((noun) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.noun_id === noun.noun_id)
                 : null;
             return {
                 id: noun.noun_id,
+                romaji: noun.romaji,
                 reading: noun.reading,
                 word: noun.word,
                 meaning: noun.meaning,
@@ -1059,6 +1774,37 @@ const nounWorkN5Controller = async (req, res) => {
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda lalu lintas berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounWorkN5Controller = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("noun_id, word, reading, meaning")
+            .eq("type", "work")
+            .order("noun_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda pekerjaan");
+        }
+
+        const datas = nounData.map((noun) => ({
+            id: noun.noun_id,
+            word: noun.word,
+        }));
 
         return res.status(200).json({
             error: false,
@@ -1074,7 +1820,85 @@ const nounWorkN5Controller = async (req, res) => {
     }
 };
 
+const nounWorkN5DetailsController = async (req, res) => {
+    try {
+        const { data: nounData, error: fetchError } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "work")
+            .order("noun_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("tracking")
+            .select("noun_id, status")
+            .eq("user_id", req.user.id);
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata benda pekerjaan");
+        }
+
+        const datas = nounData.map((noun) => {
+            const trackerItem = tracker
+                ? tracker.find((t) => t.noun_id === noun.noun_id)
+                : null;
+            return {
+                id: noun.noun_id,
+                romaji: noun.romaji,
+                reading: noun.reading,
+                word: noun.word,
+                meaning: noun.meaning,
+                example_sentence: noun.example_sentence,
+                status: trackerItem ? trackerItem.status : false,
+            };
+        });
+
+        return res.status(200).json({
+            error: false,
+            message: "Detail data kata benda pekerjaan berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
 const questionWordController = async (req, res) => {
+    try {
+        const { data: questionData, error: fetchError } = await supabase
+            .from("other_words")
+            .select("other_word_id, word, reading, meaning")
+            .eq("type", "question_word")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata tanya");
+        }
+
+        const datas = questionData.map((question) => ({
+            id: question.other_word_id,
+            word: question.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata tanya berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const questionWordN5DetailsController = async (req, res) => {
     try {
         const { data: questionData, error: fetchError } = await supabase
             .from("other_words")
@@ -1100,6 +1924,7 @@ const questionWordController = async (req, res) => {
                 : null;
             return {
                 id: question.other_word_id,
+                romaji: question.romaji,
                 reading: question.reading,
                 word: question.word,
                 meaning: question.meaning,
@@ -1110,7 +1935,7 @@ const questionWordController = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata tanya berhasil diambil",
+            message: "Detail data kata tanya berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -1123,6 +1948,38 @@ const questionWordController = async (req, res) => {
 };
 
 const conjunctionN5Controller = async (req, res) => {
+    try {
+        const { data: conjunctionData, error: fetchError } = await supabase
+            .from("other_words")
+            .select("other_word_id, word, reading, meaning")
+            .eq("type", "conjunction")
+            .eq("level_id", "5")
+            .order("other_word_id", { ascending: true });
+
+        if (fetchError) {
+            throw new Error("Gagal mengambil data kata hubung");
+        }
+
+        const datas = conjunctionData.map((conjunction) => ({
+            id: conjunction.other_word_id,
+            word: conjunction.word,
+        }));
+
+        return res.status(200).json({
+            error: false,
+            message: "Data kata hubung berhasil diambil",
+            data: datas,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const conjunctionN5DetailsController = async (req, res) => {
     try {
         const { data: conjunctionData, error: fetchError } = await supabase
             .from("other_words")
@@ -1148,6 +2005,7 @@ const conjunctionN5Controller = async (req, res) => {
                 : null;
             return {
                 id: conjunction.other_word_id,
+                romaji: conjunction.romaji,
                 reading: conjunction.reading,
                 word: conjunction.word,
                 meaning: conjunction.meaning,
@@ -1158,7 +2016,7 @@ const conjunctionN5Controller = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Data kata hubung berhasil diambil",
+            message: "Detail data kata hubung berhasil diambil",
             data: datas,
         });
     } catch (err) {
@@ -1172,29 +2030,55 @@ const conjunctionN5Controller = async (req, res) => {
 
 module.exports = {
     kanjiN5Controller,
+    kanjiN5DetailsController,
     adjectiveN5Controller,
+    adjectiveN5DetailsController,
     adverbN5Controller,
+    adverbN5DetailsController,
     verbN5Controller,
+    verbN5DetailsController,
     nounActivityN5Controller,
+    nounActivityN5DetailsController,
     nounAnimalplantN5Controller,
+    nounAnimalplantN5DetailsController,
     nounAuxnumberN5Controller,
+    nounAuxnumberN5DetailsController,
     nounBodyN5Controller,
+    nounBodyN5DetailsController,
     nounCityN5Controller,
+    nounCityN5DetailsController,
     nounColorN5Controller,
+    nounColorN5DetailsController,
     nounFoodDrinkN5Controller,
+    nounFoodDrinkN5DetailsController,
     nounHomeAppliancesN5Controller,
+    nounHomeAppliancesN5DetailsController,
     nounKosoadoN5Controller,
+    nounKosoadoN5DetailsController,
     nounMediaN5Controller,
+    nounMediaN5DetailsController,
     nounNaturalN5Controller,
+    nounNaturalN5DetailsController,
     nounNumberN5Controller,
+    nounNumberN5DetailsController,
     nounOutfitN5Controller,
+    nounOutfitN5DetailsController,
     nounPeopleN5Controller,
+    nounPeopleN5DetailsController,
     nounPositionN5Controller,
+    nounPositionN5DetailsController,
     nounRegionN5Controller,
+    nounRegionN5DetailsController,
     nounSchoolN5Controller,
+    nounSchoolN5DetailsController,
     nounTimeN5Controller,
+    nounTimeN5DetailsController,
     nounTrafficN5Controller,
+    nounTrafficN5DetailsController,
     nounWorkN5Controller,
+    nounWorkN5DetailsController,
     questionWordController,
+    questionWordN5DetailsController,
     conjunctionN5Controller,
+    conjunctionN5DetailsController,
 };

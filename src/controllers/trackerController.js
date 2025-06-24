@@ -260,7 +260,7 @@ const basicConversationTrackingUserController = async (req, res) => {
     }
 };
 
-const kanjiN5TrackingUserController = async (req, res) => {
+const kanjiTrackingUserController = async (req, res) => {
     try {
         const { kanji_id, status } = req.body;
         const userId = req.user.id;
@@ -271,7 +271,7 @@ const kanjiN5TrackingUserController = async (req, res) => {
             .eq("kanji_id", kanji_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kanji N5");
+            throw new Error("Gagal memeriksa kanji");
         }
 
         if (data.length === 0) {
@@ -284,7 +284,7 @@ const kanjiN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kanji N5");
+                throw new Error("Gagal menyimpan tracking kanji");
             }
         } else {
             if (status === "true" || status === true) {
@@ -295,7 +295,7 @@ const kanjiN5TrackingUserController = async (req, res) => {
                     .eq("kanji_id", kanji_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kanji N5");
+                    throw new Error("Gagal memperbarui status kanji");
                 }
             } else {
                 const { error: updateError } = await supabase
@@ -305,14 +305,14 @@ const kanjiN5TrackingUserController = async (req, res) => {
                     .eq("kanji_id", kanji_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kanji N5");
+                    throw new Error("Gagal memperbarui status kanji");
                 }
             }
         }
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kanji N5",
+            message: "Berhasil menyelesaikan tracking kanji ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -323,7 +323,7 @@ const kanjiN5TrackingUserController = async (req, res) => {
     }
 };
 
-const adjectiveN5TrackingUserController = async (req, res) => {
+const adjectiveTrackingUserController = async (req, res) => {
     try {
         const { adjective_id, status } = req.body;
         const userId = req.user.id;
@@ -335,7 +335,7 @@ const adjectiveN5TrackingUserController = async (req, res) => {
             .eq("adjective_id", adjective_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata sifat N5");
+            throw new Error("Gagal memeriksa kata sifat ");
         }
 
         if (data.length === 0) {
@@ -348,7 +348,7 @@ const adjectiveN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata sifat N5");
+                throw new Error("Gagal menyimpan tracking kata sifat ");
             }
         } else {
             if (status === "true" || status === true) {
@@ -359,7 +359,7 @@ const adjectiveN5TrackingUserController = async (req, res) => {
                     .eq("adjective_id", adjective_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata sifat N5");
+                    throw new Error("Gagal memperbarui status kata sifat ");
                 }
             } else {
                 const { error: updateError } = await supabase
@@ -369,14 +369,14 @@ const adjectiveN5TrackingUserController = async (req, res) => {
                     .eq("adjective_id", adjective_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata sifat N5");
+                    throw new Error("Gagal memperbarui status kata sifat ");
                 }
             }
         }
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata sifat N5",
+            message: "Berhasil menyelesaikan tracking kata sifat ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -387,7 +387,7 @@ const adjectiveN5TrackingUserController = async (req, res) => {
     }
 };
 
-const adverbN5TrackingUserController = async (req, res) => {
+const adverbTrackingUserController = async (req, res) => {
     try {
         const { other_word_id, status } = req.body;
         const userId = req.user.id;
@@ -399,7 +399,7 @@ const adverbN5TrackingUserController = async (req, res) => {
             .eq("other_word_id", other_word_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata keterangan N5");
+            throw new Error("Gagal memeriksa kata keterangan ");
         }
 
         if (data.length === 0) {
@@ -412,7 +412,7 @@ const adverbN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata keterangan N5");
+                throw new Error("Gagal menyimpan tracking kata keterangan ");
             }
         } else {
             if (status === "true" || status === true) {
@@ -424,7 +424,7 @@ const adverbN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata keterangan N5"
+                        "Gagal memperbarui status kata keterangan "
                     );
                 }
             } else {
@@ -436,7 +436,7 @@ const adverbN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata keterangan N5"
+                        "Gagal memperbarui status kata keterangan "
                     );
                 }
             }
@@ -444,7 +444,7 @@ const adverbN5TrackingUserController = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata keterangan N5",
+            message: "Berhasil menyelesaikan tracking kata keterangan ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -455,7 +455,7 @@ const adverbN5TrackingUserController = async (req, res) => {
     }
 };
 
-const verbN5TrackingUserController = async (req, res) => {
+const verbTrackingUserController = async (req, res) => {
     try {
         const { verb_id, status } = req.body;
         const userId = req.user.id;
@@ -467,7 +467,7 @@ const verbN5TrackingUserController = async (req, res) => {
             .eq("verb_id", verb_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata kerja N5");
+            throw new Error("Gagal memeriksa kata kerja ");
         }
 
         if (data.length === 0) {
@@ -480,7 +480,7 @@ const verbN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata kerja N5");
+                throw new Error("Gagal menyimpan tracking kata kerja ");
             }
         } else {
             if (status === "true" || status === true) {
@@ -491,7 +491,7 @@ const verbN5TrackingUserController = async (req, res) => {
                     .eq("verb_id", verb_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata kerja N5");
+                    throw new Error("Gagal memperbarui status kata kerja ");
                 }
             } else {
                 const { error: updateError } = await supabase
@@ -501,14 +501,14 @@ const verbN5TrackingUserController = async (req, res) => {
                     .eq("verb_id", verb_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata kerja N5");
+                    throw new Error("Gagal memperbarui status kata kerja ");
                 }
             }
         }
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata kerja N5",
+            message: "Berhasil menyelesaikan tracking kata kerja ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -519,7 +519,7 @@ const verbN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounActivityN5TrackingUserController = async (req, res) => {
+const nounActivityTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -531,7 +531,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
             .eq("noun_id", noun_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa aktivitas kata benda N5");
+            throw new Error("Gagal memeriksa aktivitas kata benda ");
         }
 
         if (data.length === 0) {
@@ -545,7 +545,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking aktivitas kata benda N5"
+                    "Gagal menyimpan tracking aktivitas kata benda "
                 );
             }
         } else {
@@ -558,7 +558,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status aktivitas kata benda N5"
+                        "Gagal memperbarui status aktivitas kata benda "
                     );
                 }
             } else {
@@ -570,7 +570,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status aktivitas kata benda N5"
+                        "Gagal memperbarui status aktivitas kata benda "
                     );
                 }
             }
@@ -578,7 +578,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking aktivitas kata benda N5",
+            message: "Berhasil menyelesaikan tracking aktivitas kata benda ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -589,7 +589,7 @@ const nounActivityN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounAnimalplantN5TrackingUserController = async (req, res) => {
+const nounAnimalplantTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -601,7 +601,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
             .eq("noun_id", noun_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata benda hewan dan tumbuhan N5");
+            throw new Error("Gagal memeriksa kata benda hewan dan tumbuhan ");
         }
 
         if (data.length === 0) {
@@ -615,7 +615,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking kata benda hewan dan tumbuhan N5"
+                    "Gagal menyimpan tracking kata benda hewan dan tumbuhan "
                 );
             }
         } else {
@@ -628,7 +628,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda hewan dan tumbuhan N5"
+                        "Gagal memperbarui status kata benda hewan dan tumbuhan "
                     );
                 }
             } else {
@@ -640,7 +640,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda hewan dan tumbuhan N5"
+                        "Gagal memperbarui status kata benda hewan dan tumbuhan "
                     );
                 }
             }
@@ -649,7 +649,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message:
-                "Berhasil menyelesaikan tracking kata benda hewan dan tumbuhan N5",
+                "Berhasil menyelesaikan tracking kata benda hewan dan tumbuhan ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -660,7 +660,7 @@ const nounAnimalplantN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounAuxnumberN5TrackingUserController = async (req, res) => {
+const nounAuxnumberTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -672,7 +672,7 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
             .eq("noun_id", noun_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata benda angka bantu N5");
+            throw new Error("Gagal memeriksa kata benda angka bantu ");
         }
 
         if (data.length === 0) {
@@ -686,7 +686,7 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking kata benda angka bantu N5"
+                    "Gagal menyimpan tracking kata benda angka bantu "
                 );
             }
         } else {
@@ -699,7 +699,7 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda angka bantu N5"
+                        "Gagal memperbarui status kata benda angka bantu "
                     );
                 }
             } else {
@@ -711,7 +711,281 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda angka bantu N5"
+                        "Gagal memperbarui status kata benda angka bantu "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda angka bantu ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounBodyTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda tubuh ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda tubuh ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda tubuh "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda tubuh "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda tubuh ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounCityTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda kota ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda kota ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda kota "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda kota "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda kota ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounColorTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda warna ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda warna ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda warna "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda warna "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda warna ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounFoodDrinkTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda makanan dan minuman ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error(
+                    "Gagal menyimpan tracking kata benda makanan dan minuman "
+                );
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda makanan dan minuman "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda makanan dan minuman "
                     );
                 }
             }
@@ -720,7 +994,7 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message:
-                "Berhasil menyelesaikan tracking kata benda angka bantu N5",
+                "Berhasil menyelesaikan tracking kata benda makanan dan minuman ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -731,211 +1005,7 @@ const nounAuxnumberN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounBodyN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda tubuh N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda tubuh N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda tubuh N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda tubuh N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda tubuh N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounCityN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda kota N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda kota N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda kota N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda kota N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda kota N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounColorN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda warna N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda warna N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda warna N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda warna N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda warna N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounFoodDrinkN5TrackingUserController = async (req, res) => {
+const nounHomeAppliancesTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -948,7 +1018,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
         if (error) {
             throw new Error(
-                "Gagal memeriksa kata benda makanan dan minuman N5"
+                "Gagal memeriksa kata benda peralatan rumah tangga "
             );
         }
 
@@ -963,7 +1033,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking kata benda makanan dan minuman N5"
+                    "Gagal menyimpan tracking kata benda peralatan rumah tangga "
                 );
             }
         } else {
@@ -976,7 +1046,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda makanan dan minuman N5"
+                        "Gagal memperbarui status kata benda peralatan rumah tangga "
                     );
                 }
             } else {
@@ -988,7 +1058,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda makanan dan minuman N5"
+                        "Gagal memperbarui status kata benda peralatan rumah tangga "
                     );
                 }
             }
@@ -997,7 +1067,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
         return res.status(200).json({
             error: false,
             message:
-                "Berhasil menyelesaikan tracking kata benda makanan dan minuman N5",
+                "Berhasil menyelesaikan tracking kata benda peralatan rumah tangga ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -1008,7 +1078,7 @@ const nounFoodDrinkN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
+const nounKosoadoTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -1020,9 +1090,687 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
             .eq("noun_id", noun_id);
 
         if (error) {
-            throw new Error(
-                "Gagal memeriksa kata benda peralatan rumah tangga N5"
-            );
+            throw new Error("Gagal memeriksa kata benda kosoado ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda kosoado ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda kosoado "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda kosoado "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda kosoado ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounMediaTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda media ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda media ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda media "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda media "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda media ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounNaturalTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda alam ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda alam ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda alam "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda alam "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda alam ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounNumberTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda angka ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda angka ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda angka "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda angka "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda angka ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounOutfitTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda pakaian ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda pakaian ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda pakaian "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda pakaian "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda pakaian ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounPeopleTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda orang ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda orang ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda orang "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda orang "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda orang ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounPositionTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda posisi ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda posisi ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda posisi "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda posisi "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda posisi ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounRegionTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda wilayah ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda wilayah ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda wilayah "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda wilayah "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda wilayah ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounSchoolTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda sekolah ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda sekolah ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda sekolah "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda sekolah "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda sekolah ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounTimeTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda waktu ");
+        }
+
+        if (data.length === 0) {
+            const { error: insertError } = await supabase
+                .from("tracking")
+                .insert({
+                    user_id: userId,
+                    noun_id: noun_id,
+                    status: true,
+                });
+
+            if (insertError) {
+                throw new Error("Gagal menyimpan tracking kata benda waktu ");
+            }
+        } else {
+            if (status === "true" || status === true) {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: false })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda waktu "
+                    );
+                }
+            } else {
+                const { error: updateError } = await supabase
+                    .from("tracking")
+                    .update({ status: true })
+                    .eq("user_id", userId)
+                    .eq("noun_id", noun_id);
+
+                if (updateError) {
+                    throw new Error(
+                        "Gagal memperbarui status kata benda waktu "
+                    );
+                }
+            }
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Berhasil menyelesaikan tracking kata benda waktu ",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            data: null,
+        });
+    }
+};
+
+const nounTrafficTrackingUserController = async (req, res) => {
+    try {
+        const { noun_id, status } = req.body;
+        const userId = req.user.id;
+
+        const { data, error } = await supabase
+            .from("tracking")
+            .select("noun_id, status, user_id")
+            .eq("user_id", userId)
+            .eq("noun_id", noun_id);
+
+        if (error) {
+            throw new Error("Gagal memeriksa kata benda lalu lintas ");
         }
 
         if (data.length === 0) {
@@ -1036,7 +1784,7 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking kata benda peralatan rumah tangga N5"
+                    "Gagal menyimpan tracking kata benda lalu lintas "
                 );
             }
         } else {
@@ -1049,7 +1797,7 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda peralatan rumah tangga N5"
+                        "Gagal memperbarui status kata benda lalu lintas "
                     );
                 }
             } else {
@@ -1061,7 +1809,7 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda peralatan rumah tangga N5"
+                        "Gagal memperbarui status kata benda lalu lintas "
                     );
                 }
             }
@@ -1069,8 +1817,7 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message:
-                "Berhasil menyelesaikan tracking kata benda peralatan rumah tangga N5",
+            message: "Berhasil menyelesaikan tracking kata benda lalu lintas ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -1081,7 +1828,7 @@ const nounHomeAppliancesN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounKosoadoN5TrackingUserController = async (req, res) => {
+const nounWorkTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
         const userId = req.user.id;
@@ -1093,7 +1840,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
             .eq("noun_id", noun_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata benda kosoado N5");
+            throw new Error("Gagal memeriksa kata benda pekerjaan ");
         }
 
         if (data.length === 0) {
@@ -1107,7 +1854,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
             if (insertError) {
                 throw new Error(
-                    "Gagal menyimpan tracking kata benda kosoado N5"
+                    "Gagal menyimpan tracking kata benda pekerjaan "
                 );
             }
         } else {
@@ -1120,7 +1867,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda kosoado N5"
+                        "Gagal memperbarui status kata benda pekerjaan "
                     );
                 }
             } else {
@@ -1132,7 +1879,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
                 if (updateError) {
                     throw new Error(
-                        "Gagal memperbarui status kata benda kosoado N5"
+                        "Gagal memperbarui status kata benda pekerjaan "
                     );
                 }
             }
@@ -1140,7 +1887,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata benda kosoado N5",
+            message: "Berhasil menyelesaikan tracking kata benda pekerjaan ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -1151,768 +1898,7 @@ const nounKosoadoN5TrackingUserController = async (req, res) => {
     }
 };
 
-const nounMediaN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda media N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda media N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda media N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda media N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda media N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounNaturalN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda alam N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda alam N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda alam N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda alam N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda alam N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounNumberN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda angka N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda angka N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda angka N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda angka N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda angka N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounOutfitN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda pakaian N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda pakaian N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda pakaian N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda pakaian N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda pakaian N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounPeopleN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda orang N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda orang N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda orang N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda orang N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda orang N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounPositionN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda posisi N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda posisi N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda posisi N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda posisi N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda posisi N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounRegionN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda wilayah N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda wilayah N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda wilayah N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda wilayah N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda wilayah N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounSchoolN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda sekolah N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda sekolah N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda sekolah N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda sekolah N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda sekolah N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounTimeN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda waktu N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata benda waktu N5");
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda waktu N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda waktu N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda waktu N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounTrafficN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda lalu lintas N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda lalu lintas N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda lalu lintas N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda lalu lintas N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message:
-                "Berhasil menyelesaikan tracking kata benda lalu lintas N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const nounWorkN5TrackingUserController = async (req, res) => {
-    try {
-        const { noun_id, status } = req.body;
-        const userId = req.user.id;
-
-        const { data, error } = await supabase
-            .from("tracking")
-            .select("noun_id, status, user_id")
-            .eq("user_id", userId)
-            .eq("noun_id", noun_id);
-
-        if (error) {
-            throw new Error("Gagal memeriksa kata benda pekerjaan N5");
-        }
-
-        if (data.length === 0) {
-            const { error: insertError } = await supabase
-                .from("tracking")
-                .insert({
-                    user_id: userId,
-                    noun_id: noun_id,
-                    status: true,
-                });
-
-            if (insertError) {
-                throw new Error(
-                    "Gagal menyimpan tracking kata benda pekerjaan N5"
-                );
-            }
-        } else {
-            if (status === "true" || status === true) {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda pekerjaan N5"
-                    );
-                }
-            } else {
-                const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: true })
-                    .eq("user_id", userId)
-                    .eq("noun_id", noun_id);
-
-                if (updateError) {
-                    throw new Error(
-                        "Gagal memperbarui status kata benda pekerjaan N5"
-                    );
-                }
-            }
-        }
-
-        return res.status(200).json({
-            error: false,
-            message: "Berhasil menyelesaikan tracking kata benda pekerjaan N5",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-            data: null,
-        });
-    }
-};
-
-const questionWordN5TrackingUserController = async (req, res) => {
+const questionWordTrackingUserController = async (req, res) => {
     try {
         const { other_word_id, status } = req.body;
         const userId = req.user.id;
@@ -1924,7 +1910,7 @@ const questionWordN5TrackingUserController = async (req, res) => {
             .eq("other_word_id", other_word_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata tanya N5");
+            throw new Error("Gagal memeriksa kata tanya ");
         }
 
         if (data.length === 0) {
@@ -1937,7 +1923,7 @@ const questionWordN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata tanya N5");
+                throw new Error("Gagal menyimpan tracking kata tanya ");
             }
         } else {
             if (status === "true" || status === true) {
@@ -1948,7 +1934,7 @@ const questionWordN5TrackingUserController = async (req, res) => {
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata tanya N5");
+                    throw new Error("Gagal memperbarui status kata tanya ");
                 }
             } else {
                 const { error: updateError } = await supabase
@@ -1958,14 +1944,14 @@ const questionWordN5TrackingUserController = async (req, res) => {
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata tanya N5");
+                    throw new Error("Gagal memperbarui status kata tanya ");
                 }
             }
         }
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata tanya N5",
+            message: "Berhasil menyelesaikan tracking kata tanya ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -1976,7 +1962,7 @@ const questionWordN5TrackingUserController = async (req, res) => {
     }
 };
 
-const conjunctionN5TrackingUserController = async (req, res) => {
+const conjunctionTrackingUserController = async (req, res) => {
     try {
         const { conjunction_id, status } = req.body;
         const userId = req.user.id;
@@ -1988,7 +1974,7 @@ const conjunctionN5TrackingUserController = async (req, res) => {
             .eq("other_word_id", conjunction_id);
 
         if (error) {
-            throw new Error("Gagal memeriksa kata hubung N5");
+            throw new Error("Gagal memeriksa kata hubung ");
         }
 
         if (data.length === 0) {
@@ -2001,7 +1987,7 @@ const conjunctionN5TrackingUserController = async (req, res) => {
                 });
 
             if (insertError) {
-                throw new Error("Gagal menyimpan tracking kata hubung N5");
+                throw new Error("Gagal menyimpan tracking kata hubung ");
             }
         } else {
             if (status === "true" || status === true) {
@@ -2012,7 +1998,7 @@ const conjunctionN5TrackingUserController = async (req, res) => {
                     .eq("other_word_id", conjunction_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata hubung N5");
+                    throw new Error("Gagal memperbarui status kata hubung ");
                 }
             } else {
                 const { error: updateError } = await supabase
@@ -2022,14 +2008,14 @@ const conjunctionN5TrackingUserController = async (req, res) => {
                     .eq("other_word_id", conjunction_id);
 
                 if (updateError) {
-                    throw new Error("Gagal memperbarui status kata hubung N5");
+                    throw new Error("Gagal memperbarui status kata hubung ");
                 }
             }
         }
 
         return res.status(200).json({
             error: false,
-            message: "Berhasil menyelesaikan tracking kata hubung N5",
+            message: "Berhasil menyelesaikan tracking kata hubung ",
         });
     } catch (err) {
         return res.status(500).json({
@@ -2045,31 +2031,31 @@ module.exports = {
     hiraganaTrackingUserController,
     katakanaTrackingUserController,
     basicConversationTrackingUserController,
-    kanjiN5TrackingUserController,
-    adjectiveN5TrackingUserController,
-    adverbN5TrackingUserController,
-    verbN5TrackingUserController,
-    nounActivityN5TrackingUserController,
-    nounAnimalplantN5TrackingUserController,
-    nounAuxnumberN5TrackingUserController,
-    nounBodyN5TrackingUserController,
-    nounCityN5TrackingUserController,
-    nounColorN5TrackingUserController,
-    nounFoodDrinkN5TrackingUserController,
-    nounHomeAppliancesN5TrackingUserController,
-    nounKosoadoN5TrackingUserController,
-    nounMediaN5TrackingUserController,
-    nounNaturalN5TrackingUserController,
-    nounNumberN5TrackingUserController,
-    nounOutfitN5TrackingUserController,
-    nounPeopleN5TrackingUserController,
-    nounPositionN5TrackingUserController,
-    nounRegionN5TrackingUserController,
-    nounSchoolN5TrackingUserController,
-    nounTimeN5TrackingUserController,
-    nounTrafficN5TrackingUserController,
-    nounWorkN5TrackingUserController,
-    questionWordN5TrackingUserController,
-    kanjiN5TrackingUserController,
-    conjunctionN5TrackingUserController,
+    kanjiTrackingUserController,
+    adjectiveTrackingUserController,
+    adverbTrackingUserController,
+    verbTrackingUserController,
+    nounActivityTrackingUserController,
+    nounAnimalplantTrackingUserController,
+    nounAuxnumberTrackingUserController,
+    nounBodyTrackingUserController,
+    nounCityTrackingUserController,
+    nounColorTrackingUserController,
+    nounFoodDrinkTrackingUserController,
+    nounHomeAppliancesTrackingUserController,
+    nounKosoadoTrackingUserController,
+    nounMediaTrackingUserController,
+    nounNaturalTrackingUserController,
+    nounNumberTrackingUserController,
+    nounOutfitTrackingUserController,
+    nounPeopleTrackingUserController,
+    nounPositionTrackingUserController,
+    nounRegionTrackingUserController,
+    nounSchoolTrackingUserController,
+    nounTimeTrackingUserController,
+    nounTrafficTrackingUserController,
+    nounWorkTrackingUserController,
+    questionWordTrackingUserController,
+    kanjiTrackingUserController,
+    conjunctionTrackingUserController,
 };

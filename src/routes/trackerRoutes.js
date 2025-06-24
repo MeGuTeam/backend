@@ -4,33 +4,33 @@ const {
     hiraganaTrackingUserController,
     katakanaTrackingUserController,
     basicConversationTrackingUserController,
-    kanjiN5TrackingUserController,
-    adjectiveN5TrackingUserController,
-    adverbN5TrackingUserController,
-    verbN5TrackingUserController,
-    nounActivityN5TrackingUserController,
-    nounAnimalplantN5TrackingUserController,
-    nounAuxnumberN5TrackingUserController,
-    nounBodyN5TrackingUserController,
-    nounCityN5TrackingUserController,
-    nounColorN5TrackingUserController,
-    nounFoodDrinkN5TrackingUserController,
-    nounHomeAppliancesN5TrackingUserController,
-    nounKosoadoN5TrackingUserController,
-    nounMediaN5TrackingUserController,
-    nounNaturalN5TrackingUserController,
-    nounNumberN5TrackingUserController,
-    nounOutfitN5TrackingUserController,
-    nounPeopleN5TrackingUserController,
-    nounPositionN5TrackingUserController,
-    nounRegionN5TrackingUserController,
-    nounSchoolN5TrackingUserController,
-    nounTimeN5TrackingUserController,
-    nounTrafficN5TrackingUserController,
-    nounWorkN5TrackingUserController,
-    questionWordN5TrackingUserController,
-    conjunctionN5TrackingUserController,
-} = require("../controllers/trackerN5Controller");
+    kanjiTrackingUserController,
+    adjectiveTrackingUserController,
+    adverbTrackingUserController,
+    verbTrackingUserController,
+    nounActivityTrackingUserController,
+    nounAnimalplantTrackingUserController,
+    nounAuxnumberTrackingUserController,
+    nounBodyTrackingUserController,
+    nounCityTrackingUserController,
+    nounColorTrackingUserController,
+    nounFoodDrinkTrackingUserController,
+    nounHomeAppliancesTrackingUserController,
+    nounKosoadoTrackingUserController,
+    nounMediaTrackingUserController,
+    nounNaturalTrackingUserController,
+    nounNumberTrackingUserController,
+    nounOutfitTrackingUserController,
+    nounPeopleTrackingUserController,
+    nounPositionTrackingUserController,
+    nounRegionTrackingUserController,
+    nounSchoolTrackingUserController,
+    nounTimeTrackingUserController,
+    nounTrafficTrackingUserController,
+    nounWorkTrackingUserController,
+    questionWordTrackingUserController,
+    conjunctionTrackingUserController,
+} = require("../controllers/trackerController");
 const middleware = require("../middleware/middleware");
 
 router.post("/tracker/particle", middleware, particleTrackingUserController);
@@ -42,126 +42,98 @@ router.post(
     basicConversationTrackingUserController
 );
 
-router.post("/tracker/kanji-n5", middleware, kanjiN5TrackingUserController);
-router.post(
-    "/tracker/adjective-n5",
-    middleware,
-    adjectiveN5TrackingUserController
-);
-router.post("/tracker/adverb-n5", middleware, adverbN5TrackingUserController);
-router.post("/tracker/verb-n5", middleware, verbN5TrackingUserController);
+router.post("/tracker/kanji", middleware, kanjiTrackingUserController);
+router.post("/tracker/adjective", middleware, adjectiveTrackingUserController);
+router.post("/tracker/adverb", middleware, adverbTrackingUserController);
+router.post("/tracker/verb", middleware, verbTrackingUserController);
 
 router.post(
-    "/tracker/noun-activity-n5",
+    "/tracker/noun-activity",
     middleware,
-    nounActivityN5TrackingUserController
+    nounActivityTrackingUserController
 );
 router.post(
-    "/tracker/noun-animalplant-n5",
+    "/tracker/noun-animalplant",
     middleware,
-    nounAnimalplantN5TrackingUserController
+    nounAnimalplantTrackingUserController
 );
 router.post(
-    "/tracker/noun-auxnumber-n5",
+    "/tracker/noun-auxnumber",
     middleware,
-    nounAuxnumberN5TrackingUserController
+    nounAuxnumberTrackingUserController
+);
+router.post("/tracker/noun-body", middleware, nounBodyTrackingUserController);
+router.post("/tracker/noun-city", middleware, nounCityTrackingUserController);
+router.post("/tracker/noun-color", middleware, nounColorTrackingUserController);
+router.post(
+    "/tracker/noun-fooddrink",
+    middleware,
+    nounFoodDrinkTrackingUserController
 );
 router.post(
-    "/tracker/noun-body-n5",
+    "/tracker/noun-homeappliances",
     middleware,
-    nounBodyN5TrackingUserController
+    nounHomeAppliancesTrackingUserController
 );
 router.post(
-    "/tracker/noun-city-n5",
+    "/tracker/noun-kosoado",
     middleware,
-    nounCityN5TrackingUserController
+    nounKosoadoTrackingUserController
+);
+router.post("/tracker/noun-media", middleware, nounMediaTrackingUserController);
+router.post(
+    "/tracker/noun-natural",
+    middleware,
+    nounNaturalTrackingUserController
 );
 router.post(
-    "/tracker/noun-color-n5",
+    "/tracker/noun-number",
     middleware,
-    nounColorN5TrackingUserController
+    nounNumberTrackingUserController
 );
 router.post(
-    "/tracker/noun-fooddrink-n5",
+    "/tracker/noun-outfit",
     middleware,
-    nounFoodDrinkN5TrackingUserController
+    nounOutfitTrackingUserController
 );
 router.post(
-    "/tracker/noun-homeappliances-n5",
+    "/tracker/noun-people",
     middleware,
-    nounHomeAppliancesN5TrackingUserController
+    nounPeopleTrackingUserController
 );
 router.post(
-    "/tracker/noun-kosoado-n5",
+    "/tracker/noun-position",
     middleware,
-    nounKosoadoN5TrackingUserController
+    nounPositionTrackingUserController
 );
 router.post(
-    "/tracker/noun-media-n5",
+    "/tracker/noun-region",
     middleware,
-    nounMediaN5TrackingUserController
+    nounRegionTrackingUserController
 );
 router.post(
-    "/tracker/noun-natural-n5",
+    "/tracker/noun-school",
     middleware,
-    nounNaturalN5TrackingUserController
+    nounSchoolTrackingUserController
 );
+router.post("/tracker/noun-time", middleware, nounTimeTrackingUserController);
 router.post(
-    "/tracker/noun-number-n5",
+    "/tracker/noun-traffic",
     middleware,
-    nounNumberN5TrackingUserController
+    nounTrafficTrackingUserController
 );
+router.post("/tracker/noun-work", middleware, nounWorkTrackingUserController);
+
 router.post(
-    "/tracker/noun-outfit-n5",
+    "/tracker/question-word",
     middleware,
-    nounOutfitN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-people-n5",
-    middleware,
-    nounPeopleN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-position-n5",
-    middleware,
-    nounPositionN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-region-n5",
-    middleware,
-    nounRegionN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-school-n5",
-    middleware,
-    nounSchoolN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-time-n5",
-    middleware,
-    nounTimeN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-traffic-n5",
-    middleware,
-    nounTrafficN5TrackingUserController
-);
-router.post(
-    "/tracker/noun-work-n5",
-    middleware,
-    nounWorkN5TrackingUserController
+    questionWordTrackingUserController
 );
 
 router.post(
-    "/tracker/question-word-n5",
+    "/tracker/conjunction",
     middleware,
-    questionWordN5TrackingUserController
-);
-
-router.post(
-    "/tracker/conjunction-n5",
-    middleware,
-    conjunctionN5TrackingUserController
+    conjunctionTrackingUserController
 );
 
 module.exports = router;
