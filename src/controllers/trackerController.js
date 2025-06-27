@@ -3,12 +3,12 @@ const supabase = require("../config/supabase");
 const particleTrackingUserController = async (req, res) => {
     try {
         const { particle_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("particles_tracker")
             .select("particle_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("particle_id", particle_id);
 
         if (error) {
@@ -17,9 +17,9 @@ const particleTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("particles_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     particle_id: particle_id,
                     status: true,
                 });
@@ -30,9 +30,9 @@ const particleTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
-                    .update({ status: false })
-                    .eq("user_id", userId)
+                    .from("particles_tracker")
+                    .update({ status: false, updated_at: new Date() })
+                    .eq("user_id", id)
                     .eq("particle_id", particle_id);
 
                 if (updateError) {
@@ -40,9 +40,9 @@ const particleTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("particles_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("particle_id", particle_id);
 
                 if (updateError) {
@@ -67,12 +67,12 @@ const particleTrackingUserController = async (req, res) => {
 const hiraganaTrackingUserController = async (req, res) => {
     try {
         const { hiragana_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("hiragana_tracker")
             .select("hiragana_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("hiragana_id", hiragana_id);
 
         if (error) {
@@ -81,9 +81,9 @@ const hiraganaTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("hiragana_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     hiragana_id: hiragana_id,
                     status: true,
                 });
@@ -94,9 +94,9 @@ const hiraganaTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("hiragana_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("hiragana_id", hiragana_id);
 
                 if (updateError) {
@@ -104,9 +104,9 @@ const hiraganaTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("hiragana_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("hiragana_id", hiragana_id);
 
                 if (updateError) {
@@ -131,12 +131,12 @@ const hiraganaTrackingUserController = async (req, res) => {
 const katakanaTrackingUserController = async (req, res) => {
     try {
         const { katakana_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("katakana_tracker")
             .select("katakana_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("katakana_id", katakana_id);
 
         if (error) {
@@ -145,9 +145,9 @@ const katakanaTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("katakana_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     katakana_id: katakana_id,
                     status: true,
                 });
@@ -158,9 +158,9 @@ const katakanaTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("katakana_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("katakana_id", katakana_id);
 
                 if (updateError) {
@@ -168,9 +168,9 @@ const katakanaTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("katakana_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("katakana_id", katakana_id);
 
                 if (updateError) {
@@ -195,12 +195,12 @@ const katakanaTrackingUserController = async (req, res) => {
 const basicConversationTrackingUserController = async (req, res) => {
     try {
         const { basic_conversation_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("basic_conversation_tracker")
             .select("basic_conversation_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("basic_conversation_id", basic_conversation_id);
 
         if (error) {
@@ -211,7 +211,7 @@ const basicConversationTrackingUserController = async (req, res) => {
             const { error: insertError } = await supabase
                 .from("tracking")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     basic_conversation_id: basic_conversation_id,
                     status: true,
                 });
@@ -222,9 +222,9 @@ const basicConversationTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("basic_conversation_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("basic_conversation_id", basic_conversation_id);
 
                 if (updateError) {
@@ -234,9 +234,9 @@ const basicConversationTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("basic_conversation_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("basic_conversation_id", basic_conversation_id);
 
                 if (updateError) {
@@ -263,11 +263,11 @@ const basicConversationTrackingUserController = async (req, res) => {
 const kanjiTrackingUserController = async (req, res) => {
     try {
         const { kanji_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
         const { data, error } = await supabase
-            .from("tracking")
+            .from("kanjis_tracker")
             .select("kanji_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("kanji_id", kanji_id);
 
         if (error) {
@@ -276,9 +276,9 @@ const kanjiTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("kanjis_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     kanji_id: kanji_id,
                     status: true,
                 });
@@ -289,9 +289,9 @@ const kanjiTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("kanjis_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("kanji_id", kanji_id);
 
                 if (updateError) {
@@ -299,9 +299,9 @@ const kanjiTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("kanjis_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("kanji_id", kanji_id);
 
                 if (updateError) {
@@ -326,12 +326,12 @@ const kanjiTrackingUserController = async (req, res) => {
 const adjectiveTrackingUserController = async (req, res) => {
     try {
         const { adjective_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("adjectives_tracker")
             .select("adjective_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("adjective_id", adjective_id);
 
         if (error) {
@@ -340,9 +340,9 @@ const adjectiveTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("adjectives_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     adjective_id: adjective_id,
                     status: true,
                 });
@@ -353,9 +353,9 @@ const adjectiveTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("adjectives_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("adjective_id", adjective_id);
 
                 if (updateError) {
@@ -363,9 +363,9 @@ const adjectiveTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("adjectives_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("adjective_id", adjective_id);
 
                 if (updateError) {
@@ -390,12 +390,12 @@ const adjectiveTrackingUserController = async (req, res) => {
 const adverbTrackingUserController = async (req, res) => {
     try {
         const { other_word_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("other_word_id", other_word_id);
 
         if (error) {
@@ -404,9 +404,9 @@ const adverbTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("other_words_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     other_word_id: other_word_id,
                     status: true,
                 });
@@ -417,9 +417,9 @@ const adverbTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
@@ -429,9 +429,9 @@ const adverbTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
@@ -458,12 +458,12 @@ const adverbTrackingUserController = async (req, res) => {
 const verbTrackingUserController = async (req, res) => {
     try {
         const { verb_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("verbs_tracker")
             .select("verb_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("verb_id", verb_id);
 
         if (error) {
@@ -472,9 +472,9 @@ const verbTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("verbs_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     verb_id: verb_id,
                     status: true,
                 });
@@ -485,9 +485,9 @@ const verbTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("verbs_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("verb_id", verb_id);
 
                 if (updateError) {
@@ -495,9 +495,9 @@ const verbTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("verbs_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("verb_id", verb_id);
 
                 if (updateError) {
@@ -522,12 +522,12 @@ const verbTrackingUserController = async (req, res) => {
 const nounActivityTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -536,9 +536,9 @@ const nounActivityTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -551,9 +551,9 @@ const nounActivityTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -563,9 +563,9 @@ const nounActivityTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -592,12 +592,12 @@ const nounActivityTrackingUserController = async (req, res) => {
 const nounAnimalplantTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -606,9 +606,9 @@ const nounAnimalplantTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -621,9 +621,9 @@ const nounAnimalplantTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -633,9 +633,9 @@ const nounAnimalplantTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -663,12 +663,12 @@ const nounAnimalplantTrackingUserController = async (req, res) => {
 const nounAuxnumberTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -677,9 +677,9 @@ const nounAuxnumberTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -692,9 +692,9 @@ const nounAuxnumberTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -704,9 +704,9 @@ const nounAuxnumberTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -733,12 +733,12 @@ const nounAuxnumberTrackingUserController = async (req, res) => {
 const nounBodyTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -747,9 +747,9 @@ const nounBodyTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -760,9 +760,9 @@ const nounBodyTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -772,9 +772,9 @@ const nounBodyTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -801,12 +801,12 @@ const nounBodyTrackingUserController = async (req, res) => {
 const nounCityTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -815,9 +815,9 @@ const nounCityTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -828,9 +828,9 @@ const nounCityTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -840,9 +840,9 @@ const nounCityTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -869,12 +869,12 @@ const nounCityTrackingUserController = async (req, res) => {
 const nounColorTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -883,9 +883,9 @@ const nounColorTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -896,9 +896,9 @@ const nounColorTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -908,9 +908,9 @@ const nounColorTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -937,12 +937,12 @@ const nounColorTrackingUserController = async (req, res) => {
 const nounFoodDrinkTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -951,9 +951,9 @@ const nounFoodDrinkTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -966,9 +966,9 @@ const nounFoodDrinkTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -978,9 +978,9 @@ const nounFoodDrinkTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1008,12 +1008,12 @@ const nounFoodDrinkTrackingUserController = async (req, res) => {
 const nounHomeAppliancesTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1024,9 +1024,9 @@ const nounHomeAppliancesTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1039,9 +1039,9 @@ const nounHomeAppliancesTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1051,9 +1051,9 @@ const nounHomeAppliancesTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1081,12 +1081,12 @@ const nounHomeAppliancesTrackingUserController = async (req, res) => {
 const nounKosoadoTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1095,9 +1095,9 @@ const nounKosoadoTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1108,9 +1108,9 @@ const nounKosoadoTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1120,9 +1120,9 @@ const nounKosoadoTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1149,12 +1149,12 @@ const nounKosoadoTrackingUserController = async (req, res) => {
 const nounMediaTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1163,9 +1163,9 @@ const nounMediaTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1176,9 +1176,9 @@ const nounMediaTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1188,9 +1188,9 @@ const nounMediaTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1217,12 +1217,12 @@ const nounMediaTrackingUserController = async (req, res) => {
 const nounNaturalTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1231,9 +1231,9 @@ const nounNaturalTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1244,9 +1244,9 @@ const nounNaturalTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1256,9 +1256,9 @@ const nounNaturalTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1285,12 +1285,12 @@ const nounNaturalTrackingUserController = async (req, res) => {
 const nounNumberTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1299,9 +1299,9 @@ const nounNumberTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1312,9 +1312,9 @@ const nounNumberTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1324,9 +1324,9 @@ const nounNumberTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1353,12 +1353,12 @@ const nounNumberTrackingUserController = async (req, res) => {
 const nounOutfitTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1367,9 +1367,9 @@ const nounOutfitTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1380,9 +1380,9 @@ const nounOutfitTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1392,9 +1392,9 @@ const nounOutfitTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1421,12 +1421,12 @@ const nounOutfitTrackingUserController = async (req, res) => {
 const nounPeopleTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1435,9 +1435,9 @@ const nounPeopleTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1448,9 +1448,9 @@ const nounPeopleTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1460,9 +1460,9 @@ const nounPeopleTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1489,12 +1489,12 @@ const nounPeopleTrackingUserController = async (req, res) => {
 const nounPositionTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1503,9 +1503,9 @@ const nounPositionTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1516,9 +1516,9 @@ const nounPositionTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1530,7 +1530,7 @@ const nounPositionTrackingUserController = async (req, res) => {
                 const { error: updateError } = await supabase
                     .from("tracking")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1557,12 +1557,12 @@ const nounPositionTrackingUserController = async (req, res) => {
 const nounRegionTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1571,9 +1571,9 @@ const nounRegionTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1584,9 +1584,9 @@ const nounRegionTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1596,9 +1596,9 @@ const nounRegionTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1625,12 +1625,12 @@ const nounRegionTrackingUserController = async (req, res) => {
 const nounSchoolTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1639,9 +1639,9 @@ const nounSchoolTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1652,9 +1652,9 @@ const nounSchoolTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1664,9 +1664,9 @@ const nounSchoolTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1693,12 +1693,12 @@ const nounSchoolTrackingUserController = async (req, res) => {
 const nounTimeTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1707,9 +1707,9 @@ const nounTimeTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1720,9 +1720,9 @@ const nounTimeTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1732,9 +1732,9 @@ const nounTimeTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1761,12 +1761,12 @@ const nounTimeTrackingUserController = async (req, res) => {
 const nounTrafficTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1775,9 +1775,9 @@ const nounTrafficTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1790,9 +1790,9 @@ const nounTrafficTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1802,9 +1802,9 @@ const nounTrafficTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1831,12 +1831,12 @@ const nounTrafficTrackingUserController = async (req, res) => {
 const nounWorkTrackingUserController = async (req, res) => {
     try {
         const { noun_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("noun_id", noun_id);
 
         if (error) {
@@ -1845,9 +1845,9 @@ const nounWorkTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("nouns_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     noun_id: noun_id,
                     status: true,
                 });
@@ -1860,9 +1860,9 @@ const nounWorkTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1872,9 +1872,9 @@ const nounWorkTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("nouns_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("noun_id", noun_id);
 
                 if (updateError) {
@@ -1901,12 +1901,12 @@ const nounWorkTrackingUserController = async (req, res) => {
 const questionWordTrackingUserController = async (req, res) => {
     try {
         const { other_word_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("other_word_id", other_word_id);
 
         if (error) {
@@ -1915,9 +1915,9 @@ const questionWordTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("other_words_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     other_word_id: other_word_id,
                     status: true,
                 });
@@ -1928,9 +1928,9 @@ const questionWordTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
@@ -1938,9 +1938,9 @@ const questionWordTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", other_word_id);
 
                 if (updateError) {
@@ -1965,12 +1965,12 @@ const questionWordTrackingUserController = async (req, res) => {
 const conjunctionTrackingUserController = async (req, res) => {
     try {
         const { conjunction_id, status } = req.body;
-        const userId = req.user.id;
+        const { id } = req.user;
 
         const { data, error } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status, user_id")
-            .eq("user_id", userId)
+            .eq("user_id", id)
             .eq("other_word_id", conjunction_id);
 
         if (error) {
@@ -1979,9 +1979,9 @@ const conjunctionTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("other_words_tracker")
                 .insert({
-                    user_id: userId,
+                    user_id: id,
                     other_word_id: conjunction_id,
                     status: true,
                 });
@@ -1992,9 +1992,9 @@ const conjunctionTrackingUserController = async (req, res) => {
         } else {
             if (status === "true" || status === true) {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: false })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", conjunction_id);
 
                 if (updateError) {
@@ -2002,9 +2002,9 @@ const conjunctionTrackingUserController = async (req, res) => {
                 }
             } else {
                 const { error: updateError } = await supabase
-                    .from("tracking")
+                    .from("other_words_tracker")
                     .update({ status: true })
-                    .eq("user_id", userId)
+                    .eq("user_id", id)
                     .eq("other_word_id", conjunction_id);
 
                 if (updateError) {

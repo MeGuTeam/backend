@@ -2,11 +2,18 @@ const supabase = require("../config/supabase");
 
 const kanjiN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: kanjiData, error: fetchError } = await supabase
             .from("kanjis")
             .select("kanji_id, character, meaning")
             .eq("level_id", "5")
             .order("kanji_id", { ascending: true });
+
+        const { data: tracker, error: trackerError } = await supabase
+            .from("kanjis_tracker")
+            .select("kanji_id")
+            .eq("user_id", id);
 
         if (fetchError) {
             throw new Error("Gagal mengambil data kanji");
@@ -17,9 +24,14 @@ const kanjiN5Controller = async (req, res) => {
             character: kanji.character,
         }));
 
+        const userCompletedKanjis = tracker.length;
+        const totalKanjis = kanjiData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kanji berhasil diambil",
+            userCompletedKanjis,
+            totalKanjis,
             data: datas,
         });
     } catch (err) {
@@ -40,7 +52,7 @@ const kanjiN5DetailsController = async (req, res) => {
             .order("kanji_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("kanjis_tracker")
             .select("kanji_id, status")
             .eq("user_id", req.user.id);
 
@@ -79,6 +91,8 @@ const kanjiN5DetailsController = async (req, res) => {
 
 const adjectiveN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: adjectiveData, error: fetchError } = await supabase
             .from("adjectives")
             .select("adjective_id, word, reading, meaning")
@@ -89,14 +103,28 @@ const adjectiveN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata sifat");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("adjectives_tracker")
+            .select("adjective_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata sifat");
+        }
+
         const datas = adjectiveData.map((adjective) => ({
             id: adjective.adjective_id,
             word: adjective.word,
         }));
 
+        const userCompletedAdjectives = tracker.length;
+        const totalAdjectives = adjectiveData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata sifat berhasil diambil",
+            userCompletedAdjectives,
+            totalAdjectives,
             data: datas,
         });
     } catch (err) {
@@ -117,7 +145,7 @@ const adjectiveN5DetailsController = async (req, res) => {
             .order("adjective_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("adjectives_tracker")
             .select("adjective_id, status")
             .eq("user_id", req.user.id);
 
@@ -157,9 +185,11 @@ const adjectiveN5DetailsController = async (req, res) => {
 
 const adverbN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: adverbData, error: fetchError } = await supabase
             .from("other_words")
-            .select("other_word_id, word, reading, meaning")
+            .select("other_word_id, word, reading, meaning, type")
             .eq("type", "adverb")
             .eq("level_id", "5")
             .order("other_word_id", { ascending: true });
@@ -167,6 +197,21 @@ const adverbN5Controller = async (req, res) => {
         if (fetchError) {
             throw new Error("Gagal mengambil data kata keterangan");
         }
+
+        const { data: tracker, error: trackerError } = await supabase
+            .from("other_words_tracker")
+            .select("other_word_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata keterangan");
+        }
+
+        const adverbIds = adverbData.map((adverb) => adverb.other_word_id);
+        const userCompletedAdverbs = tracker
+            ? tracker.filter((t) => adverbIds.includes(t.other_word_id)).length
+            : 0;
+        const totalAdverbs = adverbData.length;
 
         const datas = adverbData.map((adverb) => ({
             id: adverb.other_word_id,
@@ -176,6 +221,8 @@ const adverbN5Controller = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Data kata keterangan berhasil diambil",
+            userCompletedAdverbs,
+            totalAdverbs,
             data: datas,
         });
     } catch (err) {
@@ -197,7 +244,7 @@ const adverbN5DetailsController = async (req, res) => {
             .order("other_word_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status")
             .eq("user_id", req.user.id);
 
@@ -236,6 +283,8 @@ const adverbN5DetailsController = async (req, res) => {
 
 const verbN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: verbData, error: fetchError } = await supabase
             .from("verbs")
             .select("verb_id, word, reading, meaning")
@@ -246,6 +295,18 @@ const verbN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata kerja");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("verbs_tracker")
+            .select("verb_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata kerja");
+        }
+
+        const userCompletedVerbs = tracker.length;
+        const totalVerbs = verbData.length;
+
         const datas = verbData.map((verb) => ({
             id: verb.verb_id,
             word: verb.word,
@@ -254,6 +315,8 @@ const verbN5Controller = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Data kata kerja berhasil diambil",
+            userCompletedVerbs,
+            totalVerbs,
             data: datas,
         });
     } catch (err) {
@@ -274,7 +337,7 @@ const verbN5DetailsController = async (req, res) => {
             .order("verb_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("verbs_tracker")
             .select("verb_id, status")
             .eq("user_id", req.user.id);
 
@@ -313,6 +376,8 @@ const verbN5DetailsController = async (req, res) => {
 
 const nounActivityN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -323,14 +388,33 @@ const nounActivityN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda aktivitas");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda aktivitas"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda aktivitas berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -351,7 +435,7 @@ const nounActivityN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -390,6 +474,8 @@ const nounActivityN5DetailsController = async (req, res) => {
 
 const nounAnimalplantN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -402,14 +488,33 @@ const nounAnimalplantN5Controller = async (req, res) => {
             );
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda hewan dan tumbuhan"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda hewan dan tumbuhan berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -430,7 +535,7 @@ const nounAnimalplantN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -472,6 +577,8 @@ const nounAnimalplantN5DetailsController = async (req, res) => {
 
 const nounAuxnumberN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -482,6 +589,21 @@ const nounAuxnumberN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda angka");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda angka");
+        }
+
+        const nounsIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounsIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
@@ -490,6 +612,8 @@ const nounAuxnumberN5Controller = async (req, res) => {
         return res.status(200).json({
             error: false,
             message: "Data kata benda angka berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -510,7 +634,7 @@ const nounAuxnumberN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -549,6 +673,8 @@ const nounAuxnumberN5DetailsController = async (req, res) => {
 
 const nounBodyN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -559,14 +685,31 @@ const nounBodyN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda tubuh");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda tubuh");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda tubuh berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -587,7 +730,7 @@ const nounBodyN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -626,6 +769,8 @@ const nounBodyN5DetailsController = async (req, res) => {
 
 const nounCityN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -636,20 +781,38 @@ const nounCityN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda kota");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda kota");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda kota berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+
             data: null,
         });
     }
@@ -664,7 +827,7 @@ const nounCityN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -703,6 +866,8 @@ const nounCityN5DetailsController = async (req, res) => {
 
 const nounColorN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -713,14 +878,31 @@ const nounColorN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda warna");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda warna");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda warna berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -741,7 +923,7 @@ const nounColorN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -780,6 +962,8 @@ const nounColorN5DetailsController = async (req, res) => {
 
 const nounFoodDrinkN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -792,14 +976,33 @@ const nounFoodDrinkN5Controller = async (req, res) => {
             );
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda makanan dan minuman"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda makanan dan minuman berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -820,7 +1023,7 @@ const nounFoodDrinkN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -862,6 +1065,8 @@ const nounFoodDrinkN5DetailsController = async (req, res) => {
 
 const nounHomeAppliancesN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -874,14 +1079,33 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
             );
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda peralatan rumah tangga"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda peralatan rumah tangga berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -902,7 +1126,7 @@ const nounHomeAppliancesN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -944,6 +1168,8 @@ const nounHomeAppliancesN5DetailsController = async (req, res) => {
 
 const nounKosoadoN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -954,14 +1180,31 @@ const nounKosoadoN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda kosoado");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda kosoado");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda kosoado berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -982,7 +1225,7 @@ const nounKosoadoN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1021,6 +1264,8 @@ const nounKosoadoN5DetailsController = async (req, res) => {
 
 const nounMediaN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1031,14 +1276,31 @@ const nounMediaN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda media");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda media");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda media berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1059,7 +1321,7 @@ const nounMediaN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1098,6 +1360,8 @@ const nounMediaN5DetailsController = async (req, res) => {
 
 const nounNaturalN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1108,14 +1372,31 @@ const nounNaturalN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda alam");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda alam");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda alam berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1136,7 +1417,7 @@ const nounNaturalN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1175,6 +1456,8 @@ const nounNaturalN5DetailsController = async (req, res) => {
 
 const nounNumberN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1185,14 +1468,31 @@ const nounNumberN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda angka");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda angka");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda angka berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1213,7 +1513,7 @@ const nounNumberN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1252,6 +1552,8 @@ const nounNumberN5DetailsController = async (req, res) => {
 
 const nounOutfitN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1262,14 +1564,31 @@ const nounOutfitN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda pakaian");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda pakaian");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda pakaian berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1290,7 +1609,7 @@ const nounOutfitN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1329,6 +1648,8 @@ const nounOutfitN5DetailsController = async (req, res) => {
 
 const nounPeopleN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1339,14 +1660,31 @@ const nounPeopleN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda orang");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda orang");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda orang berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1367,7 +1705,7 @@ const nounPeopleN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1406,6 +1744,8 @@ const nounPeopleN5DetailsController = async (req, res) => {
 
 const nounPositionN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1416,14 +1756,31 @@ const nounPositionN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda posisi");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda posisi");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda posisi berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1444,7 +1801,7 @@ const nounPositionN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1483,6 +1840,8 @@ const nounPositionN5DetailsController = async (req, res) => {
 
 const nounRegionN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1493,14 +1852,31 @@ const nounRegionN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda wilayah");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda wilayah");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda wilayah berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1521,7 +1897,7 @@ const nounRegionN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1560,6 +1936,8 @@ const nounRegionN5DetailsController = async (req, res) => {
 
 const nounSchoolN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1570,14 +1948,31 @@ const nounSchoolN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda sekolah");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda sekolah");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda sekolah berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1598,7 +1993,7 @@ const nounSchoolN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1637,6 +2032,8 @@ const nounSchoolN5DetailsController = async (req, res) => {
 
 const nounTimeN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1647,14 +2044,31 @@ const nounTimeN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda waktu");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata benda waktu");
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda waktu berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1675,7 +2089,7 @@ const nounTimeN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1714,6 +2128,8 @@ const nounTimeN5DetailsController = async (req, res) => {
 
 const nounTrafficN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1724,14 +2140,33 @@ const nounTrafficN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda lalu lintas");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda lalu lintas"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda lalu lintas berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1752,7 +2187,7 @@ const nounTrafficN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1791,6 +2226,8 @@ const nounTrafficN5DetailsController = async (req, res) => {
 
 const nounWorkN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: nounData, error: fetchError } = await supabase
             .from("nouns")
             .select("noun_id, word, reading, meaning")
@@ -1801,14 +2238,33 @@ const nounWorkN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata benda pekerjaan");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("nouns_tracker")
+            .select("noun_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error(
+                "Gagal mengambil data tracker kata benda pekerjaan"
+            );
+        }
+
         const datas = nounData.map((noun) => ({
             id: noun.noun_id,
             word: noun.word,
         }));
 
+        const nounIds = nounData.map((noun) => noun.noun_id);
+        const userCompletedNouns = tracker
+            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
+            : 0;
+        const totalNouns = nounData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata benda pekerjaan berhasil diambil",
+            userCompletedNouns,
+            totalNouns,
             data: datas,
         });
     } catch (err) {
@@ -1829,7 +2285,7 @@ const nounWorkN5DetailsController = async (req, res) => {
             .order("noun_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("nouns_tracker")
             .select("noun_id, status")
             .eq("user_id", req.user.id);
 
@@ -1868,6 +2324,8 @@ const nounWorkN5DetailsController = async (req, res) => {
 
 const questionWordController = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: questionData, error: fetchError } = await supabase
             .from("other_words")
             .select("other_word_id, word, reading, meaning")
@@ -1879,14 +2337,34 @@ const questionWordController = async (req, res) => {
             throw new Error("Gagal mengambil data kata tanya");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("other_words_tracker")
+            .select("other_word_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata tanya");
+        }
+
         const datas = questionData.map((question) => ({
             id: question.other_word_id,
             word: question.word,
         }));
 
+        const otherWordIds = questionData.map(
+            (question) => question.other_word_id
+        );
+        const userCompletedQuestionWord = tracker
+            ? tracker.filter((t) => otherWordIds.includes(t.other_word_id))
+                  .length
+            : 0;
+        const totalQuestionWord = questionData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata tanya berhasil diambil",
+            userCompletedQuestionWord,
+            totalQuestionWord,
             data: datas,
         });
     } catch (err) {
@@ -1908,7 +2386,7 @@ const questionWordN5DetailsController = async (req, res) => {
             .order("other_word_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status")
             .eq("user_id", req.user.id);
 
@@ -1949,6 +2427,8 @@ const questionWordN5DetailsController = async (req, res) => {
 
 const conjunctionN5Controller = async (req, res) => {
     try {
+        const { id } = req.user;
+
         const { data: conjunctionData, error: fetchError } = await supabase
             .from("other_words")
             .select("other_word_id, word, reading, meaning")
@@ -1960,14 +2440,34 @@ const conjunctionN5Controller = async (req, res) => {
             throw new Error("Gagal mengambil data kata hubung");
         }
 
+        const { data: tracker, error: trackerError } = await supabase
+            .from("other_words_tracker")
+            .select("other_word_id")
+            .eq("user_id", id);
+
+        if (trackerError) {
+            throw new Error("Gagal mengambil data tracker kata hubung");
+        }
+
         const datas = conjunctionData.map((conjunction) => ({
             id: conjunction.other_word_id,
             word: conjunction.word,
         }));
 
+        const otherWordIds = conjunctionData.map(
+            (conjunction) => conjunction.other_word_id
+        );
+        const userCompletedConjunction = tracker
+            ? tracker.filter((t) => otherWordIds.includes(t.other_word_id))
+                  .length
+            : 0;
+        const totalConjunction = conjunctionData.length;
+
         return res.status(200).json({
             error: false,
             message: "Data kata hubung berhasil diambil",
+            userCompletedConjunction,
+            totalConjunction,
             data: datas,
         });
     } catch (err) {
@@ -1989,7 +2489,7 @@ const conjunctionN5DetailsController = async (req, res) => {
             .order("other_word_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("other_words_tracker")
             .select("other_word_id, status")
             .eq("user_id", req.user.id);
 

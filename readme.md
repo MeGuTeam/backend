@@ -1,6 +1,6 @@
-# Backend API - Aplikasi Pembelajaran Bahasa Jepang (Ikiban Nihongo)
+# Backend API - Aplikasi Pembelajaran Bahasa Jepang (MeGu)
 
-## � Prasyarat
+## 📋 Prasyarat
 
 Pastikan Anda sudah menginstall:
 
@@ -36,14 +36,58 @@ SUPABASE_API_KEY=your_supabase_api_key
 4. Jalankan aplikasi
 
 ```bash
+# Development mode (dengan auto-reload)
 npm run dev
+
+# Production mode
+npm start
 ```
 
 Server akan berjalan di `http://localhost:8000`
 
+## ⚡ Scripts Tersedia
+
+-   `npm start` - Menjalankan aplikasi dalam mode production
+-   `npm run dev` - Menjalankan aplikasi dalam mode development dengan nodemon
+-   `npm test` - Menjalankan test (belum diimplementasi)
+
+## 📦 Dependencies
+
+Project ini menggunakan dependencies berikut:
+
+### Production Dependencies
+
+-   **@supabase/supabase-js** - Client library untuk Supabase
+-   **bcrypt** - Library untuk hashing password
+-   **cors** - Middleware untuk mengatur Cross-Origin Resource Sharing
+-   **dotenv** - Untuk mengload environment variables
+-   **express** - Web framework untuk Node.js
+-   **jsonwebtoken** - Untuk implementasi JWT authentication
+-   **multer** - Middleware untuk handling multipart/form-data (file upload)
+
+### Dev Dependencies
+
+-   **nodemon** - Tool untuk auto-restart aplikasi saat development (perlu diinstall secara global atau tambahkan ke devDependencies)
+
+## 🔧 Konfigurasi
+
+### CORS Configuration
+
+Aplikasi ini dikonfigurasi untuk menerima request dari:
+
+-   **Origin**: `http://localhost:3000` (Frontend development server)
+-   **Methods**: GET, POST, PUT, DELETE
+-   **Credentials**: Enabled
+
+### File Upload Configuration
+
+-   Menggunakan **multer** dengan memory storage
+-   Support untuk upload avatar/profile picture
+-   File disimpan di Supabase Storage
+
 ## 📚 Dokumentasi Endpoint API
 
-### � Autentikasi
+### 🔥 Autentikasi
 
 #### POST `/register` - Registrasi Pengguna Baru
 
@@ -418,6 +462,8 @@ Semua endpoint tracking menggunakan format yang sama:
 
 ## 📋 Tabel Endpoint API
 
+### 🔥 Autentikasi
+
 | Method | Endpoint           | Deskripsi                | Auth Required |
 | ------ | ------------------ | ------------------------ | ------------- |
 | POST   | `/register`        | Registrasi pengguna baru | ❌            |
@@ -509,6 +555,12 @@ Semua endpoint tracking menggunakan format yang sama:
 | GET    | `/quiz/:quizzes_id`                     | Generate kuis dengan pertanyaan | ✅            |
 | PUT    | `/quiz/:quizzes_id/:question_id/answer` | Kirim jawaban kuis              | ✅            |
 | POST   | `/quiz/:quizzes_id/submit`              | Submit dan dapatkan nilai kuis  | ✅            |
+
+### 📊 Dashboard & Statistics
+
+| Method | Endpoint    | Deskripsi                          | Auth Required |
+| ------ | ----------- | ---------------------------------- | ------------- |
+| GET    | `/bar-home` | Ambil data statistik untuk beranda | ✅            |
 
 ### 🧩 Kuis
 
@@ -608,6 +660,22 @@ Semua endpoint tracking menggunakan format yang sama:
     "message": "Kuis berhasil diselesaikan",
     "data": {
         "score": "number"
+    }
+}
+```
+
+### 📊 Dashboard & Statistics
+
+#### GET `/bar-home` - Ambil Data Statistik untuk Beranda
+
+**Success Response (200):**
+
+```json
+{
+    "error": false,
+    "message": "Data statistik berhasil diambil",
+    "data": {
+        // Data statistik untuk dashboard beranda
     }
 }
 ```

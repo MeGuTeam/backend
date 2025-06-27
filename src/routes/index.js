@@ -6,6 +6,7 @@ const n5Router = require("./n5Routes");
 const basicSubjectRouter = require("./basicSubjectRoutes");
 const trackerRouter = require("./trackerRoutes");
 const quizRouter = require("./quizRoutes");
+const barRouter = require("./barRoutes");
 
 router.use(authRouter);
 router.use(profileRouter);
@@ -14,5 +15,6 @@ router.use(basicSubjectRouter);
 router.use(n5Router);
 router.use(trackerRouter);
 router.use(quizRouter);
+router.use(barRouter);
 
 module.exports = router;

@@ -48,7 +48,7 @@ const particleDetailsController = async (req, res) => {
             .order("particle_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("particles_tracker")
             .select("particle_id, status")
             .eq("user_id", req.user.id);
 
@@ -102,7 +102,7 @@ const hiraganaController = async (req, res) => {
             .order("hiragana_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("hiragana_tracker")
             .select("hiragana_id, status")
             .eq("user_id", req.user.id);
 
@@ -155,7 +155,7 @@ const katakanaController = async (req, res) => {
             .order("katakana_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("katakana_tracker")
             .select("katakana_id, status")
             .eq("user_id", req.user.id);
 
@@ -249,7 +249,7 @@ const basicConversationDetailsController = async (req, res) => {
             .order("basic_conversation_id", { ascending: true });
 
         const { data: tracker } = await supabase
-            .from("tracking")
+            .from("basic_conversation_tracker")
             .select("basic_conversation_id, status")
             .eq("user_id", req.user.id);
 
