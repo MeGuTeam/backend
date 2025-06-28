@@ -38,9 +38,14 @@ const particleController = async (req, res) => {
             };
         });
 
+        const userCompletedParticles = tracker ? tracker.length : 0;
+        const totalParticles = data.length;
+
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data partikel",
+            userCompletedParticles,
+            totalParticles,
             data: resultData,
         });
     } catch (err) {
@@ -91,9 +96,14 @@ const hiraganaController = async (req, res) => {
             };
         });
 
+        const userCompletedHiragana = tracker ? tracker.length : 0;
+        const totalHiragana = data.length;
+
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data hiragana",
+            userCompletedHiragana,
+            totalHiragana,
             data: result,
         });
     } catch (err) {
@@ -144,9 +154,14 @@ const katakanaController = async (req, res) => {
             };
         });
 
+        const userCompletedKatakana = tracker ? tracker.length : 0;
+        const totalKatakana = data.length;
+
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data katakana",
+            userCompletedKatakana,
+            totalKatakana,
             data: result,
         });
     } catch (err) {
@@ -186,7 +201,8 @@ const basicConversationController = async (req, res) => {
         const result = data.map((row) => {
             const trackerItem = tracker
                 ? tracker.find(
-                      (t) => t.basic_conversation_id === row.basic_conversation_id
+                      (t) =>
+                          t.basic_conversation_id === row.basic_conversation_id
                   )
                 : null;
             return {
@@ -200,9 +216,14 @@ const basicConversationController = async (req, res) => {
             };
         });
 
+        const userCompletedBasicConversation = tracker ? tracker.length : 0;
+        const totalBasicConversation = data.length;
+
         return res.status(200).json({
             error: false,
             message: "Berhasil mendapatkan data percakapan dasar",
+            userCompletedBasicConversation,
+            totalBasicConversation,
             data: result,
         });
     } catch (err) {
