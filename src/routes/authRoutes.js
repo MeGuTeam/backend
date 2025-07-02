@@ -6,8 +6,8 @@ const {
 } = require("../controllers/authController");
 const middleware = require("../middleware/middleware");
 
-router.post("/register", registerAuth);
-router.post("/login", loginAuth);
-router.post("/change-password", middleware, changePasswordAuth);
+router.post("/auth/register", registerAuth);
+router.post("/auth/login", loginAuth);
+router.post("/auth/change-password", middleware, changePasswordAuth);
 
 module.exports = router;
