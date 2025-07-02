@@ -209,7 +209,7 @@ const basicConversationTrackingUserController = async (req, res) => {
 
         if (data.length === 0) {
             const { error: insertError } = await supabase
-                .from("tracking")
+                .from("basic_conversation_tracker")
                 .insert({
                     user_id: id,
                     basic_conversation_id: basic_conversation_id,
