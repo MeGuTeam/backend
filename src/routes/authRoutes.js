@@ -8,6 +8,6 @@ const middleware = require("../middleware/middleware");
 
 router.post("/auth/register", registerAuth);
 router.post("/auth/login", loginAuth);
-router.post("/auth/change-password", middleware, changePasswordAuth);
+router.post("/change-password", middleware, changePasswordAuth);
 
 module.exports = router;
