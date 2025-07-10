@@ -61,15 +61,13 @@ const particleController = async (req, res) => {
 
 const hiraganaController = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
+
         const { data, error } = await supabase
             .from("hiragana")
             .select("*")
             .order("hiragana_id", { ascending: true });
-
-        const { data: tracker } = await supabase
-            .from("hiragana_tracker")
-            .select("hiragana_id, status")
-            .eq("user_id", req.user.id);
 
         if (error) {
             throw new Error("Gagal memeriksa hiragana");
@@ -83,7 +81,31 @@ const hiraganaController = async (req, res) => {
             });
         }
 
-        const result = data.map((row) => {
+        const { data: dataPaging, error: errorPaging } = await supabase
+            .from("hiragana")
+            .select("*")
+            .range((page - 1) * pageSize, page * pageSize - 1)
+            .order("hiragana_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("hiragana_tracker")
+            .select("hiragana_id, status")
+            .eq("user_id", req.user.id);
+
+        if (errorPaging) {
+            throw new Error("Gagal memeriksa paging hiragana");
+        }
+
+        if (dataPaging.length === 0 || !dataPaging) {
+            return res.status(404).json({
+                error: true,
+                message:
+                    "Tidak ada data hiragana yang ditemukan pada halaman ini",
+                data: null,
+            });
+        }
+
+        const result = dataPaging.map((row) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.hiragana_id === row.hiragana_id)
                 : null;
@@ -119,15 +141,13 @@ const hiraganaController = async (req, res) => {
 
 const katakanaController = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
+
         const { data, error } = await supabase
             .from("katakana")
             .select("*")
             .order("katakana_id", { ascending: true });
-
-        const { data: tracker } = await supabase
-            .from("katakana_tracker")
-            .select("katakana_id, status")
-            .eq("user_id", req.user.id);
 
         if (error) {
             throw new Error("Gagal memeriksa katakana");
@@ -141,7 +161,31 @@ const katakanaController = async (req, res) => {
             });
         }
 
-        const result = data.map((row) => {
+        const { data: dataPaging, error: errorPaging } = await supabase
+            .from("katakana")
+            .select("*")
+            .range((page - 1) * pageSize, page * pageSize - 1)
+            .order("katakana_id", { ascending: true });
+
+        const { data: tracker } = await supabase
+            .from("katakana_tracker")
+            .select("katakana_id, status")
+            .eq("user_id", req.user.id);
+
+        if (errorPaging) {
+            throw new Error("Gagal memeriksa paging katakana");
+        }
+
+        if (dataPaging.length === 0 || !dataPaging) {
+            return res.status(404).json({
+                error: true,
+                message:
+                    "Tidak ada data hiragana yang ditemukan pada halaman ini",
+                data: null,
+            });
+        }
+
+        const result = dataPaging.map((row) => {
             const trackerItem = tracker
                 ? tracker.find((t) => t.katakana_id === row.katakana_id)
                 : null;
@@ -165,10 +209,11 @@ const katakanaController = async (req, res) => {
             data: result,
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message:
+                err.message ||
+                "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
             data: null,
         });
     }
