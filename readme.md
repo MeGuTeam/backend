@@ -1,127 +1,28 @@
-# Backend API - Aplikasi Pembelajaran Bahasa Jepang (MeGu)
+# Backend API Documentation
 
-## 📋 Prasyarat
+## Base URL
 
-Pastikan Anda sudah menginstall:
-
--   Node.js (versi 14 atau lebih baru)
--   npm atau yarn
--   Akun Supabase
-
-## ⚙️ Instalasi
-
-1. Clone repository ini
-
-```bash
-git clone <repository-url>
-cd backend
+```
+http://localhost:PORT
 ```
 
-2. Install dependencies
+## Authentication
 
-```bash
-npm install
+Most endpoints require JWT token in Authorization header:
+
+```
+Authorization: Bearer <token>
 ```
 
-3. Buat file `.env` di root folder dan isi dengan konfigurasi berikut:
+---
 
-```env
-PORT=8000
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
-JWT_SECRET=your_jwt_secret_key
-SUPABASE_API_KEY=your_supabase_api_key
-```
+## Authentication Routes
 
-4. Jalankan aplikasi
+### POST /auth/register
 
-```bash
-# Development mode (dengan auto-reload)
-npm run dev
+Register new user
 
-# Production mode
-npm start
-```
-
-Server akan berjalan di `http://localhost:8000`
-
-## ⚡ Scripts Tersedia
-
--   `npm start` - Menjalankan aplikasi dalam mode production
--   `npm run dev` - Menjalankan aplikasi dalam mode development dengan nodemon
--   `npm test` - Menjalankan test (belum diimplementasi)
-
-## 📦 Dependencies
-
-Project ini menggunakan dependencies berikut:
-
-### Production Dependencies
-
--   **@supabase/supabase-js** - Client library untuk Supabase
--   **bcrypt** - Library untuk hashing password
--   **cors** - Middleware untuk mengatur Cross-Origin Resource Sharing
--   **dotenv** - Untuk mengload environment variables
--   **express** - Web framework untuk Node.js
--   **jsonwebtoken** - Untuk implementasi JWT authentication
--   **multer** - Middleware untuk handling multipart/form-data (file upload)
-
-### Dev Dependencies
-
--   **nodemon** - Tool untuk auto-restart aplikasi saat development (perlu diinstall secara global atau tambahkan ke devDependencies)
-
-## 🔧 Konfigurasi
-
-### CORS Configuration
-
-Aplikasi ini dikonfigurasi untuk menerima request dari:
-
--   **Origin**: `http://localhost:3000` (Frontend development server)
--   **Methods**: GET, POST, PUT, DELETE
--   **Credentials**: Enabled
-
-### File Upload Configuration
-
--   Menggunakan **multer** dengan memory storage
--   Support untuk upload avatar/profile picture
--   File disimpan di Supabase Storage
-
-## 📚 Dokumentasi Endpoint API
-
-### 🔥 Autentikasi
-
-#### POST `/register` - Registrasi Pengguna Baru
-
-**Request Body:**
-
-```json
-{
-    "username": "string", // 3-20 karakter, hanya huruf, angka, dan underscore
-    "password": "string" // Min 8 karakter, kombinasi huruf besar/kecil, angka, simbol
-}
-```
-
-**Success Response (201):**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil mendaftar"
-}
-```
-
-**Error Response (400/500):**
-
-```json
-{
-    "error": true,
-    "message": "Error message",
-    "data": null
-}
-```
-
-#### POST `/login` - Login Pengguna
-
-**Request Body:**
+**Payload:**
 
 ```json
 {
@@ -130,33 +31,57 @@ Aplikasi ini dikonfigurasi untuk menerima request dari:
 }
 ```
 
-**Success Response (200):**
+**Response:**
+
+```json
+{
+    "error": false,
+    "message": "Berhasil mendaftar"
+}
+```
+
+### POST /auth/login
+
+Login user
+
+**Payload:**
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+**Response:**
 
 ```json
 {
     "error": false,
     "message": "Login berhasil!",
     "data": {
-        "id": "integer",
+        "id": "uuid",
         "username": "string",
-        "profile_picture": "string|null",
-        "token": "string"
+        "profile_picture": "url|null",
+        "token": "jwt_token"
     }
 }
 ```
 
-#### POST `/change-password` - Ganti Password
+### POST /change-password
 
-**Request Body:**
+Change user password (requires auth)
+
+**Payload:**
 
 ```json
 {
     "oldPassword": "string",
-    "newPassword": "string" // Min 8 karakter, kombinasi huruf besar/kecil, angka, simbol
+    "newPassword": "string"
 }
 ```
 
-**Success Response (200):**
+**Response:**
 
 ```json
 {
@@ -166,407 +91,204 @@ Aplikasi ini dikonfigurasi untuk menerima request dari:
 }
 ```
 
-### 👤 Profil Pengguna
+---
 
-#### POST `/upload/avatar` - Upload Foto Profil
+## Profile Routes
 
-**Request:** Multipart form-data
+### GET /profile/:profileId
 
-```
-avatar: File (image file)
-```
+Get user profile (requires auth)
 
-**Success Response (200):**
+**Response:**
 
 ```json
 {
     "error": false,
-    "message": "Berhasil mengunggah avatar"
-}
-```
-
-#### GET `/avatar` - Ambil Avatar untuk Navbar
-
-**Success Response (200):**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil mengambil data avatar",
-    "data": {
-        "imageUrl": "string|null"
-    }
-}
-```
-
-#### GET `/profile/:profileId` - Ambil Data Profil Lengkap
-
-**Success Response (200):**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil mengambil data profil",
+    "message": "Data profil berhasil diambil",
     "data": {
         "username": "string",
-        "profile_picture": "string|null"
+        "profile_picture": "url|null"
     }
 }
 ```
 
-### 🌟 Materi Dasar
+### GET /navbar-profile
 
-#### GET `/particle` - Materi Partikel
+Get current user profile for navbar (requires auth)
 
-**Success Response (200):**
-
-```json
-{
-    "error": false,
-    "message": "Berhasil mendapatkan data partikel",
-    "data": [
-        {
-            "id": "integer",
-            "particle_name": "string"
-        }
-    ]
-}
-```
-
-#### GET `/particle/details` - Detail Materi Partikel
-
-**Success Response (200):**
+**Response:**
 
 ```json
 {
     "error": false,
-    "message": "Berhasil mendapatkan detail partikel",
-    "data": [
-        {
-            "id": "integer",
-            "romaji": "string",
-            "particle_name": "string",
-            "description": "string",
-            "example_sentence": "string",
-            "status": "boolean"
-        }
-    ]
+    "message": "Data profil berhasil diambil",
+    "data": {
+        "username": "string",
+        "profile_picture": "url|null"
+    }
 }
 ```
 
-#### GET `/hiragana` - Materi Hiragana
+---
 
-**Success Response (200):**
+## Image Upload Routes
+
+### POST /upload/avatar
+
+Upload user avatar (requires auth, multipart/form-data)
+
+**Payload:**
+
+```
+Form data with file field named "avatar"
+```
+
+**Response:**
 
 ```json
 {
     "error": false,
-    "message": "Berhasil mendapatkan data hiragana",
-    "data": [
-        {
-            "id": "integer",
-            "character": "string",
-            "romaji": "string",
-            "type": "string",
-            "status": "boolean"
-        }
-    ]
+    "message": "Gambar profil berhasil diunggah"
 }
 ```
 
-#### GET `/katakana` - Materi Katakana
+---
 
-**Success Response (200):**
+## Basic Subject Routes
 
-```json
-{
-    "error": false,
-    "message": "Berhasil mendapatkan data katakana",
-    "data": [
-        {
-            "id": "integer",
-            "character": "string",
-            "romaji": "string",
-            "type": "string",
-            "status": "boolean"
-        }
-    ]
-}
-```
+### GET /particle
 
-#### GET `/basic-conversation` - Percakapan Dasar
+Get particles data (requires auth)
 
-**Success Response (200):**
+### GET /hiragana
 
-```json
-{
-    "error": false,
-    "message": "Berhasil mendapatkan data percakapan dasar",
-    "data": [
-        {
-            "id": "integer",
-            "word": "string",
-            "reading": "string",
-            "meaning": "string"
-        }
-    ]
-}
-```
+Get hiragana data (requires auth)
 
-#### GET `/basic-conversation/details` - Detail Percakapan Dasar
+### GET /katakana
 
-**Success Response (200):**
+Get katakana data (requires auth)
 
-```json
-{
-    "error": false,
-    "message": "Berhasil mendapatkan detail percakapan dasar",
-    "data": [
-        {
-            "id": "integer",
-            "word": "string",
-            "reading": "string",
-            "meaning": "string",
-            "type": "string",
-            "example_sentence": "string",
-            "status": "boolean"
-        }
-    ]
-}
-```
+### GET /basic-conversation
 
-### 📝 Materi Level N5
+Get basic conversation data (requires auth)
 
-Semua endpoint N5 memiliki format response yang sama:
+---
 
-**Success Response (200):**
+## N5 Level Routes
 
-```json
-{
-    "error": false,
-    "message": "Data [jenis materi] berhasil diambil",
-    "data": [
-        {
-            "id": "integer",
-            "character": "string" // Nama field bervariasi sesuai jenis materi
-        }
-    ]
-}
-```
+### GET /kanji-n5
 
-**Contoh untuk berbagai jenis materi:**
+Get N5 kanji data (requires auth)
 
--   **Kanji N5**: `character` (karakter kanji)
--   **Adjective N5**: `character` (kata sifat)
--   **Verb N5**: `character` (kata kerja)
--   **Noun Categories**: `character` (kata benda)
+### GET /adjective-n5
 
-#### Detail Routes N5
+Get N5 adjective data (requires auth)
 
-Semua materi N5 juga memiliki endpoint details dengan format:
+### GET /adverb-n5
 
-**GET `/[materi]-n5-details`** - Detail materi dengan status tracking
+Get N5 adverb data (requires auth)
 
-**Success Response (200):**
+### GET /verb-n5
 
-```json
-{
-    "error": false,
-    "message": "Detail data [jenis materi] berhasil diambil",
-    "data": [
-        {
-            "id": "integer",
-            "romaji": "string",
-            "character": "string",
-            "meaning": "string",
-            "status": "boolean"
-        }
-    ]
-}
-```
+Get N5 verb data (requires auth)
 
-**Contoh tambahan field untuk berbagai jenis materi:**
+### GET /noun-activity-n5
 
--   **Kanji N5**: `onyomi`, `kunyomi`
--   **Adjective N5**: (tidak ada field tambahan)
--   **Verb N5**: (tidak ada field tambahan)
--   **Noun Categories**: (tidak ada field tambahan)
+Get N5 activity noun data (requires auth)
 
-### 📊 Tracking Progress
+### GET /noun-animalplant-n5
 
-Semua endpoint tracking menggunakan format yang sama:
+Get N5 animal/plant noun data (requires auth)
 
-#### POST `/tracker/[materi]` - Tracking Progress
+### GET /noun-auxnumber-n5
 
-**Request Body:**
+Get N5 auxiliary number noun data (requires auth)
 
-```json
-{
-    "[materi]_id": "integer", // ID item yang di-track
-    "status": "boolean" // Status tracking saat ini
-}
-```
+### GET /noun-body-n5
 
-**Contoh Request Body untuk berbagai materi:**
+Get N5 body noun data (requires auth)
 
-```json
-// Tracking Particle
-{
-  "particle_id": 1,
-  "status": true
-}
+### GET /noun-city-n5
 
-// Tracking Hiragana
-{
-  "hiragana_id": 5,
-  "status": false
-}
+Get N5 city noun data (requires auth)
 
-// Tracking Kanji N5
-{
-  "kanji_id": 10,
-  "status": true
-}
+### GET /noun-color-n5
 
-// Tracking Noun Activity N5
-{
-  "noun_activity_id": 3,
-  "status": true
-}
+Get N5 color noun data (requires auth)
 
-// Tracking Conjunction N5
-{
-  "conjunction_id": 2,
-  "status": true
-}
-```
+### GET /noun-fooddrink-n5
 
-**Success Response (200):**
+Get N5 food/drink noun data (requires auth)
 
-```json
-{
-    "error": false,
-    "message": "Berhasil menyelesaikan tracking [jenis materi]"
-}
-```
+### GET /noun-homeappliances-n5
 
-**Error Response (500):**
+Get N5 home appliances noun data (requires auth)
 
-```json
-{
-    "error": true,
-    "message": "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
-    "data": null
-}
-```
+### GET /noun-kosoado-n5
 
-## 📋 Tabel Endpoint API
+Get N5 kosoado noun data (requires auth)
 
-### 🔥 Autentikasi
+### GET /noun-media-n5
 
-| Method | Endpoint           | Deskripsi                | Auth Required |
-| ------ | ------------------ | ------------------------ | ------------- |
-| POST   | `/register`        | Registrasi pengguna baru | ❌            |
-| POST   | `/login`           | Login pengguna           | ❌            |
-| POST   | `/change-password` | Ganti password           | ✅            |
+Get N5 media noun data (requires auth)
 
-### 👤 Profil Pengguna
+### GET /noun-natural-n5
 
-| Method | Endpoint              | Deskripsi                 | Auth Required |
-| ------ | --------------------- | ------------------------- | ------------- |
-| POST   | `/upload/avatar`      | Upload foto profil        | ✅            |
-| GET    | `/avatar`             | Ambil avatar untuk navbar | ✅            |
-| GET    | `/profile/:profileId` | Ambil data profil lengkap | ✅            |
+Get N5 natural noun data (requires auth)
 
-### 🌟 Materi Dasar
+### GET /noun-number-n5
 
-| Method | Endpoint                      | Deskripsi                     | Auth Required |
-| ------ | ----------------------------- | ----------------------------- | ------------- |
-| GET    | `/particle`                   | Materi partikel bahasa Jepang | ✅            |
-| GET    | `/particle/details`           | Detail materi partikel        | ✅            |
-| GET    | `/hiragana`                   | Materi huruf Hiragana         | ✅            |
-| GET    | `/katakana`                   | Materi huruf Katakana         | ✅            |
-| GET    | `/basic-conversation`         | Percakapan dasar              | ✅            |
-| GET    | `/basic-conversation/details` | Detail percakapan dasar       | ✅            |
+Get N5 number noun data (requires auth)
 
-### 📝 Materi Level N5
+### GET /noun-outfit-n5
 
-| Method | Endpoint                          | Deskripsi                           | Auth Required |
-| ------ | --------------------------------- | ----------------------------------- | ------------- |
-| GET    | `/kanji-n5`                       | Kanji level N5                      | ✅            |
-| GET    | `/kanji-n5-details`               | Detail Kanji level N5               | ✅            |
-| GET    | `/adjective-n5`                   | Kata sifat level N5                 | ✅            |
-| GET    | `/adjective-n5-details`           | Detail kata sifat level N5          | ✅            |
-| GET    | `/adverb-n5`                      | Kata keterangan level N5            | ✅            |
-| GET    | `/adverb-n5-details`              | Detail kata keterangan level N5     | ✅            |
-| GET    | `/verb-n5`                        | Kata kerja level N5                 | ✅            |
-| GET    | `/verb-n5-details`                | Detail kata kerja level N5          | ✅            |
-| GET    | `/question-word-n5`               | Kata tanya level N5                 | ✅            |
-| GET    | `/question-word-n5-details`       | Detail kata tanya level N5          | ✅            |
-| GET    | `/conjunction-n5`                 | Kata sambung level N5               | ✅            |
-| GET    | `/conjunction-n5-details`         | Detail kata sambung level N5        | ✅            |
-| GET    | `/noun-activity-n5`               | Kata benda aktivitas                | ✅            |
-| GET    | `/noun-activity-n5-details`       | Detail kata benda aktivitas         | ✅            |
-| GET    | `/noun-animalplant-n5`            | Kata benda hewan & tumbuhan         | ✅            |
-| GET    | `/noun-animalplant-n5-details`    | Detail kata benda hewan & tumbuhan  | ✅            |
-| GET    | `/noun-auxnumber-n5`              | Kata benda angka bantu              | ✅            |
-| GET    | `/noun-auxnumber-n5-details`      | Detail kata benda angka bantu       | ✅            |
-| GET    | `/noun-body-n5`                   | Kata benda bagian tubuh             | ✅            |
-| GET    | `/noun-body-n5-details`           | Detail kata benda bagian tubuh      | ✅            |
-| GET    | `/noun-city-n5`                   | Kata benda kota                     | ✅            |
-| GET    | `/noun-city-n5-details`           | Detail kata benda kota              | ✅            |
-| GET    | `/noun-color-n5`                  | Kata benda warna                    | ✅            |
-| GET    | `/noun-color-n5-details`          | Detail kata benda warna             | ✅            |
-| GET    | `/noun-fooddrink-n5`              | Kata benda makanan & minuman        | ✅            |
-| GET    | `/noun-fooddrink-n5-details`      | Detail kata benda makanan & minuman | ✅            |
-| GET    | `/noun-homeappliances-n5`         | Kata benda peralatan rumah          | ✅            |
-| GET    | `/noun-homeappliances-n5-details` | Detail kata benda peralatan rumah   | ✅            |
-| GET    | `/noun-kosoado-n5`                | Kata benda kosoado                  | ✅            |
-| GET    | `/noun-kosoado-n5-details`        | Detail kata benda kosoado           | ✅            |
-| GET    | `/noun-media-n5`                  | Kata benda media                    | ✅            |
-| GET    | `/noun-media-n5-details`          | Detail kata benda media             | ✅            |
-| GET    | `/noun-natural-n5`                | Kata benda alam                     | ✅            |
-| GET    | `/noun-natural-n5-details`        | Detail kata benda alam              | ✅            |
-| GET    | `/noun-number-n5`                 | Kata benda angka                    | ✅            |
-| GET    | `/noun-number-n5-details`         | Detail kata benda angka             | ✅            |
-| GET    | `/noun-outfit-n5`                 | Kata benda pakaian                  | ✅            |
-| GET    | `/noun-outfit-n5-details`         | Detail kata benda pakaian           | ✅            |
-| GET    | `/noun-people-n5`                 | Kata benda orang                    | ✅            |
-| GET    | `/noun-people-n5-details`         | Detail kata benda orang             | ✅            |
-| GET    | `/noun-position-n5`               | Kata benda posisi                   | ✅            |
-| GET    | `/noun-position-n5-details`       | Detail kata benda posisi            | ✅            |
-| GET    | `/noun-region-n5`                 | Kata benda wilayah                  | ✅            |
-| GET    | `/noun-region-n5-details`         | Detail kata benda wilayah           | ✅            |
-| GET    | `/noun-school-n5`                 | Kata benda sekolah                  | ✅            |
-| GET    | `/noun-school-n5-details`         | Detail kata benda sekolah           | ✅            |
-| GET    | `/noun-time-n5`                   | Kata benda waktu                    | ✅            |
-| GET    | `/noun-time-n5-details`           | Detail kata benda waktu             | ✅            |
-| GET    | `/noun-traffic-n5`                | Kata benda transportasi             | ✅            |
-| GET    | `/noun-traffic-n5-details`        | Detail kata benda transportasi      | ✅            |
-| GET    | `/noun-work-n5`                   | Kata benda pekerjaan                | ✅            |
-| GET    | `/noun-work-n5-details`           | Detail kata benda pekerjaan         | ✅            |
+Get N5 outfit noun data (requires auth)
 
-### 🧩 Kuis
+### GET /noun-people-n5
 
-| Method | Endpoint                                | Deskripsi                       | Auth Required |
-| ------ | --------------------------------------- | ------------------------------- | ------------- |
-| GET    | `/quiz-categories`                      | Ambil kategori kuis             | ✅            |
-| GET    | `/quiz/:quiz_category_id/:level_id`     | Ambil daftar kuis               | ✅            |
-| GET    | `/quiz/:quizzes_id`                     | Generate kuis dengan pertanyaan | ✅            |
-| PUT    | `/quiz/:quizzes_id/:question_id/answer` | Kirim jawaban kuis              | ✅            |
-| POST   | `/quiz/:quizzes_id/submit`              | Submit dan dapatkan nilai kuis  | ✅            |
+Get N5 people noun data (requires auth)
 
-### 📊 Dashboard & Statistics
+### GET /noun-position-n5
 
-| Method | Endpoint    | Deskripsi                          | Auth Required |
-| ------ | ----------- | ---------------------------------- | ------------- |
-| GET    | `/bar-home` | Ambil data statistik untuk beranda | ✅            |
+Get N5 position noun data (requires auth)
 
-### 🧩 Kuis
+### GET /noun-region-n5
 
-#### GET `/quiz-categories` - Ambil Kategori Kuis
+Get N5 region noun data (requires auth)
 
-**Success Response (200):**
+### GET /noun-school-n5
+
+Get N5 school noun data (requires auth)
+
+### GET /noun-time-n5
+
+Get N5 time noun data (requires auth)
+
+### GET /noun-traffic-n5
+
+Get N5 traffic noun data (requires auth)
+
+### GET /noun-work-n5
+
+Get N5 work noun data (requires auth)
+
+### GET /question-word-n5
+
+Get N5 question word data (requires auth)
+
+### GET /conjunction-n5
+
+Get N5 conjunction data (requires auth)
+
+---
+
+## Quiz Routes
+
+### GET /quiz-categories
+
+Get quiz categories (requires auth)
+
+**Response:**
 
 ```json
 {
@@ -574,16 +296,18 @@ Semua endpoint tracking menggunakan format yang sama:
     "message": "Kategori kuis berhasil diambil",
     "data": [
         {
-            "id": "integer",
+            "quiz_category_id": "uuid",
             "category": "string"
         }
     ]
 }
 ```
 
-#### GET `/quiz/:quiz_category_id/:level_id` - Ambil Daftar Kuis
+### GET /quiz/:quiz_category_id/:level_id
 
-**Success Response (200):**
+Get quizzes by category and level (requires auth)
+
+**Response:**
 
 ```json
 {
@@ -591,7 +315,7 @@ Semua endpoint tracking menggunakan format yang sama:
     "message": "Kuis berhasil diambil",
     "data": [
         {
-            "quizzes_id": "integer",
+            "quizzes_id": "uuid",
             "title": "string",
             "category": "string",
             "level": "string"
@@ -600,27 +324,29 @@ Semua endpoint tracking menggunakan format yang sama:
 }
 ```
 
-#### GET `/quiz/:quizzes_id` - Generate Kuis dengan Pertanyaan
+### GET /quiz/:quizzes_id
 
-**Success Response (200):**
+Generate quiz with questions (requires auth)
+
+**Response:**
 
 ```json
 {
     "error": false,
     "message": "Kuis berhasil dibuat",
     "data": {
-        "quizzes_id": "integer",
+        "quizzes_id": "uuid",
         "title": "string",
         "category": "string",
         "level": "string",
         "questions": [
             {
-                "question_id": "integer",
+                "question_id": "uuid",
                 "question_text": "string",
                 "utils": "string|null",
                 "options": [
                     {
-                        "option_id": "integer",
+                        "option_id": "uuid",
                         "option_text": "string"
                     }
                 ]
@@ -630,17 +356,19 @@ Semua endpoint tracking menggunakan format yang sama:
 }
 ```
 
-#### PUT `/quiz/:quizzes_id/:question_id/answer` - Kirim Jawaban Kuis
+### PUT /quiz/:quizzes_id/:question_id/answer
 
-**Request Body:**
+Submit answer for question (requires auth)
+
+**Payload:**
 
 ```json
 {
-    "option_id": "integer"
+    "option_id": "uuid"
 }
 ```
 
-**Success Response (200):**
+**Response:**
 
 ```json
 {
@@ -650,75 +378,109 @@ Semua endpoint tracking menggunakan format yang sama:
 }
 ```
 
-#### POST `/quiz/:quizzes_id/submit` - Submit dan Dapatkan Nilai Kuis
+### POST /quiz/:quizzes_id/submit
 
-**Success Response (200):**
+Submit quiz and get score (requires auth)
+
+**Response:**
 
 ```json
 {
     "error": false,
     "message": "Kuis berhasil diselesaikan",
     "data": {
-        "score": "number"
+        "score": 85.5
     }
 }
 ```
 
-### 📊 Dashboard & Statistics
+---
 
-#### GET `/bar-home` - Ambil Data Statistik untuk Beranda
+## Tracker Routes
 
-**Success Response (200):**
+All tracker routes require authentication and follow the same pattern:
+
+**Payload:**
+
+```json
+{
+  "particle_id": "uuid", // or respective _id field
+  "status": boolean
+}
+```
+
+**Response:**
 
 ```json
 {
     "error": false,
-    "message": "Data statistik berhasil diambil",
-    "data": {
-        // Data statistik untuk dashboard beranda
-    }
+    "message": "Berhasil menyelesaikan tracking [type]"
 }
 ```
 
-### 📊 Tracking Progress Pengguna
+### Basic Subject Trackers
 
-| Method | Endpoint                       | Deskripsi                                | Auth Required |
-| ------ | ------------------------------ | ---------------------------------------- | ------------- |
-| POST   | `/tracker/particle`            | Tracking progress partikel               | ✅            |
-| POST   | `/tracker/hiragana`            | Tracking progress hiragana               | ✅            |
-| POST   | `/tracker/katakana`            | Tracking progress katakana               | ✅            |
-| POST   | `/tracker/basic-conversation`  | Tracking progress percakapan dasar       | ✅            |
-| POST   | `/tracker/kanji`               | Tracking progress kanji                  | ✅            |
-| POST   | `/tracker/adjective`           | Tracking progress kata sifat             | ✅            |
-| POST   | `/tracker/adverb`              | Tracking progress kata keterangan        | ✅            |
-| POST   | `/tracker/verb`                | Tracking progress kata kerja             | ✅            |
-| POST   | `/tracker/noun-activity`       | Tracking progress kata benda aktivitas   | ✅            |
-| POST   | `/tracker/noun-animalplant`    | Tracking progress kata benda hewan       | ✅            |
-| POST   | `/tracker/noun-auxnumber`      | Tracking progress kata benda angka bantu | ✅            |
-| POST   | `/tracker/noun-body`           | Tracking progress kata benda tubuh       | ✅            |
-| POST   | `/tracker/noun-city`           | Tracking progress kata benda kota        | ✅            |
-| POST   | `/tracker/noun-color`          | Tracking progress kata benda warna       | ✅            |
-| POST   | `/tracker/noun-fooddrink`      | Tracking progress kata benda makanan     | ✅            |
-| POST   | `/tracker/noun-homeappliances` | Tracking progress kata benda peralatan   | ✅            |
-| POST   | `/tracker/noun-kosoado`        | Tracking progress kata benda kosoado     | ✅            |
-| POST   | `/tracker/noun-media`          | Tracking progress kata benda media       | ✅            |
-| POST   | `/tracker/noun-natural`        | Tracking progress kata benda alam        | ✅            |
-| POST   | `/tracker/noun-number`         | Tracking progress kata benda angka       | ✅            |
-| POST   | `/tracker/noun-outfit`         | Tracking progress kata benda pakaian     | ✅            |
-| POST   | `/tracker/noun-people`         | Tracking progress kata benda orang       | ✅            |
-| POST   | `/tracker/noun-position`       | Tracking progress kata benda posisi      | ✅            |
-| POST   | `/tracker/noun-region`         | Tracking progress kata benda wilayah     | ✅            |
-| POST   | `/tracker/noun-school`         | Tracking progress kata benda sekolah     | ✅            |
-| POST   | `/tracker/noun-time`           | Tracking progress kata benda waktu       | ✅            |
-| POST   | `/tracker/noun-traffic`        | Tracking progress kata benda lalu lintas | ✅            |
-| POST   | `/tracker/noun-work`           | Tracking progress kata benda pekerjaan   | ✅            |
-| POST   | `/tracker/question-word`       | Tracking progress kata tanya             | ✅            |
-| POST   | `/tracker/conjunction`         | Tracking progress kata sambung           | ✅            |
+-   POST /tracker/particle
+-   POST /tracker/hiragana
+-   POST /tracker/katakana
+-   POST /tracker/basic-conversation
 
-## 🔒 Format Autentikasi
+### N5 Trackers
 
-Semua endpoint yang memerlukan autentikasi harus menyertakan header:
+-   POST /tracker/kanji
+-   POST /tracker/adjective
+-   POST /tracker/adverb
+-   POST /tracker/verb
+-   POST /tracker/noun-activity
+-   POST /tracker/noun-animalplant
+-   POST /tracker/noun-auxnumber
+-   POST /tracker/noun-body
+-   POST /tracker/noun-city
+-   POST /tracker/noun-color
+-   POST /tracker/noun-fooddrink
+-   POST /tracker/noun-homeappliances
+-   POST /tracker/noun-kosoado
+-   POST /tracker/noun-media
+-   POST /tracker/noun-natural
+-   POST /tracker/noun-number
+-   POST /tracker/noun-outfit
+-   POST /tracker/noun-people
+-   POST /tracker/noun-position
+-   POST /tracker/noun-region
+-   POST /tracker/noun-school
+-   POST /tracker/noun-time
+-   POST /tracker/noun-traffic
+-   POST /tracker/noun-work
+-   POST /tracker/question-word
+-   POST /tracker/conjunction
 
+---
+
+## Bar Routes
+
+### GET /bar-home
+
+Get home bar data (requires auth)
+
+---
+
+## Error Response Format
+
+All endpoints return errors in this format:
+
+```json
+{
+    "error": true,
+    "message": "Error description",
+    "data": null
+}
 ```
-Authorization: Bearer <jwt-token>
-```
+
+Common HTTP status codes:
+
+-   200: Success
+-   201: Created
+-   400: Bad Request
+-   401: Unauthorized
+-   404: Not Found
+-   500: Internal Server Error
