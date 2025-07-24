@@ -5,7 +5,7 @@ const {
     validateInput,
     validateUsername,
     validatePassword,
-} = require("../utils/validateInput");
+} = require("../utils");
 
 const registerAuth = async (req, res) => {
     const { username, password } = req.body;
@@ -228,7 +228,6 @@ const changePasswordAuth = async (req, res) => {
             .from("users")
             .update({
                 password: hashedPassword,
-                updated_at: new Date().toISOString(),
             })
             .eq("user_id", id);
 
@@ -244,7 +243,7 @@ const changePasswordAuth = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             error: true,
-            message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+            message: error.message,
             data: null,
         });
     }

@@ -1,39 +1,9 @@
 const supabase = require("../config/supabase");
+const { getProgressInfo, nounTypeMapping } = require("../utils");
 
 const homeBarController = async (req, res) => {
     try {
         const { id } = req.user;
-
-        const getProgressInfo = (trackData, options = {}) => {
-            if (!trackData || trackData.length === 0)
-                return { finished: 0, lastProgress: null, subCategory: null };
-            const finishedItems = trackData.filter(
-                (item) => item.status === true
-            );
-            const finished = finishedItems.length;
-            let lastProgress = null;
-            let subCategory = null;
-            if (finishedItems.length > 0) {
-                const lastItem = finishedItems
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            new Date(b.updated_at) - new Date(a.updated_at)
-                    )[0];
-                lastProgress = lastItem.updated_at;
-
-                if (
-                    options.relationTypeField &&
-                    lastItem[options.relationTypeField]
-                ) {
-                    subCategory =
-                        lastItem[options.relationTypeField].type || null;
-                } else {
-                    subCategory = lastItem.type || null;
-                }
-            }
-            return { finished, lastProgress, subCategory };
-        };
 
         const [
             { data: adjectivesTrack, error: adjectivesTrackError },
@@ -46,7 +16,7 @@ const homeBarController = async (req, res) => {
             { data: particlesTrack, error: particlesTrackError },
             { data: particlesData, error: particlesDataError },
             { data: kanjiTrack, error: kanjiTrackError },
-            { data: kanjiData, error: kanjiDataError },
+            { data: kanjiDataN5, error: kanjiDataN5Error },
             { data: hiraganaTrack, error: hiraganaTrackError },
             { data: hiraganaData, error: hiraganaDataError },
             { data: katakanaTrack, error: katakanaTrackError },
@@ -75,7 +45,7 @@ const homeBarController = async (req, res) => {
                 .from("kanjis_tracker")
                 .select("kanji_id, status, updated_at")
                 .eq("user_id", id),
-            supabase.from("kanjis").select("kanji_id"),
+            supabase.from("kanjis").select("kanji_id").eq("level_id", 5),
             supabase
                 .from("hiragana_tracker")
                 .select("hiragana_id, status, updated_at")
@@ -111,7 +81,7 @@ const homeBarController = async (req, res) => {
         if (particlesDataError)
             throw new Error("Gagal mengambil data partikel");
         if (kanjiTrackError) throw new Error("Gagal memeriksa tracker kanji");
-        if (kanjiDataError) throw new Error("Gagal mengambil data kanji");
+        if (kanjiDataN5Error) throw new Error("Gagal mengambil data kanji N5");
         if (hiraganaTrackError)
             throw new Error("Gagal memeriksa tracker hiragana");
         if (hiraganaDataError) throw new Error("Gagal mengambil data hiragana");
@@ -125,53 +95,62 @@ const homeBarController = async (req, res) => {
             throw new Error("Gagal memeriksa tracker kata kerja");
         if (verbsDataError) throw new Error("Gagal mengambil data kata kerja");
 
+        const nounsProgress = getProgressInfo(nounsTrack, {
+            relationTypeField: "nouns",
+        });
+        const nounsHref =
+            nounsProgress.subCategory &&
+            nounTypeMapping[nounsProgress.subCategory]
+                ? `home/n5/${nounTypeMapping[nounsProgress.subCategory]}`
+                : "home/n5/nouns";
+
         const progressList = [
             {
                 type: "Kata Sifat",
                 ...getProgressInfo(adjectivesTrack),
-                href: "/home/n5/adjectives",
+                href: "home/n5/adjectives",
                 total: adjectivesData ? adjectivesData.length : 0,
             },
             {
                 type: "Percakapan Dasar",
                 ...getProgressInfo(basicConversationTrack),
-                href: "/home/dasar/basic-conversation",
+                href: "home/bc",
                 total: basicConversationData ? basicConversationData.length : 0,
             },
             {
                 type: "Partikel",
                 ...getProgressInfo(particlesTrack),
-                href: "/home/dasar/particle",
+                href: "home/particle",
                 total: particlesData ? particlesData.length : 0,
             },
             {
                 type: "Kanji",
                 ...getProgressInfo(kanjiTrack),
-                href: "/home/n5/kanji",
-                total: kanjiData ? kanjiData.length : 0,
+                href: "home/n5/kanji-n5",
+                total: kanjiDataN5 ? kanjiDataN5.length : 0,
             },
             {
                 type: "Hiragana",
                 ...getProgressInfo(hiraganaTrack),
-                href: "/home/dasar/hiragana",
+                href: "home/hiragana",
                 total: hiraganaData ? hiraganaData.length : 0,
             },
             {
                 type: "Katakana",
                 ...getProgressInfo(katakanaTrack),
-                href: "/home/dasar/katakana",
+                href: "home/katakana",
                 total: katakanaData ? katakanaData.length : 0,
             },
             {
                 type: "Kata Benda",
-                ...getProgressInfo(nounsTrack, { relationTypeField: "nouns" }),
-                href: "/home/n5/nouns/",
+                ...nounsProgress,
+                href: nounsHref,
                 total: nounsData ? nounsData.length : 0,
             },
             {
                 type: "Kata Kerja",
                 ...getProgressInfo(verbsTrack),
-                href: "/home/n5/verbs",
+                href: "home/n5/verbs",
                 total: verbsData ? verbsData.length : 0,
             },
         ];
