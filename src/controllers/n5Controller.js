@@ -2,49 +2,82 @@ const supabase = require("../config/supabase");
 
 const kanjiN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: kanjiData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("kanjis")
+            .select("*")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa kanji");
+        }
+
+        const { data: datas, error } = await supabase
             .from("kanjis")
             .select("*")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("kanji_id", { ascending: true });
 
-        const { data: tracker } = await supabase
-            .from("kanjis_tracker")
-            .select("kanji_id, status")
-            .eq("user_id", id);
-
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kanji");
+        if (error) {
+            throw new Error("Gagal memeriksa partikel");
         }
 
-        const datas = kanjiData.map((kanji) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.kanji_id === kanji.kanji_id)
+        const { data: trackers, error: errorTracker } = await supabase
+            .from("kanjis_tracker")
+            .select("kanji_id, status")
+            .eq("user_id", req.user.id);
+
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
+        }
+
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data partikel yang ditemukan",
+                data: null,
+            });
+        }
+
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.kanji_id === data.kanji_id)
                 : null;
             return {
-                id: kanji.kanji_id,
-                romaji: kanji.romaji,
-                character: kanji.character,
-                onyomi: kanji.onyomi,
-                kunyomi: kanji.kunyomi,
-                meaning: kanji.meaning,
+                id: data.kanji_id,
+                romaji: data.romaji,
+                character: data.character,
+                onyomi: data.onyomi,
+                kunyomi: data.kunyomi,
+                meaning: data.meaning,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
 
-        const userCompletedKanjis = tracker ? tracker.length : 0;
-        const totalKanjis = kanjiData.length;
+        const userCompletedKanjis = trackers ? trackers.length : 0;
+        const totalKanjis = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kanji berhasil diambil",
             userCompletedKanjis,
             totalKanjis,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -55,50 +88,85 @@ const kanjiN5Controller = async (req, res) => {
 
 const adjectiveN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: adjectiveData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("adjectives")
+            .select("*")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata sifat");
+        }
+
+        const { data: datas, error } = await supabase
             .from("adjectives")
             .select("*")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("adjective_id", { ascending: true });
 
-        const { data: tracker } = await supabase
-            .from("adjectives_tracker")
-            .select("adjective_id, status")
-            .eq("user_id", id);
-
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata sifat");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata sifat");
         }
 
-        const datas = adjectiveData.map((adjective) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.adjective_id === adjective.adjective_id)
+        const { data: trackers, error: errorTracker } = await supabase
+            .from("adjectives_tracker")
+            .select("adjective_id, status")
+            .eq("user_id", req.user.id);
+
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
+        }
+
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata sifat yang ditemukan",
+                data: null,
+            });
+        }
+
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find(
+                      (tracker) => tracker.adjective_id === data.adjective_id
+                  )
                 : null;
             return {
-                id: adjective.adjective_id,
-                romaji: adjective.romaji,
-                reading: adjective.reading,
-                word: adjective.word,
-                meaning: adjective.meaning,
-                example_sentence: adjective.example_sentence,
-                type: adjective.type,
+                id: data.adjective_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
+                type: data.type,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
 
-        const userCompletedAdjectives = tracker ? tracker.length : 0;
-        const totalAdjectives = adjectiveData.length;
+        const userCompletedAdjectives = trackers ? trackers.length : 0;
+        const totalAdjectives = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata sifat berhasil diambil",
             userCompletedAdjectives,
             totalAdjectives,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -109,57 +177,86 @@ const adjectiveN5Controller = async (req, res) => {
 
 const adverbN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: adverbData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("other_words")
+            .select("*")
+            .eq("type", "adverb")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata keterangan");
+        }
+
+        const { data: datas, error } = await supabase
             .from("other_words")
             .select("*")
             .eq("type", "adverb")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("other_word_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata keterangan");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata keterangan");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("other_words_tracker")
             .select("other_word_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata keterangan");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const adverbIds = adverbData.map((adverb) => adverb.other_word_id);
-        const userCompletedAdverbs = tracker
-            ? tracker.filter((t) => adverbIds.includes(t.other_word_id)).length
-            : 0;
-        const totalAdverbs = adverbData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata keterangan yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = adverbData.map((adverb) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.other_word_id === adverb.other_word_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find(
+                      (tracker) => tracker.other_word_id === data.other_word_id
+                  )
                 : null;
             return {
-                id: adverb.other_word_id,
-                romaji: adverb.romaji,
-                reading: adverb.reading,
-                word: adverb.word,
-                meaning: adverb.meaning,
-                example_sentence: adverb.example_sentence,
+                id: data.other_word_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedAdverbs = trackers ? trackers.length : 0;
+        const totalAdverbs = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata keterangan berhasil diambil",
             userCompletedAdverbs,
             totalAdverbs,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -170,53 +267,82 @@ const adverbN5Controller = async (req, res) => {
 
 const verbN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: verbData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("verbs")
+            .select("*")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata kerja");
+        }
+
+        const { data: datas, error } = await supabase
             .from("verbs")
             .select("*")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("verb_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata kerja");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata kerja");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("verbs_tracker")
             .select("verb_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata kerja");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const userCompletedVerbs = tracker ? tracker.length : 0;
-        const totalVerbs = verbData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata kerja yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = verbData.map((verb) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.verb_id === verb.verb_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.verb_id === data.verb_id)
                 : null;
             return {
-                id: verb.verb_id,
-                romaji: verb.romaji,
-                reading: verb.reading,
-                word: verb.word,
-                meaning: verb.meaning,
-                example_sentence: verb.example_sentence,
+                id: data.verb_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedVerbs = trackers ? trackers.length : 0;
+        const totalVerbs = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata kerja berhasil diambil",
             userCompletedVerbs,
             totalVerbs,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -227,58 +353,84 @@ const verbN5Controller = async (req, res) => {
 
 const nounActivityN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "activity")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda aktivitas");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "activity")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda aktivitas");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda aktivitas");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda aktivitas"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda aktivitas yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda aktivitas berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -289,60 +441,89 @@ const nounActivityN5Controller = async (req, res) => {
 
 const nounAnimalplantN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "animalplant")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error(
+                "Gagal memeriksa data kata benda hewan dan tumbuhan"
+            );
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "animalplant")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
+        if (error) {
             throw new Error(
-                "Gagal mengambil data kata benda hewan dan tumbuhan"
+                "Gagal memeriksa data kata benda hewan dan tumbuhan"
             );
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda hewan dan tumbuhan"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message:
+                    "Tidak ada data kata benda hewan dan tumbuhan yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda hewan dan tumbuhan berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -353,56 +534,84 @@ const nounAnimalplantN5Controller = async (req, res) => {
 
 const nounAuxnumberN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "auxnumber")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda angka");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "auxnumber")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda angka");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda angka");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda angka");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounsIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounsIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda angka yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda angka berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -413,54 +622,81 @@ const nounAuxnumberN5Controller = async (req, res) => {
 
 const nounBodyN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "body")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda tubuh");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "body")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda tubuh");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda tubuh");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda tubuh");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda tubuh yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda tubuh berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -473,54 +709,81 @@ const nounBodyN5Controller = async (req, res) => {
 
 const nounCityN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "city")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda kota");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "city")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda kota");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda kota");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda kota");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda kota yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda kota berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -533,54 +796,81 @@ const nounCityN5Controller = async (req, res) => {
 
 const nounColorN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "color")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda warna");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "color")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda warna");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda warna");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda warna");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda warna yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda warna berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -593,58 +883,86 @@ const nounColorN5Controller = async (req, res) => {
 
 const nounFoodDrinkN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "fooddrink")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error(
+                "Gagal memeriksa data kata benda makanan dan minuman"
+            );
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "fooddrink")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
+        if (error) {
             throw new Error(
-                "Gagal mengambil data kata benda makanan dan minuman"
+                "Gagal memeriksa data kata benda makanan dan minuman"
             );
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda makanan dan minuman"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message:
+                    "Tidak ada data kata benda makanan dan minuman yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda makanan dan minuman berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -657,58 +975,86 @@ const nounFoodDrinkN5Controller = async (req, res) => {
 
 const nounHomeAppliancesN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "homeappliances")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error(
+                "Gagal memeriksa data kata benda peralatan rumah tangga"
+            );
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "homeappliances")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
+        if (error) {
             throw new Error(
-                "Gagal mengambil data kata benda peralatan rumah tangga"
+                "Gagal memeriksa data kata benda peralatan rumah tangga"
             );
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda peralatan rumah tangga"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message:
+                    "Tidak ada data kata benda peralatan rumah tangga yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda peralatan rumah tangga berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -721,54 +1067,81 @@ const nounHomeAppliancesN5Controller = async (req, res) => {
 
 const nounKosoadoN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "kosoado")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda kosoado");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "kosoado")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda kosoado");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda kosoado");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda kosoado");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda kosoado yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda kosoado berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
         return res.status(500).json({
@@ -781,56 +1154,84 @@ const nounKosoadoN5Controller = async (req, res) => {
 
 const nounMediaN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "media")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda media");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "media")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda media");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda media");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda media");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda media yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda media berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -841,56 +1242,84 @@ const nounMediaN5Controller = async (req, res) => {
 
 const nounNaturalN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "natural")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda alam");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "natural")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda alam");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda alam");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda alam");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda alam yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda alam berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -901,56 +1330,84 @@ const nounNaturalN5Controller = async (req, res) => {
 
 const nounNumberN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "number")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda angka");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "number")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda angka");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda angka");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda angka");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda angka yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda angka berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -961,56 +1418,84 @@ const nounNumberN5Controller = async (req, res) => {
 
 const nounOutfitN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "outfit")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda pakaian");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "outfit")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda pakaian");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda pakaian");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda pakaian");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda pakaian yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda pakaian berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1021,56 +1506,84 @@ const nounOutfitN5Controller = async (req, res) => {
 
 const nounPeopleN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "people")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda orang");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "people")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda orang");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda orang");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda orang");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda orang yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda orang berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1081,56 +1594,84 @@ const nounPeopleN5Controller = async (req, res) => {
 
 const nounPositionN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "position")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda posisi");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "position")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda posisi");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda posisi");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda posisi");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda posisi yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda posisi berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1141,56 +1682,84 @@ const nounPositionN5Controller = async (req, res) => {
 
 const nounRegionN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "region")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda wilayah");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "region")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda wilayah");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda wilayah");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda wilayah");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda wilayah yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda wilayah berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1201,56 +1770,84 @@ const nounRegionN5Controller = async (req, res) => {
 
 const nounSchoolN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "school")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda sekolah");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "school")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda sekolah");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda sekolah");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda sekolah");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda sekolah yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda sekolah berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1261,56 +1858,84 @@ const nounSchoolN5Controller = async (req, res) => {
 
 const nounTimeN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "time")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda waktu");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "time")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda waktu");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda waktu");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata benda waktu");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda waktu yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda waktu berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1321,58 +1946,84 @@ const nounTimeN5Controller = async (req, res) => {
 
 const nounTrafficN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "traffic")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda lalu lintas");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "traffic")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda lalu lintas");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda lalu lintas");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda lalu lintas"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda lalu lintas yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda lalu lintas berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1383,58 +2034,84 @@ const nounTrafficN5Controller = async (req, res) => {
 
 const nounWorkN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: nounData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
             .from("nouns")
             .select("*")
             .eq("type", "work")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata benda pekerjaan");
+        }
+
+        const { data: datas, error } = await supabase
+            .from("nouns")
+            .select("*")
+            .eq("type", "work")
+            .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("noun_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata benda pekerjaan");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata benda pekerjaan");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("nouns_tracker")
             .select("noun_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error(
-                "Gagal mengambil data tracker kata benda pekerjaan"
-            );
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const nounIds = nounData.map((noun) => noun.noun_id);
-        const userCompletedNouns = tracker
-            ? tracker.filter((t) => nounIds.includes(t.noun_id)).length
-            : 0;
-        const totalNouns = nounData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata benda pekerjaan yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = nounData.map((noun) => {
-            const trackerItem = tracker
-                ? tracker.find((t) => t.noun_id === noun.noun_id)
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find((tracker) => tracker.noun_id === data.noun_id)
                 : null;
             return {
-                id: noun.noun_id,
-                romaji: noun.romaji,
-                reading: noun.reading,
-                word: noun.word,
-                meaning: noun.meaning,
-                example_sentence: noun.example_sentence,
+                id: data.noun_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedNouns = trackers ? trackers.length : 0;
+        const totalNouns = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata benda pekerjaan berhasil diambil",
             userCompletedNouns,
             totalNouns,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1445,62 +2122,86 @@ const nounWorkN5Controller = async (req, res) => {
 
 const questionWordController = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: questionData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("other_words")
+            .select("*")
+            .eq("type", "question_word")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata tanya");
+        }
+
+        const { data: datas, error } = await supabase
             .from("other_words")
             .select("*")
             .eq("type", "question_word")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("other_word_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata tanya");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata tanya");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("other_words_tracker")
             .select("other_word_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata tanya");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const otherWordIds = questionData.map(
-            (question) => question.other_word_id
-        );
-        const userCompletedQuestionWord = tracker
-            ? tracker.filter((t) => otherWordIds.includes(t.other_word_id))
-                  .length
-            : 0;
-        const totalQuestionWord = questionData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata tanya yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = questionData.map((question) => {
-            const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.other_word_id === question.other_word_id
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find(
+                      (tracker) => tracker.other_word_id === data.other_word_id
                   )
                 : null;
             return {
-                id: question.other_word_id,
-                romaji: question.romaji,
-                reading: question.reading,
-                word: question.word,
-                meaning: question.meaning,
-                example_sentence: question.example_sentence,
+                id: data.other_word_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedQuestionWord = trackers ? trackers.length : 0;
+        const totalQuestionWord = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata tanya berhasil diambil",
             userCompletedQuestionWord,
             totalQuestionWord,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
@@ -1511,62 +2212,86 @@ const questionWordController = async (req, res) => {
 
 const conjunctionN5Controller = async (req, res) => {
     try {
-        const { id } = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
 
-        const { data: conjunctionData, error: fetchError } = await supabase
+        const { data: pagination, error: errorPagination } = await supabase
+            .from("other_words")
+            .select("*")
+            .eq("type", "conjunction")
+            .eq("level_id", "5");
+
+        if (errorPagination) {
+            throw new Error("Gagal memeriksa data kata hubung");
+        }
+
+        const { data: datas, error } = await supabase
             .from("other_words")
             .select("*")
             .eq("type", "conjunction")
             .eq("level_id", "5")
+            .range((page - 1) * pageSize, page * pageSize - 1)
             .order("other_word_id", { ascending: true });
 
-        if (fetchError) {
-            throw new Error("Gagal mengambil data kata hubung");
+        if (error) {
+            throw new Error("Gagal memeriksa data kata hubung");
         }
 
-        const { data: tracker, error: trackerError } = await supabase
+        const { data: trackers, error: errorTracker } = await supabase
             .from("other_words_tracker")
             .select("other_word_id, status")
-            .eq("user_id", id);
+            .eq("user_id", req.user.id);
 
-        if (trackerError) {
-            throw new Error("Gagal mengambil data tracker kata hubung");
+        if (errorTracker) {
+            throw new Error("Gagal memeriksa progress user");
         }
 
-        const otherWordIds = conjunctionData.map(
-            (conjunction) => conjunction.other_word_id
-        );
-        const userCompletedConjunction = tracker
-            ? tracker.filter((t) => otherWordIds.includes(t.other_word_id))
-                  .length
-            : 0;
-        const totalConjunction = conjunctionData.length;
+        if (datas.length === 0 || !datas) {
+            return res.status(404).json({
+                error: true,
+                message: "Tidak ada data kata hubung yang ditemukan",
+                data: null,
+            });
+        }
 
-        const datas = conjunctionData.map((conjunction) => {
-            const trackerItem = tracker
-                ? tracker.find(
-                      (t) => t.other_word_id === conjunction.other_word_id
+        const resultData = datas.map((data) => {
+            const trackerItem = trackers
+                ? trackers.find(
+                      (tracker) => tracker.other_word_id === data.other_word_id
                   )
                 : null;
             return {
-                id: conjunction.other_word_id,
-                romaji: conjunction.romaji,
-                reading: conjunction.reading,
-                word: conjunction.word,
-                meaning: conjunction.meaning,
-                example_sentence: conjunction.example_sentence,
+                id: data.other_word_id,
+                romaji: data.romaji,
+                reading: data.reading,
+                word: data.word,
+                meaning: data.meaning,
+                example_sentence: data.example_sentence,
                 status: trackerItem ? trackerItem.status : false,
             };
         });
+
+        const userCompletedConjunction = trackers ? trackers.length : 0;
+        const totalConjunction = pagination.length;
+        const totalPage = Math.ceil(pagination.length / pageSize);
+        const havePrevious = page > 1 ? true : false;
+        const haveNext = page < totalPage ? true : false;
 
         return res.status(200).json({
             error: false,
             message: "Data kata hubung berhasil diambil",
             userCompletedConjunction,
             totalConjunction,
-            data: datas,
+            pagination: {
+                totalPage,
+                pageNow: page,
+                havePrevious,
+                haveNext,
+            },
+            data: resultData,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: true,
             message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",

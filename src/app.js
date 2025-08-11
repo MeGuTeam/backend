@@ -7,7 +7,11 @@ const router = require("./routes/index");
 
 app.use(
     cors({
-        origin: ["http://localhost:3000", "https://rifqicodes.icu"],
+        origin: [
+            "http://localhost:3000",
+            "https://rifqicodes.icu",
+            "https://www.rifqicodes.icu",
+        ],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })
