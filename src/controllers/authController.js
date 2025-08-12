@@ -254,4 +254,25 @@ const changePasswordAuth = async (req, res) => {
   }
 };
 
-module.exports = { registerAuth, loginAuth, changePasswordAuth };
+const logoutAuth = (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      error: false,
+      message: "Logout berhasil",
+      data: null,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: true,
+      message: "Gagal logout",
+      data: null,
+    });
+  }
+};
+
+module.exports = { registerAuth, loginAuth, changePasswordAuth, logoutAuth };
